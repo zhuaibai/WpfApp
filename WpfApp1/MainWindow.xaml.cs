@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModels;
 
 namespace WpfApp1
 {
@@ -19,6 +21,16 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = new MainWindowVM();
+           
         }
+
+        private void btnMenu_Click(object sender, RoutedEventArgs e)
+        {
+            // 显示Popup
+            myPopup.IsOpen = !myPopup.IsOpen;
+        }
+        
+
     }
 }

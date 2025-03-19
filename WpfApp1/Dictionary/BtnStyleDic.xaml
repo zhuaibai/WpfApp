@@ -1,0 +1,31 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="BtnStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="#aaa"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border BorderThickness="1" Background="Transparent" Name="border">
+                        <Border.BorderBrush>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#22ffffff" Offset="0"></GradientStop>
+                                <GradientStop Color="#77ffffff" Offset="0.5"></GradientStop>
+                                <GradientStop Color="#22ffffff" Offset="1"></GradientStop>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock Text="{TemplateBinding Tag}" VerticalAlignment="Center"  FontFamily="../Resource/Fonts/#iconfont"></TextBlock>
+                            <TextBlock Text="{TemplateBinding Content}" VerticalAlignment="Center"  Margin="5,0"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#11ffffff"></Setter>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
