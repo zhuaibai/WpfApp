@@ -5,8 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WpfApp1.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="700"
+    d:DesignWidth="1200"
+    Background="White"
     mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="GroupBox">
@@ -81,7 +82,7 @@
             <RadioButton Content="概览图" IsChecked="True" />
             <RadioButton Content="软件升级" />
         </StackPanel>
-        <!--  第二行  第一列-->
+        <!--  第二行 第一列  -->
         <Grid Grid.Row="1" Margin="10,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="150" />
@@ -193,15 +194,294 @@
                 </ItemsControl>
             </GroupBox>
         </Grid>
+        <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*"></RowDefinition>
-                <RowDefinition Height="3*"></RowDefinition>
-                <RowDefinition Height="2*"></RowDefinition>
+                <RowDefinition Height="4*" MaxHeight="330" />
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
+            <!--  第一行 图标显示  -->
             <Grid>
-                
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <!--  上边 (光伏发电)  -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="60"
+                            Foreground="#FF3596D4"
+                            Text="&#xe809;" />
+                        <!--  向下箭头（垂直翻转）  -->
+                        <Path
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
+                            Fill="#9918aabd" />
+                    </StackPanel>
+
+
+                    <TextBlock
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                        <Run Text="光伏功率:" />
+                        <Run
+                            FontSize="16"
+                            Foreground="#FF0000FF"
+                            Text="0" />
+                    </TextBlock>
+                </Grid>
+                <!--  中间 (电池 总控 负载)  -->
+                <Grid Grid.Row="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="150" />
+                        </Grid.ColumnDefinitions>
+                        <!--  向下箭头（垂直翻转）  -->
+                        <Path
+                            Grid.Column="4"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
+                            Fill="#9918aabd" />
+                        <Path
+                            Grid.Column="4"
+                            Margin="0,0,0,5"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
+                            Fill="#9918aabd" />
+                        <TextBlock
+                            Grid.Column="4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="50"
+                            Foreground="#FF3596D4"
+                            Text="&#xe6af;" />
+                        <!--  电池发电  -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontFamily="../Resource/Fonts/#iconfont"
+                                FontSize="50"
+                                Foreground="#FF3596D4"
+                                Text="&#xe603;" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock>
+                                    <Run FontSize="13" Text="SOC(%):" />
+                                    <Run
+                                        FontSize="15"
+                                        Foreground="#FF0000FF"
+                                        Text="0" />
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run FontSize="13" Text="充电功率(W):" />
+                                    <Run
+                                        FontSize="15"
+                                        Foreground="#FF0000FF"
+                                        Text="0" />
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run FontSize="13" Text="放电功率(W):" />
+                                    <Run
+                                        FontSize="15"
+                                        Foreground="#FF0000FF"
+                                        Text="0" />
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <Grid Grid.Column="5">
+                            <!--  向右箭头（原始）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="6">
+                            <!--  向右箭头（原始）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="7">
+                            <!--  向右箭头（原始）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <!--  向左箭头（水平镜像）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="2">
+                            <!--  向左箭头（水平镜像）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="3">
+                            <!--  向左箭头（水平镜像）  -->
+                            <Path
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
+                                Fill="#9918aabd" />
+                        </Grid>
+                        <Grid Grid.Column="8">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontFamily="../Resource/Fonts/#iconfont"
+                                    FontSize="50"
+                                    Foreground="#FF3596D4"
+                                    Text="&#xe611;" />
+                                <TextBlock>
+                                    <Run FontSize="13" Text="总负载:" />
+                                    <Run
+                                        FontSize="15"
+                                        Foreground="#FF0000FF"
+                                        Text="0" />
+                                </TextBlock>
+                            </StackPanel>
+
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <!--  下边 (电网)  -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1">
+                        <Path
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
+                            Fill="#9918aabd" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="60"
+                            Foreground="#FF3596D4"
+                            Text="&#xe809;" />
+                        <!--  向下箭头（垂直翻转）  -->
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="电网取电:" />
+                            <Run
+                                FontSize="16"
+                                Foreground="#FF0000FF"
+                                Text="0" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                            <Run Text="馈入电网:" />
+                            <Run
+                                FontSize="16"
+                                Foreground="#FF0000FF"
+                                Text="0" />
+                        </TextBlock>
+                    </StackPanel>
+
+                </Grid>
+
             </Grid>
+            <!--  第二行  -->
+            <GroupBox Grid.Row="1" Header="逆变信息" />
+            <!--  第三行  -->
+            <GroupBox Grid.Row="2" Header="电池信息" />
+        </Grid>
+        <!--  第二行 第三列  -->
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <GroupBox Header="电网信息" />
+            <GroupBox Grid.Row="1" Header="柴油发电机信息" />
+            <GroupBox Grid.Row="2" Header="EPS信息" />
+        </Grid>
+        <!--  第二行 第四列  -->
+        <Grid Grid.Row="1" Grid.Column="3">
+            <Border
+                Margin="3,0,0,5"
+                BorderBrush="Gray"
+                BorderThickness="1" />
+        </Grid>
+        <!--  第三行  -->
+        <Grid Grid.Row="2" Grid.ColumnSpan="4">
+            <Border BorderBrush="Gray" BorderThickness="1">
+                <StackPanel Margin="5,0" Orientation="Horizontal">
+                    <Button
+                        Width="80"
+                        Height="30"
+                        Margin="0,0,5,0"
+                        Background="Red"
+                        Content="停止"
+                        Style="{StaticResource BtnStyle}"
+                        Tag="&#xe691;" />
+                    <Button
+                        Width="80"
+                        Height="30"
+                        Background="#FF1AFA29"
+                        Content="开始"
+                        Style="{StaticResource BtnStyle}"
+                        Tag="&#xe622;" />
+                    <Border Width="2" Background="Black" Margin="5,0,0,0"></Border>
+                    <CheckBox VerticalAlignment="Center" Margin="10,0,0,0">
+                        <TextBlock Text="导出运行数据" VerticalAlignment="Center" FontSize="15"/>
+                    </CheckBox>
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0">
+                        <Hyperlink >日志目录</Hyperlink>
+                    </TextBlock>
+                    <Border Width="2" Background="Black" Margin="5,0,0,0"></Border>
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </UserControl>

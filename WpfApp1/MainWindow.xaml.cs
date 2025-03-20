@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp1.ViewModels;
+using WpfApp1.Views;
 
 namespace WpfApp1
 {
@@ -30,7 +31,14 @@ namespace WpfApp1
             // 显示Popup
             myPopup.IsOpen = !myPopup.IsOpen;
         }
-        
 
+        private void SerialSettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SerialPortSettingWindow() { Owner = this};
+
+            settingsWindow.ShowDialog();
+        }
+
+        
     }
 }

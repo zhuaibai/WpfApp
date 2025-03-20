@@ -39,6 +39,7 @@
                 BorderBrush="White"
                 BorderThickness="2,0,0,0" />
             <Button
+                Click="SerialSettingButton_Click"
                 Background="#FF1677FF"
                 Content="串口设置"
                 Style="{StaticResource MenuStyleBtn}"

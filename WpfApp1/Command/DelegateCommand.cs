@@ -9,27 +9,29 @@ namespace WpfApp1.Command
 {
     public class DelegateCommand : ICommand
     {
-        public DelegateCommand(Action<object> action) { this.ExecuteAction = action; }
-        public event EventHandler? CanExecuteChanged;
+        private readonly Action<object> _execute;
+        private readonly Predicate<object> _canExecute;
 
-        public bool CanExecute(object? parameter)
+        public DelegateCommand(Action<object> execute, Predicate<object> canExecute = null)
         {
-            if (CanExecuteChanged != null)
-            {
-                this.CanExecuteFunc(parameter);
-            }
-            return true;
+            _execute = execute;
+            _canExecute = canExecute;
         }
 
-        public void Execute(object? parameter)
+        public event EventHandler CanExecuteChanged
         {
-            if (ExecuteAction != null)
-            {
-                this.ExecuteAction(parameter);
-            }
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public Action<object> ExecuteAction {  get; set; }
-        public Func<object,bool> CanExecuteFunc {  get; set; }
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null || _canExecute(parameter);
+        }
+
+        public void Execute(object parameter)
+        {
+            _execute(parameter);
+        }
     }
 }
