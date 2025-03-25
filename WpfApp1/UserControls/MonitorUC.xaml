@@ -458,6 +458,8 @@
             <Border BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Margin="5,0" Orientation="Horizontal">
                     <Button
+                        x:Name="StopBtn"
+                        Visibility="Collapsed"
                         Width="80"
                         Height="30"
                         Margin="0,0,5,0"
@@ -466,6 +468,7 @@
                         Style="{StaticResource BtnStyle}"
                         Tag="&#xe691;" />
                     <Button
+                        Click="Button_Click"
                         Width="80"
                         Height="30"
                         Background="#FF1AFA29"

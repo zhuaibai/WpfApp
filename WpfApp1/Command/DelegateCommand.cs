@@ -18,20 +18,17 @@ namespace WpfApp1.Command
             _canExecute = canExecute;
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object? parameter)
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            return  _canExecute == null || _canExecute(parameter);
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return _canExecute == null || _canExecute(parameter);
-        }
-
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             _execute(parameter);
+
         }
     }
 }

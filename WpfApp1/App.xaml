@@ -9,6 +9,7 @@
                 <ResourceDictionary Source="Dictionary\OperateBtnStyleDic.xaml"/>
                 <ResourceDictionary Source="Dictionary\BtnStyleDic.xaml"/>
                 <ResourceDictionary Source="Dictionary\MenuBtnStyle.xaml"/>
+                <ResourceDictionary Source="Dictionary\ToggleButtonSty.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         

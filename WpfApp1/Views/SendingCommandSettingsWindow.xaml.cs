@@ -10,24 +10,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp1.ViewModels;
 
-namespace WpfApp1.UserControls
+namespace WpfApp1.Views
 {
     /// <summary>
-    /// MonitorUC.xaml 的交互逻辑
+    /// SendingCommandSettingsWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MonitorUC : UserControl
+    public partial class SendingCommandSettingsWindow : Window
     {
-        public MonitorUC()
+        public SendingCommandSettingsWindow()
         {
             InitializeComponent();
+            this.DataContext = new SendingCommandSettingsViewModel();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            StopBtn.Visibility = Visibility.Visible;
+            this.Close();
         }
     }
 }
