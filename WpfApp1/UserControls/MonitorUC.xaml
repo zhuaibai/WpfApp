@@ -79,7 +79,8 @@
         </Grid.RowDefinitions>
         <!--  第一行  -->
         <StackPanel Orientation="Horizontal">
-            <RadioButton Content="概览图" IsChecked="True" />
+            <RadioButton Content="概览图" IsChecked="True" Click="ElementView_Click" />
+            <RadioButton Content="参数设置" Click="ElementSetting_Click"/>
             <RadioButton Content="软件升级" />
         </StackPanel>
         <!--  第二行 第一列  -->
@@ -241,7 +242,7 @@
                         <Run
                             FontSize="16"
                             Foreground="#FF0000FF"
-                            Text="0" />
+                            Text="{Binding hopViewModel.Name}" />
                     </TextBlock>
                 </Grid>
                 <!--  中间 (电池 总控 负载)  -->
@@ -377,7 +378,7 @@
                                     <Run
                                         FontSize="15"
                                         Foreground="#FF0000FF"
-                                        Text="0" />
+                                        Text="{Binding hopViewModel.Kame}" />
                                 </TextBlock>
                             </StackPanel>
 
@@ -459,16 +460,20 @@
                 <StackPanel Margin="5,0" Orientation="Horizontal">
                     <Button
                         x:Name="StopBtn"
-                        Visibility="Collapsed"
+ 
                         Width="80"
                         Height="30"
+                        Command="{Binding DataContext.StopCommand,RelativeSource={RelativeSource AncestorType= Window}}"
+                        
                         Margin="0,0,5,0"
                         Background="Red"
                         Content="停止"
                         Style="{StaticResource BtnStyle}"
                         Tag="&#xe691;" />
                     <Button
-                        Click="Button_Click"
+                        x:Name="BeginBtn"
+                        
+                        Command="{Binding DataContext.StartCommand,RelativeSource={RelativeSource AncestorType=Window}}"
                         Width="80"
                         Height="30"
                         Background="#FF1AFA29"
@@ -485,6 +490,22 @@
                     <Border Width="2" Background="Black" Margin="5,0,0,0"></Border>
                 </StackPanel>
             </Border>
+        </Grid>
+        
+        
+        
+        <!-- 参数设置 界面-->
+        <Grid Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="2" Visibility="Collapsed" x:Name="SettingView" Background="White">
+            <Grid>
+                <StackPanel Orientation="Horizontal"  Height="40">
+                    <TextBlock Text="电压"/>
+                    <TextBlock Text="{Binding hopViewModel.Name}"/>
+                    <Button Content="设置" Width="40" Margin="5" Command="{Binding DataContext.hopViewModel.Button1Command,RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <TextBox Text="{Binding hopViewModel.Input1,UpdateSourceTrigger=PropertyChanged}" Width="60" TextAlignment="Center" FontSize="17" ></TextBox>
+                </StackPanel>
+            </Grid>
+                
+            
         </Grid>
     </Grid>
 </UserControl>

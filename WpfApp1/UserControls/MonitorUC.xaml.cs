@@ -23,11 +23,28 @@ namespace WpfApp1.UserControls
         public MonitorUC()
         {
             InitializeComponent();
+            //this.DataContext = this;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 点击概览图
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ElementView_Click(object sender, RoutedEventArgs e)
         {
-            StopBtn.Visibility = Visibility.Visible;
+            SettingView.Visibility = Visibility.Collapsed;
+             
+        }
+
+        /// <summary>
+        /// 参数设置界面显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ElementSetting_Click(object sender, RoutedEventArgs e)
+        {
+            SettingView.Visibility = Visibility.Visible;
         }
     }
 }

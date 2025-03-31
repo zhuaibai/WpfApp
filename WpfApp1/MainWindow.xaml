@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:convert="clr-namespace:WpfApp1.Convert"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lo="clr-namespace:WpfApp1.Behavior"
     xmlns:local="clr-namespace:WpfApp1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
@@ -19,7 +20,7 @@
             Opacity="0.6"
             ShadowDepth="3"
             Color="#40000000" />
-        
+
 
         <!--  开关按钮样式  -->
         <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
@@ -43,7 +44,7 @@
                                     <TranslateTransform X="0" />
                                 </Ellipse.RenderTransform>
                             </Ellipse>
-                            
+
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
@@ -105,6 +106,7 @@
             <Button
                 Background="#FF1677FF"
                 Content="打开串口"
+                Command="{Binding OpenCom}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xec61;" />
             <Border
@@ -139,8 +141,8 @@
                 Tag="&#xe601;" />
             <Button
                 Background="#FF1677FF"
-                Content="日志"
                 Click="Log_Click"
+                Content="日志"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe8ac;" />
         </StackPanel>
@@ -220,12 +222,19 @@
                     Width="20"
                     Height="20"
                     Margin="5,0"
-                    Background="Red"
+                    Background="{Binding ComStatus}"
+                    
                     CornerRadius="10" />
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Text="串口状态:" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="5,0,0,0"
+                    Foreground="{Binding ComStatus}"
+                    Text="{Binding Status}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <TextBlock
@@ -271,7 +280,7 @@
             </StackPanel>
         </Grid>
         <!--  日志显示  -->
-        <Border 
+        <Border
             Name="Log"
             Grid.Row="1"
             Background="#11000000"
@@ -280,27 +289,27 @@
                 x:Name="logContent"
                 VerticalAlignment="Bottom"
                 Background="#f5f7f9fa"
-                BorderBrush="Gray" 
+                BorderBrush="Gray"
                 BorderThickness="0,5,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="350" />
-                        
+
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <ListBox ItemsSource="{Binding LogMessages}" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        
-                    </ListBox>
+                    <ListBox
+                        lo:ScrollBehavior.AdjustScrollOnAdd="{Binding IsScrollingEnabled}"
+                        ItemsSource="{Binding LogMessages}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" />
                     <StackPanel Grid.Column="1">
                         <Button
                             Margin="5"
                             Command="{Binding ClearLogCommand}"
                             Content="清空日志" />
                         <ToggleButton
-           
                             Margin="5"
                             IsChecked="{Binding IsScrollingEnabled}"
                             Style="{StaticResource ToggleSwitchStyle}" />
@@ -308,11 +317,27 @@
                             Margin="5"
                             Command="{Binding SaveLogCommand}"
                             Content="保存日志" />
-                        <ToggleButton Style="{StaticResource SwitchButton}" IsChecked="{Binding IsScrollingEnabled}"/>
-                        
+                        <Button
+                            Margin="5"
+                            Command="{Binding AddLogCommand}"
+                            Content="添加数据" />
+                        <ToggleButton IsChecked="{Binding IsScrollingEnabled}" Style="{StaticResource SwitchButton}" />
+
                     </StackPanel>
-                    <Button Style="{StaticResource BtnStyle}" Grid.Column="1" Content="关闭" VerticalAlignment="Bottom" Background="Red"  Tag="&#xe62f;" Click="Log_Close_Click" Width="80" Height="30" Grid.Row="1" HorizontalAlignment="Right" Margin="5"/>
-                    
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Width="80"
+                        Height="30"
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Background="Red"
+                        Click="Log_Close_Click"
+                        Content="关闭"
+                        Style="{StaticResource BtnStyle}"
+                        Tag="&#xe62f;" />
+
                 </Grid>
 
 
