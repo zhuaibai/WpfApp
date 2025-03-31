@@ -17,14 +17,13 @@ namespace WpfApp1.GB3024C_Comand
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
-        SerialCommunicationService communicationService;//通讯类
-        public HOPViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore,Action<string> addLog,Action<string> _updateState,SerialCommunicationService service)
+        public HOPViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore,Action<string> addLog,Action<string> _updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
             AddLog = addLog;
             UpdateState  = _updateState;
-            communicationService = service;
+            
             Button1Command = new RelayCommand(
                 execute: () => ExecuteButton1Operation(),
                 canExecute: () => ValidateInput1() && !IsWorking // 增加处理状态检查
@@ -123,8 +122,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    
-                    string receive = communicationService.SendSettingCommand("PCVV", "23.8");
+                    //Thread.Sleep(2000);
+                    string receive = SerialCommunicationService.SendSettingCommand("PCVV", "23.8");
 
                 })
                 , timeoutCts.Token);

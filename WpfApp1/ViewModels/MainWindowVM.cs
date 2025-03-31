@@ -76,7 +76,7 @@ namespace WpfApp1.ViewModels
             //初始化串口信息
             IniCom();
 
-            hopViewModel = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState,communicationService);
+            hopViewModel = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
             
             OpenCom = new RelayCommand(openCom);
             // 改进的命令初始化
@@ -88,15 +88,19 @@ namespace WpfApp1.ViewModels
         }
 
         #region 串口工具
-        //modbus通讯工具
-        SerialCommunicationService communicationService;
+        
         //串口实体类
         private SerialPortSettings serialPortSettings;
-        //初始化串口工具
+
+        /// <summary>
+        /// 初始化串口工具
+        /// </summary>
         private void IniCom()
         {
+            //加载串口配置文件
             serialPortSettings = LoadCom();
-            communicationService = new SerialCommunicationService(serialPortSettings);
+            //初始化串口通讯工具
+            SerialCommunicationService.InitiateCom(serialPortSettings);
         }
 
         
@@ -132,7 +136,7 @@ namespace WpfApp1.ViewModels
         /// </summary>
         public void openCom()
         {
-            if (communicationService.IsOpen())
+            if (SerialCommunicationService.IsOpen())
             {
                 MessageBoxResult dialogResult = MessageBox.Show("串口已打开，是否重新打开！", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (dialogResult == MessageBoxResult.OK)
@@ -143,12 +147,12 @@ namespace WpfApp1.ViewModels
                     
                     //关闭串口
                     AddLog("串口已关闭");
-                    communicationService.CloseCom();
+                    SerialCommunicationService.CloseCom();
                     
                     
                     //重新加载配置文件
                     IniCom();
-                    if (!communicationService.OpenCom())
+                    if (!SerialCommunicationService.OpenCom())
                     {
                         MessageBox.Show("串口打开失败！");
                         return;
@@ -163,7 +167,7 @@ namespace WpfApp1.ViewModels
             else
             {
                 IniCom();
-                if (!communicationService.OpenCom())
+                if (!SerialCommunicationService.OpenCom())
                 {
                     MessageBox.Show("串口打开失败！");
                     return ;
@@ -171,7 +175,7 @@ namespace WpfApp1.ViewModels
             }
             UpdateState("串口已打开(点击开始进行通讯)");
             comStateColor(true);
-            AddLog($"打开串口{communicationService.getComName()}成功");
+            AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
         }
         #endregion
 
@@ -494,7 +498,7 @@ namespace WpfApp1.ViewModels
                     _pauseEvent.Wait(token); // 等待暂停或取消信号
 
                     //发送HOP指令
-                    string receive = communicationService.SendCommand(hopViewModel.Command, 40);
+                    string receive = SerialCommunicationService.SendCommand(hopViewModel.Command, 40);
                     //解析返回命令
                     hopViewModel.AnalysisStringToElement(receive);
 

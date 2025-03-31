@@ -9,18 +9,19 @@ using WpfApp1.Models;
 
 namespace WpfApp1.Services
 {
-    public class SerialCommunicationService : ICommunicationService
+    public static class  SerialCommunicationService
     {
-        public SerialCommunicationService(SerialPortSettings serialPortSettings) { SerialPortModel = serialPortSettings; InitiateCom(); }
-        SerialPort SerialPort { get; set; }
+       
+        static SerialPort SerialPort { get; set; }
 
-        SerialPortSettings SerialPortModel { get; set; }
+        static SerialPortSettings SerialPortModel { get; set; }
 
         /// <summary>
         /// 初始化
         /// </summary>
-        public void InitiateCom()
+        public static void InitiateCom(SerialPortSettings serialPortSettings)
         {
+            SerialPortModel = serialPortSettings;
             SerialPort = new SerialPort();
             SerialPort.PortName = SerialPortModel.PortName;
             SerialPort.Parity = SerialPort.Parity;
@@ -33,7 +34,7 @@ namespace WpfApp1.Services
         /// 判断是否返回
         /// </summary>
         /// <returns></returns>
-        public bool IsOpen()
+        public static bool IsOpen()
         {
             return SerialPort.IsOpen;
         }
@@ -42,7 +43,7 @@ namespace WpfApp1.Services
         /// 获取串口名字
         /// </summary>
         /// <returns></returns>
-        public string getComName()
+        public static string getComName()
         {
             return SerialPort.PortName;
         }
@@ -51,7 +52,7 @@ namespace WpfApp1.Services
         /// 关闭串口
         /// </summary>
         /// <returns></returns>
-        public bool CloseCom()
+        public static bool CloseCom()
         {
             if (SerialPort.IsOpen)
             {
@@ -77,13 +78,13 @@ namespace WpfApp1.Services
         /// 打开串口
         /// </summary>
         /// <returns></returns>
-        public bool OpenCom()
+        public static bool OpenCom()
         {
             if (!SerialPort.IsOpen)
             {
                 try
                 {
-                    InitiateCom();
+                    
                     SerialPort.Open();
                     return true;
                 }
@@ -97,7 +98,6 @@ namespace WpfApp1.Services
                 CloseCom();
                 try
                 {
-                    InitiateCom();
                     SerialPort.Open();
                     return true;
                 }
@@ -115,7 +115,7 @@ namespace WpfApp1.Services
         /// <param name="command">指令</param>
         /// <param name="returnCount">返回字节数</param>
         /// <returns></returns>
-        public string SendCommand(string command ,int returnCount)
+        public static string SendCommand(string command ,int returnCount)
         {
             //在写命令之前先清空一下接受缓存
             SerialPort.DiscardInBuffer();
@@ -160,14 +160,14 @@ namespace WpfApp1.Services
         /// <param name="frontCommand"></param>
         /// <param name="setValue"></param>
         /// <returns></returns>
-        public string SendSettingCommand(string frontCommand,string setValue)
+        public static string SendSettingCommand(string frontCommand,string setValue)
         {
             //指令与设置值结合
             string Command = frontCommand + setValue;
             //转成字节
             byte[] bytes = Encoding.ASCII.GetBytes(Command);
             //获取CRC校验字节
-            byte[] CRC = CRC16(bytes);
+            byte[] CRC = getCRC(bytes);
             //拼接
             byte[] buffer = bytes.Concat(CRC).ToArray();
             //末尾的字节
@@ -175,7 +175,7 @@ namespace WpfApp1.Services
             //完成指令
             byte[] sendCommand = buffer.Concat(endCommand).ToArray();
             //发送指令
-            string receive = SendCommand(Encoding.ASCII.GetString(sendCommand),3);
+            string receive = SendCommand(Encoding.ASCII.GetString(sendCommand),7);
             return receive;
         }
 
@@ -191,7 +191,7 @@ namespace WpfApp1.Services
         /// <param name="checkCode">需要校验的字节数组</param>
         /// <param name="len">数组长度</param>
         /// <returns>字节数组的校验和</returns>
-        public int Check_Sum_Operation(byte[] checkCode, int len)
+        public static int Check_Sum_Operation(byte[] checkCode, int len)
         {
             int checkSumResult = 0;
             int checkSum = 0;
@@ -211,7 +211,7 @@ namespace WpfApp1.Services
         /// </summary>
         /// <param name="data"></param>
         /// <returns>字节数组，含两个字节</returns>
-        public byte[] getCRC(byte[] data)
+        public static byte[] getCRC(byte[] data)
         {
             byte[] CRC = new byte[2];
             int value = xmodem_crc16_ccitt(data);//从数据包中获取校验码
@@ -220,7 +220,7 @@ namespace WpfApp1.Services
             return CRC;
         }
         //RTU_CRC
-        int RTU_CalCRC16(byte[] pucFrame, int usDataLen)
+        static int RTU_CalCRC16(byte[] pucFrame, int usDataLen)
         {
             byte ucCRCHi = 0xFF;     // 高CRC字节初始化
             byte ucCRCLo = 0xFF;     // 低CRC字节初始化
@@ -293,24 +293,24 @@ namespace WpfApp1.Services
             0x41, 0x81, 0x80, 0x40
         };
 
-        private byte U16_MSB(int data)
+        private static byte U16_MSB(int data)
         {
             return (byte)(data >> 8);
         }
 
-        private byte U16_LSB(int data)
+        static private byte U16_LSB(int data)
         {
             return (byte)(data & 0xff);
         }
         //TQF_CRC
-        private int[] crc_ta = new int[16]
+        static private int[] crc_ta = new int[16]
         {
                 0x0000,0x1021,0x2042,0x3063,0x4084,0x50a5,0x60c6,0x70e7,
 
                 0x8108,0x9129,0xa14a,0xb16b,0xc18c,0xd1ad,0xe1ce,0xf1ef
         };
 
-        private int cal_crc_half(byte[] pin, int len)
+        static private int cal_crc_half(byte[] pin, int len)
         {
             int i = 0;
             int crc;
@@ -362,7 +362,7 @@ namespace WpfApp1.Services
             return (crc);
         }
         //MODE1K_CRC
-        int xmodem_crc16_ccitt(byte[] pbBuf)
+        static int xmodem_crc16_ccitt(byte[] pbBuf)
         {
             int wCRC = 0;
             int i = 0;
@@ -393,7 +393,7 @@ namespace WpfApp1.Services
         /// </summary>
         /// <param name="data">参与计算字节</param>
         /// <returns></returns>
-        public byte[] CRC16(byte[] arr)
+        public static byte[] CRC16(byte[] arr)
         {
             //byte[] res = new byte[2];                         
             //byte[] crcbuf = data.ToArray();
