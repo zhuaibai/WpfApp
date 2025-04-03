@@ -28,7 +28,6 @@ namespace WpfApp1.GB3024C_Comand
                 execute: () => ExecuteButton1Operation(),
                 canExecute: () => ValidateInput1() && !IsWorking // 增加处理状态检查
             );
-
         }
         //指令
         private string command = "HOP\r";

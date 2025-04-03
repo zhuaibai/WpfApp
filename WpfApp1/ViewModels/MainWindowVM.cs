@@ -76,19 +76,68 @@ namespace WpfApp1.ViewModels
             //初始化串口信息
             IniCom();
 
-            hopViewModel = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
-            
-            OpenCom = new RelayCommand(openCom);
-            // 改进的命令初始化
-            Button1Command = new RelayCommand(
-                execute: () => ExecuteButton1Operation(),
-                canExecute: () => ValidateInput1() && !IsWorking // 增加处理状态检查
-            );
-            
+            //初始化ViewModel
+            HOP = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
+            HEEP1 = new HEEP1_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HEEP2 = new HEEP2_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
+            OpenCom = new RelayCommand(openCom);  
         }
 
+        #region 指令ViewModel
+
+        private HOPViewModel hopVm;
+        public HOPViewModel HOP
+        {
+            get { return hopVm; }
+            set
+            {
+                hopVm = value;
+                this.RaiseProperChanged(nameof(HOP));
+            }
+        }
+
+        private HEEP1_ViewModel hEEP1_ViewModel;
+
+        public HEEP1_ViewModel HEEP1
+        {
+            get { return hEEP1_ViewModel; }
+            set
+            {
+                hEEP1_ViewModel = value;
+                this.RaiseProperChanged(nameof(HEEP1));
+            }
+        }
+
+        private HEEP2_ViewModel hEEP2_ViewModel;
+
+        public HEEP2_ViewModel HEEP2
+        {
+            get { return hEEP2_ViewModel; }
+            set
+            {
+                hEEP2_ViewModel = value;
+                this.RaiseProperChanged(nameof(HEEP2));
+            }
+        }
+
+
+        private Special_Command special_Command;
+
+        public Special_Command SpecialCommand
+        {
+            get { return special_Command; }
+            set
+            {
+                special_Command = value;
+                this.RaiseProperChanged(nameof(SpecialCommand));
+            }
+        }
+
+        #endregion
+
         #region 串口工具
-        
+
         //串口实体类
         private SerialPortSettings serialPortSettings;
 
@@ -368,6 +417,8 @@ namespace WpfApp1.ViewModels
         private readonly object _syncLock = new object();
         private CancellationTokenSource _cts = new CancellationTokenSource();//取消线程专用
         private ManualResetEventSlim _pauseEvent = new ManualResetEventSlim(true);//暂停线程专用
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // 异步竞争
+
 
         // 后台线程是否正在运行
         private bool _isRunning;
@@ -393,7 +444,6 @@ namespace WpfApp1.ViewModels
             }
         }
 
-
         /// <summary>
         /// 更新状态
         /// </summary>
@@ -416,7 +466,7 @@ namespace WpfApp1.ViewModels
             }
         }
 
-        //状态灯指示
+        //状态灯
         private Brush comStatus = Brushes.Red;
         public Brush ComStatus
         {
@@ -432,7 +482,7 @@ namespace WpfApp1.ViewModels
         }
 
         /// <summary>
-        /// 状态颜色
+        /// 设置状态灯颜色
         /// </summary>
         /// <param name="flag"></param>
         public void comStateColor(bool flag)
@@ -446,8 +496,6 @@ namespace WpfApp1.ViewModels
                 ComStatus = Brushes.Red;
             }
         }
-        // 日志记录
-        //public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
 
         // 命令定义
         public ICommand StartCommand { get; }
@@ -455,14 +503,17 @@ namespace WpfApp1.ViewModels
         public ICommand ExecuteSpecialCommand { get; }
         public ICommand OpenCom {  get; }
        
-        
-
         /// <summary>
         /// 启动后台通信线程
         /// </summary>
         private void StartBackgroundThread()
         {
             if (IsRunning) return;
+            if (!SerialCommunicationService.IsOpen())
+            {
+                MessageBox.Show("请先打开串口!","提示",MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             IsRunning = true;
             _cts = new CancellationTokenSource();
             _pauseEvent.Set();
@@ -472,19 +523,7 @@ namespace WpfApp1.ViewModels
             AddLog("后台通信线程已启动");
         }
 
-
-        private HOPViewModel hopVm;
-
-        public HOPViewModel hopViewModel    
-        {
-            get { return hopVm; }
-            set
-            {
-                hopVm = value;
-                this.RaiseProperChanged(nameof(hopViewModel));
-            }
-        }
-            
+       
 
         /// <summary>
         /// 后台工作线程主循环
@@ -498,11 +537,14 @@ namespace WpfApp1.ViewModels
                     _pauseEvent.Wait(token); // 等待暂停或取消信号
 
                     //发送HOP指令
-                    string receive = SerialCommunicationService.SendCommand(hopViewModel.Command, 40);
+                    string receive = SerialCommunicationService.SendCommand(HOP.Command, 40);
                     //解析返回命令
-                    hopViewModel.AnalysisStringToElement(receive);
+                    HOP.AnalysisStringToElement(receive);
 
-                    AddLog($"{"Name:"+hopViewModel.Name +"Kanme:"+ hopViewModel.Kame}");
+                    AddLog($"{"Name:"+ HOP.Name +"Kanme:"+ HOP.Kame}");
+
+                    string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
+                    HEEP1.AnalyseStringToElement(receiveHEEP1);
                     // 模拟常规通信
                     await Task.Delay(1000, token);
                     AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
@@ -527,133 +569,11 @@ namespace WpfApp1.ViewModels
             _cts.Cancel();
             AddLog("后台通信停止请求已发送");
         }
-
-       
-
-        ///// <summary>
-        ///// 执行特殊操作（暂停后台线程后执行）
-        ///// </summary>
-        //private async void ExecuteSpecialOperation()
-        //{
-        //    try
-        //    {
-        //        IsWorking = true;
-        //        Status = "正在执行特殊操作...";
-
-        //        // 暂停后台线程
-        //        _pauseEvent.Reset();
-        //        AddLog("已暂停后台通信");
-
-        //        // 执行特殊操作（带超时保护）
-        //        using var timeoutCts = new CancellationTokenSource(5000);
-        //        await Task.Run(new Action (Test)
-        //        , timeoutCts.Token);
-        //    }
-        //    catch (OperationCanceledException)
-        //    {
-        //        AddLog("特殊操作执行超时");
-        //    }
-        //    finally
-        //    {
-        //        // 恢复后台线程
-        //        _pauseEvent.Set();
-        //        IsWorking = false;
-        //        Status = "就绪";
-        //    }
-        //}
-
-        //public void Test()
-        //{
-
-        //}
-        ///// <summary>
-        ///// 线程安全的日志添加方法
-        ///// </summary>
-        //private void AddLog(string message)
-        //{
-        //    Application.Current.Dispatcher.Invoke(() =>
-        //    {
-        //        Logs.Add($"{DateTime.Now:HH:mm:ss.fff} {message}");
-        //        if (Logs.Count > 100) Logs.RemoveAt(0);
-        //    });
-        //}
-
-        // INotifyPropertyChanged 实现
-        
-
         #endregion
 
         #region 设置指令测试
 
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // 异步竞争
-        // 示例1的属性和命令
-        private string _input1 = string.Empty;
-        public string Input1
-        {
-            get => _input1;
-            set
-            {
-                _input1 = value;
-                OnPropertyChanged();
-                // 输入变化时更新按钮可用状态
-                Button1Command.RaiseCanExecuteChanged();
-            }
-        }
-        // 示例操作1（模拟耗时操作）
-        private async void ExecuteButton1Operation()
-        {
-            try
-            {
-                IsWorking = true;
-                // 禁用按钮
-                Button1Command.RaiseCanExecuteChanged();
-                
-                // 异步等待锁
-                await _semaphore.WaitAsync();
-                Status = "正在执行特殊操作...";
-
-                // 暂停后台线程
-                _pauseEvent.Reset();
-                AddLog("已暂停后台通信");
-
-                // 执行特殊操作（带超时保护）
-                using var timeoutCts = new CancellationTokenSource(5000);
-                await Task.Run(new Action(() =>
-                {
-                    //执行设置指令
-                    Thread.Sleep(2000);
-                })
-                , timeoutCts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                AddLog("特殊操作执行超时");
-            }
-            finally
-            {
-                // 恢复后台线程
-                _pauseEvent.Set();
-                AddLog("恢复后台通信");
-                IsWorking = false;
-                Status = "就绪";
-                // 重新启用按钮
-                Button1Command.RaiseCanExecuteChanged();
-                // 确保释放锁
-                _semaphore.Release(); 
-            }
-
-
-        }
-
         
-
-        public RelayCommand Button1Command { get; }
-        // 输入验证方法1：简单非空验证
-        private bool ValidateInput1()
-        {
-            return !string.IsNullOrWhiteSpace(Input1);
-        }
-       
         #endregion
 
     }

@@ -63,6 +63,17 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+
+
+
+
+
+
+
+
+
+
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -79,8 +90,11 @@
         </Grid.RowDefinitions>
         <!--  第一行  -->
         <StackPanel Orientation="Horizontal">
-            <RadioButton Content="概览图" IsChecked="True" Click="ElementView_Click" />
-            <RadioButton Content="参数设置" Click="ElementSetting_Click"/>
+            <RadioButton
+                Click="ElementView_Click"
+                Content="概览图"
+                IsChecked="True" />
+            <RadioButton Click="ElementSetting_Click" Content="参数设置" />
             <RadioButton Content="软件升级" />
         </StackPanel>
         <!--  第二行 第一列  -->
@@ -460,52 +474,382 @@
                 <StackPanel Margin="5,0" Orientation="Horizontal">
                     <Button
                         x:Name="StopBtn"
- 
                         Width="80"
                         Height="30"
-                        Command="{Binding DataContext.StopCommand,RelativeSource={RelativeSource AncestorType= Window}}"
-                        
                         Margin="0,0,5,0"
                         Background="Red"
+                        Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Content="停止"
                         Style="{StaticResource BtnStyle}"
                         Tag="&#xe691;" />
                     <Button
                         x:Name="BeginBtn"
-                        
-                        Command="{Binding DataContext.StartCommand,RelativeSource={RelativeSource AncestorType=Window}}"
                         Width="80"
                         Height="30"
                         Background="#FF1AFA29"
+                        Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                         Content="开始"
                         Style="{StaticResource BtnStyle}"
                         Tag="&#xe622;" />
-                    <Border Width="2" Background="Black" Margin="5,0,0,0"></Border>
-                    <CheckBox VerticalAlignment="Center" Margin="10,0,0,0">
-                        <TextBlock Text="导出运行数据" VerticalAlignment="Center" FontSize="15"/>
+                    <Border
+                        Width="2"
+                        Margin="5,0,0,0"
+                        Background="Black" />
+                    <CheckBox Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Text="导出运行数据" />
                     </CheckBox>
-                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0">
-                        <Hyperlink >日志目录</Hyperlink>
+                    <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
+                        <Hyperlink>日志目录</Hyperlink>
                     </TextBlock>
-                    <Border Width="2" Background="Black" Margin="5,0,0,0"></Border>
+                    <Border
+                        Width="2"
+                        Margin="5,0,0,0"
+                        Background="Black" />
                 </StackPanel>
             </Border>
         </Grid>
-        
-        
-        
-        <!-- 参数设置 界面-->
-        <Grid Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="2" Visibility="Collapsed" x:Name="SettingView" Background="White">
+
+
+
+        <!--  参数设置 界面  -->
+        <Grid
+            x:Name="SettingView"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="4"
+            Background="White"
+            Visibility="Visible">
             <Grid>
-                <StackPanel Orientation="Horizontal"  Height="40">
-                    <TextBlock Text="电压"/>
-                    <TextBlock Text="{Binding hopViewModel.Name}"/>
-                    <Button Content="设置" Width="40" Margin="5" Command="{Binding DataContext.hopViewModel.Button1Command,RelativeSource={RelativeSource AncestorType=Window}}"/>
-                    <TextBox Text="{Binding hopViewModel.Input1,UpdateSourceTrigger=PropertyChanged}" Width="60" TextAlignment="Center" FontSize="17" ></TextBox>
-                </StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Border Padding="20" Background="#FFF0F0F0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  标题行  -->
+                        <TextBlock
+                            Grid.Column="0"
+                            Style="{StaticResource HeaderText}"
+                            Text="设置项" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource HeaderText}"
+                            Text="当前值" />
+                        <TextBlock
+                            Grid.Column="2"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource HeaderText}"
+                            Text="设置值" />
+                        <TextBlock
+                            Grid.Column="3"
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource HeaderText}"
+                            Text="操作" />
+
+                        <!--  电池类型设置行  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource ContentText}"
+                            Text="电池类型" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.BatteryType}" />
+                        <ComboBox
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            ItemsSource="{Binding HEEP1.BatteryTypeOptions}"
+                            SelectedItem="{Binding HEEP1.BatteryTypeSelectedOption}"
+                            Style="{StaticResource SelectBox}" />
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetBatteryType, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+
+                        <!--  示例第二设置行  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource ContentText}"
+                            Text="锁机电压" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.LowPowerLock}" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP1.LowPowerLock_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetLowPowerLock, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+
+                        <!--  示例第三设置行  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource ContentText}"
+                            Text="工作模式" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.WorkingMode}" />
+                        <ComboBox
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            ItemsSource="{Binding HEEP1.WorkingModeOptions}"
+                            SelectedItem="{Binding HEEP1.WorkingModeSelectedOption}"
+                            Style="{StaticResource SelectBox}" />
+                        <Button
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetWorkingMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  强充电压  -->
+                        <TextBlock
+                            Grid.Row="4"
+                            Style="{StaticResource ContentText}"
+                            Text="强充电压" />
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.StrongChargeVoltage}" />
+                        <Button
+                            Grid.Row="4"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetStrongChargeVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <TextBox
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP1.StrongChargeVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <!--  浮充电压  -->
+                        <TextBlock
+                            Grid.Row="5"
+                            Style="{StaticResource ContentText}"
+                            Text="浮充电压" />
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.FloatChargeVolage}" />
+                        <Button
+                            Grid.Row="5"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetFloatChargeVolage, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <TextBox
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP1.FloatChargeVolage_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <!--  总充电电流  -->
+                        <TextBlock
+                            Grid.Row="6"
+                            Style="{StaticResource ContentText}"
+                            Text="总充电电流" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.TotalChargeCurrent}" />
+                        <TextBox
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP1.TotalChargeCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <Button
+                            Grid.Row="6"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetTotalChargeCurrent, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  市电充电电流  -->
+                        <TextBlock
+                            Grid.Row="7"
+                            Style="{StaticResource ContentText}"
+                            Text="市电充电电流" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.AC_ChargingCurrent}" />
+                        <TextBox
+                            Grid.Row="7"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP1.AC_ChargingCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <Button
+                            Grid.Row="7"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetAC_ChargingCurrent, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  返回市电充电电压  -->
+                        <TextBlock
+                            Grid.Row="8"
+                            Style="{StaticResource ContentText}"
+                            Text="返回市电充电电压" />
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP2.ReturnMainsBatteryVoltage}" />
+                        <TextBox
+                            Grid.Row="8"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP2.ReturnMainsBatteryVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <Button
+                            Grid.Row="8"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP2.Command_SetReturnMainsBatteryVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  返回电池模式电压  -->
+                        <TextBlock
+                            Grid.Row="9"
+                            Style="{StaticResource ContentText}"
+                            Text="返回电池模式电压" />
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP2.ReturnBatteryModeVoltage}" />
+                        <TextBox
+                            Grid.Row="9"
+                            Grid.Column="2"
+                            Style="{StaticResource InputBox}"
+                            Text="{Binding HEEP2.ReturnBatteryModeVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            TextAlignment="Center" />
+                        <Button
+                            Grid.Row="9"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP2.Command_SetReturnBatteryModeVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  返回电池模式电压  -->
+                        <TextBlock
+                            Grid.Row="10"
+                            Style="{StaticResource ContentText}"
+                            Text="蜂鸣器状态" />
+                        <TextBlock
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.BuzzerStatus}" />
+                        <ComboBox
+                            Grid.Row="10"
+                            Grid.Column="2"
+                            ItemsSource="{Binding HEEP1.BuzzerStatusOptions}"
+                            SelectedItem="{Binding HEEP1.BuzzerStatus_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource SelectBox}" />
+                        <Button
+                            Grid.Row="10"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetBuzzerStatus, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  过载重启  -->
+                        <TextBlock
+                            Grid.Row="11"
+                            Style="{StaticResource ContentText}"
+                            Text="过载重启" />
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.OverloadRestart}" />
+                        <ComboBox
+                            Grid.Row="11"
+                            Grid.Column="2"
+                            ItemsSource="{Binding HEEP1.OverloadRestartOptions}"
+                            SelectedItem="{Binding HEEP1.OverloadRestart_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource SelectBox}" />
+                        <Button
+                            Grid.Row="11"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetOverloadRestart, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+                        <!--  过温重启  -->
+                        <TextBlock
+                            Grid.Row="12"
+                            Style="{StaticResource ContentText}"
+                            Text="过温重启" />
+                        <TextBlock
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1.OverTemperatureRestart}" />
+                        <ComboBox
+                            Grid.Row="12"
+                            Grid.Column="2"
+                            ItemsSource="{Binding HEEP1.OverTemperatureRestartOptions}"
+                            SelectedItem="{Binding HEEP1.OverTemperatureRestart_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource SelectBox}" />
+                        <Button
+                            Grid.Row="12"
+                            Grid.Column="3"
+                            Command="{Binding DataContext.HEEP1.Command_SetOverTemperatureRestart, RelativeSource={RelativeSource AncestorType=Window}}"
+                            Content="设置"
+                            Style="{StaticResource ActionButton}" />
+
+                    </Grid>
+                </Border>
             </Grid>
-                
-            
+
+
         </Grid>
     </Grid>
+
+
 </UserControl>

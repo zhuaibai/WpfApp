@@ -112,7 +112,7 @@ namespace WpfApp1.Services
         /// <summary>
         /// 发送指令
         /// </summary>
-        /// <param name="command">指令</param>
+        /// <param name="command">字符串指令</param>
         /// <param name="returnCount">返回字节数</param>
         /// <returns></returns>
         public static string SendCommand(string command ,int returnCount)
@@ -131,6 +131,49 @@ namespace WpfApp1.Services
                 SerialPort.ReadTimeout = 1000;
                 // 需要读取的字节数
                 int bytesToRead =  returnCount;
+                //读取输入缓冲区
+                byte[] buffer = new byte[bytesToRead];
+                int totalBytesRead = 0;
+                //设置读取超时，1s内达不到所需字节就触发超时异常
+                while (totalBytesRead < bytesToRead)
+                {
+                    int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
+                    totalBytesRead += bytesRead;
+                }
+                //获取返回转字符串
+                string DataBuffer = Encoding.ASCII.GetString(buffer);
+                return DataBuffer;
+            }
+            catch (TimeoutException ex)
+            {
+                // 超时未
+                //MessageBox.Show("超时未收到ACK");
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// 发送指令
+        /// </summary>
+        /// <param name="command">字节指令</param>
+        /// <param name="returnCount">返回字节数</param>
+        /// <returns></returns>
+        public static string SendCommand(byte[] command, int returnCount)
+        {
+            //在写命令之前先清空一下接受缓存
+            SerialPort.DiscardInBuffer();
+            SerialPort.WriteTimeout = 1000;
+            //写命令
+            byte[] Command = command;
+
+            //收报文
+            try
+            {
+                SerialPort.Write(Command, 0, Command.Length);
+                // 设置读取超时时间【1s】
+                SerialPort.ReadTimeout = 1000;
+                // 需要读取的字节数
+                int bytesToRead = returnCount;
                 //读取输入缓冲区
                 byte[] buffer = new byte[bytesToRead];
                 int totalBytesRead = 0;
@@ -175,7 +218,7 @@ namespace WpfApp1.Services
             //完成指令
             byte[] sendCommand = buffer.Concat(endCommand).ToArray();
             //发送指令
-            string receive = SendCommand(Encoding.ASCII.GetString(sendCommand),7);
+            string receive = SendCommand(sendCommand,7);
             return receive;
         }
 
