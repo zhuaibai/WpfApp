@@ -160,15 +160,14 @@ namespace WpfApp1.Services
         /// <returns></returns>
         public static string SendCommand(byte[] command, int returnCount)
         {
-            //在写命令之前先清空一下接受缓存
-            SerialPort.DiscardInBuffer();
-            SerialPort.WriteTimeout = 1000;
-            //写命令
-            byte[] Command = command;
-
             //收报文
             try
             {
+                //在写命令之前先清空一下接受缓存
+                SerialPort.DiscardInBuffer();
+                SerialPort.WriteTimeout = 1000;
+                //写命令
+                byte[] Command = command;
                 SerialPort.Write(Command, 0, Command.Length);
                 // 设置读取超时时间【1s】
                 SerialPort.ReadTimeout = 1000;
@@ -191,6 +190,10 @@ namespace WpfApp1.Services
             {
                 // 超时未
                 //MessageBox.Show("超时未收到ACK");
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
                 return string.Empty;
             }
         }

@@ -17,18 +17,8 @@ namespace WpfApp1.GB3024C_Comand
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
-        public HOPViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore,Action<string> addLog,Action<string> _updateState)
-        {
-            _pauseEvent = pauseEvent;
-            _semaphore = semaphore;
-            AddLog = addLog;
-            UpdateState  = _updateState;
-            
-            Button1Command = new RelayCommand(
-                execute: () => ExecuteButton1Operation(),
-                canExecute: () => ValidateInput1() && !IsWorking // 增加处理状态检查
-            );
-        }
+
+
         //指令
         private string command = "HOP\r";
 
@@ -45,67 +35,78 @@ namespace WpfApp1.GB3024C_Comand
             }
         }
 
-
-        private string _kame;
-        public string Kame
+        public HOPViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> _updateState)
         {
-            get => _name;
+            _pauseEvent = pauseEvent;
+            _semaphore = semaphore;
+            AddLog = addLog;
+            UpdateState = _updateState;
+
+            //输出电压
+            Command_SetOutputVoltage = new RelayCommand(
+                execute: () => OutputVoltageOperation(),
+                canExecute: () => Validate(nameof(OutputVoltage_Inputs)) && !OutputVoltage_IsWorking // 增加处理状态检查
+            );
+
+        }
+
+        #region 输出电压
+
+        private string _OutputVoltage;
+
+        public string OutputVoltage
+        {
+            get { return _OutputVoltage; }
             set
             {
-                _kame = value;
-                RaiseProperChanged(nameof(Kame));
+                _OutputVoltage = value;
+                this.RaiseProperChanged(nameof(OutputVoltage));
             }
         }
 
-        // 工作状态指示
-        private bool _isWorking;
-        public bool IsWorking
+
+        private bool OutputVoltage_IsWorking;
+
+
+        //设置值
+        private string _OutputVoltage_Inputs;
+
+        public string OutputVoltage_Inputs
         {
-            get => _isWorking;
+            get { return _OutputVoltage_Inputs; }
             set
             {
-                if (value == _isWorking) return;
-                _isWorking = value;
-                RaiseProperChanged(nameof(IsWorking));
+                _OutputVoltage_Inputs = value;
+                this.RaiseProperChanged(nameof(OutputVoltage_Inputs));
+                Command_SetOutputVoltage.RaiseCanExecuteChanged();
             }
         }
 
+        //下拉选项
+        private List<string> _OutputVoltageOptions = new List<string> { "开启", "关闭" };
 
+        public List<string> OutputVoltageOptions
+        {
+            get { return _OutputVoltageOptions; }
+            set
+            {
+                _OutputVoltageOptions = value;
+                this.RaiseProperChanged(nameof(OutputVoltageOptions));
+            }
+        }
 
+        public RelayCommand Command_SetOutputVoltage { get; }
 
         /// <summary>
-        /// 对字符串进行解析
+        /// 点击设置
         /// </summary>
-        /// <param name="value"></param>
-        public void AnalysisStringToElement(string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                Name = value.Substring(1, 5);
-                Kame = value.Substring(7, 4);
-            }
-        }
-        // 示例1的属性和命令
-        private string _input1 = string.Empty;
-        public string Input1
-        {
-            get => _input1;
-            set
-            {
-                _input1 = value;
-                OnPropertyChanged();
-                // 输入变化时更新按钮可用状态
-                Button1Command.RaiseCanExecuteChanged();
-            }
-        }
-        // 示例操作1（模拟耗时操作）
-        private async void ExecuteButton1Operation()
+        private async void OutputVoltageOperation()
         {
             try
             {
-                IsWorking = true;
+                OutputVoltage_IsWorking = true;
                 // 禁用按钮
-                Button1Command.RaiseCanExecuteChanged();
+                Command_SetOutputVoltage.RaiseCanExecuteChanged();
 
                 // 异步等待锁
                 await _semaphore.WaitAsync();
@@ -121,8 +122,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    //Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("PCVV", "23.8");
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -136,25 +137,76 @@ namespace WpfApp1.GB3024C_Comand
                 // 恢复后台线程
                 _pauseEvent.Set();
                 AddLog("恢复后台通信");
-                IsWorking = false;
+                OutputVoltage_IsWorking = false;
                 //Status = "就绪";
                 // 重新启用按钮
-                Button1Command.RaiseCanExecuteChanged();
+                Command_SetOutputVoltage.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
             }
-
-
         }
 
-        public RelayCommand Button1Command { get; }
-        // 输入验证方法1：简单非空验证
-        private bool ValidateInput1()
+
+        #endregion
+
+
+
+
+
+
+        /// <summary>
+        /// 对字符串进行解析
+        /// </summary>
+        /// <param name="value"></param>
+        public void AnalysisStringToElement(string value)
         {
-            return !string.IsNullOrWhiteSpace(Input1);
+            if (!string.IsNullOrEmpty(value))
+            {
+
+            }
         }
 
-    }
 
+        // 输入验证&选择验证
+        private bool Validate(string value)
+        {
+            switch (value)
+            {
+                case "OutputVoltage_Inputs":
+                    return !string.IsNullOrWhiteSpace(OutputVoltage_Inputs);
+                default:
+                    return false;
+            }
+        }
+        /// <summary>
+        /// 对属性值进行二次转换，换成命令指令符号
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private string getSelectedToCommad(string value)
+        {
+            switch (value)
+            {
+                //输出电压
+                case "OutputVoltage_Inputs":
+                    if (string.IsNullOrWhiteSpace(OutputVoltage_Inputs))
+                    {
+                        return string.Empty;
+                    }
+                    else if (OutputVoltage_Inputs == "UTI")
+                    {
+                        return "00";
+                    }
+                    else if (OutputVoltage_Inputs == "SUB")
+                    {
+                        return "01";
+                    }
+                    return "";
+                default:
+                    return string.Empty;
+
+            }
+        }
+    }
 }

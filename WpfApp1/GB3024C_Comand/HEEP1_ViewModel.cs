@@ -5,10 +5,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WpfApp1.GB3024C_Comand
 {
@@ -29,6 +31,7 @@ namespace WpfApp1.GB3024C_Comand
             AddLog = addLog;
             UpdateState = _updateState;
 
+            #region 初始化命令
             //设置工作模式
             Command_SetWorkingMode = new RelayCommand(
                 execute: () => WorkingModeOperation(),
@@ -86,6 +89,79 @@ namespace WpfApp1.GB3024C_Comand
                 execute: () => OverTemperatureRestartOperation(),
                 canExecute: () => Validate(nameof(OverTemperatureRestart_Inputs)) && !OverTemperatureRestart_IsWorking
             );
+            //LCD背光
+            Command_SetLCD_Backlight = new RelayCommand(
+                execute: () => LCD_BacklightOperation(),
+                canExecute: () => Validate(nameof(LCD_Backlight_Inputs)) && !LCD_Backlight_IsWorking
+            );
+            //BMS开关
+            Command_SetBMS_CommunicationControlFunction = new RelayCommand(
+                execute: () => BMS_CommunicationControlFunctionOperation(),
+                canExecute: () => Validate(nameof(BMS_CommunicationControlFunction_Inputs)) && !BMS_CommunicationControlFunction_IsWorking
+            );
+            //输出模式
+            Command_SetOutputMode = new RelayCommand(
+                execute: () => OutputModeOperation(),
+                canExecute: () => Validate(nameof(OutputMode_Inputs)) && !OutputMode_IsWorking
+            );
+            //市电输入范围
+            Command_SetAC_InputRange = new RelayCommand(
+                execute: () => AC_InputRangeOperation(),
+                canExecute: () => Validate(nameof(AC_InputRange_Inputs)) && !AC_InputRange_IsWorking
+            );
+            //充电模式
+            Command_SetChargingPriority = new RelayCommand(
+                execute: () => ChargingPriorityOperation(),
+                canExecute: () => Validate(nameof(ChargingPriority_Inputs)) && !ChargingPriority_IsWorking
+            );
+            //BMS锁机电池容量
+            Command_SetBMS_LowPower_SOC = new RelayCommand(
+                execute: () => BMS_LowPower_SOCOperation(),
+                canExecute: () => Validate(nameof(BMS_LowPower_SOC_Inputs)) && !BMS_LowPower_SOC_IsWorking
+            );
+            //AC充电电池容量
+            Command_SetBMSreturns_to_AC_mode_SOC = new RelayCommand(
+                execute: () => BMSreturns_to_AC_mode_SOCOperation(),
+                canExecute: () => Validate(nameof(BMSreturns_to_AC_mode_SOC_Inputs)) && !BMSreturns_to_AC_mode_SOC_IsWorking
+            );
+            //恢复电池放电电池容量
+            Command_SetBMS_returns_to_battery_mode_SOC = new RelayCommand(
+                execute: () => BMS_returns_to_battery_mode_SOCOperation(),
+                canExecute: () => Validate(nameof(BMS_returns_to_battery_mode_SOC_Inputs)) && !BMS_returns_to_battery_mode_SOC_IsWorking
+            );
+
+            //逆变开机电池容量
+            Command_SetBMS_automatically_turns_on_after_low_power_SOC = new RelayCommand(
+                execute: () => BMS_automatically_turns_on_after_low_power_SOCOperation(),
+                canExecute: () => Validate(nameof(BMS_automatically_turns_on_after_low_power_SOC_Inputs)) && !BMS_automatically_turns_on_after_low_power_SOC_IsWorking
+            );
+            //过载转接旁路
+            Command_SetOverloadByPassFunction = new RelayCommand(
+               execute: () => OverloadByPassFunctionOperation(),
+               canExecute: () => Validate(nameof(OverloadByPassFunction_Inputs)) && !OverloadByPassFunction_IsWorking
+            );
+            //系统频率
+            Command_SetOutputSettingFrequency = new RelayCommand(
+               execute: () => OutputSettingFrequencyOperation(),
+               canExecute: () => Validate(nameof(OutputSettingFrequency_Inputs)) && !OutputSettingFrequency_IsWorking
+            );
+            //并网电流
+            Command_SetGridCurrent = new RelayCommand(
+              execute: () => OutputSettingFrequencyOperation(),
+              canExecute: () => Validate(nameof(GridCurrent_Inputs)) && !GridCurrent_IsWorking
+             );
+
+            //并网功能
+            Command_SetGridConnectedFunction = new RelayCommand(
+              execute: () => GridConnectedFunctionOperation(),
+              canExecute: () => Validate(nameof(GridConnectedFunction_Inputs)) && !GridConnectedFunction_IsWorking
+             );
+            //并网协议
+            Command_SetPV_GridConnectionProtocol = new RelayCommand(
+              execute: () => PV_GridConnectionProtocolOperation(),
+              canExecute: () => Validate(nameof(PV_GridConnectionProtocol_Inputs)) && !PV_GridConnectionProtocol_IsWorking
+             );
+            #endregion
         }
 
 
@@ -1071,16 +1147,1435 @@ namespace WpfApp1.GB3024C_Comand
 
         #endregion
 
+        #region 背光开启
+
+        private string _LCD_Backlight;
+
+        public string LCD_Backlight
+        {
+            get { return _LCD_Backlight; }
+            set
+            {
+                if (value == "0")
+                {
+                    _LCD_Backlight = "关闭";
+                }
+                else if (value == "1")
+                {
+                    _LCD_Backlight = "开启";
+                }
+                else
+                _LCD_Backlight = value;
+                this.RaiseProperChanged(nameof(LCD_Backlight));
+            }
+        }
+
+
+        private bool LCD_Backlight_IsWorking;
+
+
+        //设置值
+        private string _LCD_Backlight_Inputs;
+
+        public string LCD_Backlight_Inputs
+        {
+            get { return _LCD_Backlight_Inputs; }
+            set
+            {
+                _LCD_Backlight_Inputs = value;
+                this.RaiseProperChanged(nameof(LCD_Backlight_Inputs));
+                Command_SetLCD_Backlight.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _LCD_BacklightOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> LCD_BacklightOptions
+        {
+            get { return _LCD_BacklightOptions; }
+            set
+            {
+                _LCD_BacklightOptions = value;
+                this.RaiseProperChanged(nameof(LCD_BacklightOptions));
+            }
+        }
+
+        public RelayCommand Command_SetLCD_Backlight { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void LCD_BacklightOperation()
+        {
+            try
+            {
+                LCD_Backlight_IsWorking = true;
+                // 禁用按钮
+                Command_SetLCD_Backlight.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", LCD_Backlight_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                LCD_Backlight_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetLCD_Backlight.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+
+        #endregion
+
+        #region 输出模式
+
+        private string _OutputMode;
+
+        public string OutputMode
+        {
+            get { return _OutputMode; }
+            set
+            {
+                if (value == "0")
+                {
+                    _OutputMode = "SIG";
+                }
+                else if (value == "1")
+                {
+                    _OutputMode = "PAL";
+                } else if (value == "2")
+                {
+                    _OutputMode = "3P1";
+                }else if(value == "3") { _OutputMode = "3P2"; }
+                else if(value == "4") { _OutputMode = "3P3"; }
+                else
+                    _OutputMode = value;
+                this.RaiseProperChanged(nameof(OutputMode));
+            }
+        }
+
+
+        private bool OutputMode_IsWorking;
+
+
+        //设置值
+        private string _OutputMode_Inputs;
+
+        public string OutputMode_Inputs
+        {
+            get { return _OutputMode_Inputs; }
+            set
+            {
+                _OutputMode_Inputs = value;
+                this.RaiseProperChanged(nameof(OutputMode_Inputs));
+                Command_SetOutputMode.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _OutputModeOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> OutputModeOptions
+        {
+            get { return _OutputModeOptions; }
+            set
+            {
+                _OutputModeOptions = value;
+                this.RaiseProperChanged(nameof(OutputModeOptions));
+            }
+        }
+
+        public RelayCommand Command_SetOutputMode { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void OutputModeOperation()
+        {
+            try
+            {
+                OutputMode_IsWorking = true;
+                // 禁用按钮
+                Command_SetOutputMode.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputMode_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                OutputMode_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetOutputMode.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region BMS开关
+
+        //BMS通信控制功能
+        private string _BMS_CommunicationControlFunction;
+
+        public string BMS_CommunicationControlFunction
+        {
+            get { return _BMS_CommunicationControlFunction; }
+            set
+            {
+
+                if (value == "0")
+                {
+                    _BMS_CommunicationControlFunction = "关闭";
+                }
+                else if (value == "1")
+                {
+                    _BMS_CommunicationControlFunction = "开启";
+                }
+                else
+                    _BMS_CommunicationControlFunction = value;
+                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunction));
+            }
+        }
+
+
+        private bool BMS_CommunicationControlFunction_IsWorking;
+
+
+        //设置值
+        private string _BMS_CommunicationControlFunction_Inputs;
+
+        public string BMS_CommunicationControlFunction_Inputs
+        {
+            get { return _BMS_CommunicationControlFunction_Inputs; }
+            set
+            {
+                _BMS_CommunicationControlFunction_Inputs = value;
+                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunction_Inputs));
+                Command_SetBMS_CommunicationControlFunction.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _BMS_CommunicationControlFunctionOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> BMS_CommunicationControlFunctionOptions
+        {
+            get { return _BMS_CommunicationControlFunctionOptions; }
+            set
+            {
+                _BMS_CommunicationControlFunctionOptions = value;
+                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunctionOptions));
+            }
+        }
+
+        public RelayCommand Command_SetBMS_CommunicationControlFunction { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BMS_CommunicationControlFunctionOperation()
+        {
+            try
+            {
+                BMS_CommunicationControlFunction_IsWorking = true;
+                // 禁用按钮
+                Command_SetBMS_CommunicationControlFunction.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_CommunicationControlFunction_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BMS_CommunicationControlFunction_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBMS_CommunicationControlFunction.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+
+        #endregion
+
+        #region 市电输入范围
+        //市电输入范围
+        private string _AC_InputRange;
+
+        public string AC_InputRange
+        {
+            get { return _AC_InputRange; }
+            set
+            {
+                if (value == "0")
+                {
+                    _AC_InputRange = "APL(宽范围)";
+                }
+                else if (value == "1")
+                {
+                    _AC_InputRange = "UPL(窄范围)";
+                }
+                else
+                    _AC_InputRange = value;
+                this.RaiseProperChanged(nameof(AC_InputRange));
+            }
+        }
+
+
+        private bool AC_InputRange_IsWorking;
+
+
+        //设置值
+        private string _AC_InputRange_Inputs;
+
+        public string AC_InputRange_Inputs
+        {
+            get { return _AC_InputRange_Inputs; }
+            set
+            {
+                _AC_InputRange_Inputs = value;
+                this.RaiseProperChanged(nameof(AC_InputRange_Inputs));
+                Command_SetAC_InputRange.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _AC_InputRangeOptions = new List<string> { "APL(宽范围)", "UPS(窄范围)" };
+
+        public List<string> AC_InputRangeOptions
+        {
+            get { return _AC_InputRangeOptions; }
+            set
+            {
+                _AC_InputRangeOptions = value;
+                this.RaiseProperChanged(nameof(AC_InputRangeOptions));
+            }
+        }
+
+        public RelayCommand Command_SetAC_InputRange { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AC_InputRangeOperation()
+        {
+            try
+            {
+                AC_InputRange_IsWorking = true;
+                // 禁用按钮
+                Command_SetAC_InputRange.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PGR", AC_InputRange_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                AC_InputRange_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetAC_InputRange.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+
+        #endregion
+
+        #region 充电模式
+
+        //充电模式
+        private string _ChargingPriority;
+
+        public string ChargingPriority
+        {
+            get { return _ChargingPriority; }
+            set
+            {
+                if (value != null)
+                {
+                    if (value == "0")
+                    {
+                        _ChargingPriority = "CUT";
+                    }
+                    else if (value == "1") { _ChargingPriority = "CSO"; }
+                    else if (value == "2") { _ChargingPriority = "SUN"; }
+                    else if (value == "3") { _ChargingPriority = "OSO"; }
+                    else { _ChargingPriority = value; }
+                }else
+                _ChargingPriority = "";
+                this.RaiseProperChanged(nameof(ChargingPriority));
+            }
+        }
+
+
+        private bool ChargingPriority_IsWorking;
+
+
+        //设置值
+        private string _ChargingPriority_Inputs;
+
+        public string ChargingPriority_Inputs
+        {
+            get { return _ChargingPriority_Inputs; }
+            set
+            { 
+                _ChargingPriority_Inputs = value;
+                this.RaiseProperChanged(nameof(ChargingPriority_Inputs));
+                Command_SetChargingPriority.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _ChargingPriorityOptions = new List<string> { "CUT", "CSO", "SNU", "OSO" };
+
+        public List<string> ChargingPriorityOptions
+        {
+            get { return _ChargingPriorityOptions; }
+            set
+            {
+                _ChargingPriorityOptions = value;
+                this.RaiseProperChanged(nameof(ChargingPriorityOptions));
+            }
+        }
+
+        public RelayCommand Command_SetChargingPriority { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void ChargingPriorityOperation()
+        {
+            try
+            {
+                ChargingPriority_IsWorking = true;
+                // 禁用按钮
+                Command_SetChargingPriority.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ChargingPriority_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                ChargingPriority_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetChargingPriority.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region BMS锁机电池容量(%)
+
+        //BMS锁机电池容量
+        private string _BMS_LowPower_SOC;
+
+        public string BMS_LowPower_SOC
+        {
+            get { return _BMS_LowPower_SOC; }
+            set
+            {
+                _BMS_LowPower_SOC = value;
+                this.RaiseProperChanged(nameof(BMS_LowPower_SOC));
+            }
+        }
+
+
+        private bool BMS_LowPower_SOC_IsWorking;
+
+
+        //设置值
+        private string _BMS_LowPower_SOC_Inputs;
+
+        public string BMS_LowPower_SOC_Inputs
+        {
+            get { return _BMS_LowPower_SOC_Inputs; }
+            set
+            {
+                _BMS_LowPower_SOC_Inputs = value;
+                this.RaiseProperChanged(nameof(BMS_LowPower_SOC_Inputs));
+                Command_SetBMS_LowPower_SOC.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBMS_LowPower_SOC { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BMS_LowPower_SOCOperation()
+        {
+            try
+            {
+                BMS_LowPower_SOC_IsWorking = true;
+                // 禁用按钮
+                Command_SetBMS_LowPower_SOC.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_LowPower_SOC_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BMS_LowPower_SOC_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBMS_LowPower_SOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region AC充电电池容量
+
+        //AC充电电池容量
+        private string _BMSreturns_to_AC_mode_SOC;
+
+        public string BMSreturns_to_AC_mode_SOC
+        {
+            get { return _BMSreturns_to_AC_mode_SOC; }
+            set
+            {
+                _BMSreturns_to_AC_mode_SOC = value;
+                this.RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC));
+            }
+        }
+
+
+        private bool BMSreturns_to_AC_mode_SOC_IsWorking;
+
+
+        //设置值
+        private string _BMSreturns_to_AC_mode_SOC_Inputs;
+
+        public string BMSreturns_to_AC_mode_SOC_Inputs
+        {
+            get { return _BMSreturns_to_AC_mode_SOC_Inputs; }
+            set
+            {
+                _BMSreturns_to_AC_mode_SOC_Inputs = value;
+                this.RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC_Inputs));
+                Command_SetBMSreturns_to_AC_mode_SOC.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBMSreturns_to_AC_mode_SOC { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BMSreturns_to_AC_mode_SOCOperation()
+        {
+            try
+            {
+                BMSreturns_to_AC_mode_SOC_IsWorking = true;
+                // 禁用按钮
+                Command_SetBMSreturns_to_AC_mode_SOC.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMSreturns_to_AC_mode_SOC_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BMSreturns_to_AC_mode_SOC_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBMSreturns_to_AC_mode_SOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 电池放电电池容量
+
+        private string _BMS_returns_to_battery_mode_SOC;
+
+        public string BMS_returns_to_battery_mode_SOC
+        {
+            get { return _BMS_returns_to_battery_mode_SOC; }
+            set
+            {
+                _BMS_returns_to_battery_mode_SOC = value;
+                this.RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC));
+            }
+        }
+
+        //验证是否在执行
+        private bool BMS_returns_to_battery_mode_SOC_IsWorking;
+
+
+        //设置值
+        private string _BMS_returns_to_battery_mode_SOC_Inputs;
+
+        public string BMS_returns_to_battery_mode_SOC_Inputs
+        {
+            get { return _BMS_returns_to_battery_mode_SOC_Inputs; }
+            set
+            {
+                _BMS_returns_to_battery_mode_SOC_Inputs = value;
+                this.RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC_Inputs));
+                Command_SetBMS_returns_to_battery_mode_SOC.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBMS_returns_to_battery_mode_SOC { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BMS_returns_to_battery_mode_SOCOperation()
+        {
+            try
+            {
+                BMS_returns_to_battery_mode_SOC_IsWorking = true;
+                // 禁用按钮
+                Command_SetBMS_returns_to_battery_mode_SOC.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_returns_to_battery_mode_SOC_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BMS_returns_to_battery_mode_SOC_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBMS_returns_to_battery_mode_SOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 逆变开机电池容量
+
+        //逆变开机电池容量
+        private string _BMS_automatically_turns_on_after_low_power_SOC;
+
+        public string BMS_automatically_turns_on_after_low_power_SOC
+        {
+            get { return _BMS_automatically_turns_on_after_low_power_SOC; }
+            set
+            {
+                _BMS_automatically_turns_on_after_low_power_SOC = value;
+                this.RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC));
+            }
+        }
+
+
+        private bool BMS_automatically_turns_on_after_low_power_SOC_IsWorking;
+
+
+        //设置值
+        private string _BMS_automatically_turns_on_after_low_power_SOC_Inputs;
+
+        public string BMS_automatically_turns_on_after_low_power_SOC_Inputs
+        {
+            get { return _BMS_automatically_turns_on_after_low_power_SOC_Inputs; }
+            set
+            {
+                _BMS_automatically_turns_on_after_low_power_SOC_Inputs = value;
+                this.RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC_Inputs));
+                Command_SetBMS_automatically_turns_on_after_low_power_SOC.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBMS_automatically_turns_on_after_low_power_SOC { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BMS_automatically_turns_on_after_low_power_SOCOperation()
+        {
+            try
+            {
+                BMS_automatically_turns_on_after_low_power_SOC_IsWorking = true;
+                // 禁用按钮
+                Command_SetBMS_automatically_turns_on_after_low_power_SOC.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_automatically_turns_on_after_low_power_SOC_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BMS_automatically_turns_on_after_low_power_SOC_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBMS_automatically_turns_on_after_low_power_SOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 市电过载转旁路
+
+        //市电过载转旁路
+        private string _OverloadByPassFunction;
+
+        public string OverloadByPassFunction
+        {
+            get { return _OverloadByPassFunction; }
+            set
+            {
+                if (value == "0")
+                {
+                    _OverloadByPassFunction = "关闭";
+                }
+                else if (value == "1")
+                {
+                    _OverloadByPassFunction = "开启";
+                }
+                else
+                    _OverloadByPassFunction = value;
+                this.RaiseProperChanged(nameof(OverloadByPassFunction));
+            }
+        }
+
+
+        private bool OverloadByPassFunction_IsWorking;
+
+
+        //设置值
+        private string _OverloadByPassFunction_Inputs;
+
+        public string OverloadByPassFunction_Inputs
+        {
+            get { return _OverloadByPassFunction_Inputs; }
+            set
+            {
+                _OverloadByPassFunction_Inputs = value;
+                this.RaiseProperChanged(nameof(OverloadByPassFunction_Inputs));
+                Command_SetOverloadByPassFunction.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _OverloadByPassFunctionOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> OverloadByPassFunctionOptions
+        {
+            get { return _OverloadByPassFunctionOptions; }
+            set
+            {
+                _OverloadByPassFunctionOptions = value;
+                this.RaiseProperChanged(nameof(OverloadByPassFunctionOptions));
+            }
+        }
+
+        public RelayCommand Command_SetOverloadByPassFunction { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void OverloadByPassFunctionOperation()
+        {
+            try
+            {
+                OverloadByPassFunction_IsWorking = true;
+                // 禁用按钮
+                Command_SetOverloadByPassFunction.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OverloadByPassFunction_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                OverloadByPassFunction_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetOverloadByPassFunction.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 系统频率
+
+        //系统频率
+        private string _OutputSettingFrequency;
+
+        public string OutputSettingFrequency
+        {
+            get { return _OutputSettingFrequency; }
+            set
+            {
+                if(value == "0")
+                {
+                    _OutputSettingFrequency = "50";
+                }else if(_OutputSettingFrequency == "1")
+                {
+                    value = "60";
+                }else
+                _OutputSettingFrequency = value;
+                this.RaiseProperChanged(nameof(OutputSettingFrequency));
+            }
+        }
+
+
+        private bool OutputSettingFrequency_IsWorking;
+
+
+        //设置值
+        private string _OutputSettingFrequency_Inputs;
+
+        public string OutputSettingFrequency_Inputs
+        {
+            get { return _OutputSettingFrequency_Inputs; }
+            set
+            {
+                _OutputSettingFrequency_Inputs = value;
+                this.RaiseProperChanged(nameof(OutputSettingFrequency_Inputs));
+                Command_SetOutputSettingFrequency.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _OutputSettingFrequencyOptions = new List<string> { "50", "60" };
+
+        public List<string> OutputSettingFrequencyOptions
+        {
+            get { return _OutputSettingFrequencyOptions; }
+            set
+            {
+                _OutputSettingFrequencyOptions = value;
+                this.RaiseProperChanged(nameof(OutputSettingFrequencyOptions));
+            }
+        }
+
+        public RelayCommand Command_SetOutputSettingFrequency { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void OutputSettingFrequencyOperation()
+        {
+            try
+            {
+                OutputSettingFrequency_IsWorking = true;
+                // 禁用按钮
+                Command_SetOutputSettingFrequency.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputSettingFrequency_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                OutputSettingFrequency_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetOutputSettingFrequency.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 并网电流
+
+        //并网电流
+        private string _GridCurrent;
+
+        public string GridCurrent
+        {
+            get { return _GridCurrent; }
+            set
+            {
+                _GridCurrent = value;
+                this.RaiseProperChanged(nameof(GridCurrent));
+            }
+        }
+
+
+        private bool GridCurrent_IsWorking;
+
+
+        //设置值
+        private string _GridCurrent_Inputs;
+
+        public string GridCurrent_Inputs
+        {
+            get { return _GridCurrent_Inputs; }
+            set
+            {
+                _GridCurrent_Inputs = value;
+                this.RaiseProperChanged(nameof(GridCurrent_Inputs));
+                Command_SetGridCurrent.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetGridCurrent { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void GridCurrentOperation()
+        {
+            try
+            {
+                GridCurrent_IsWorking = true;
+                // 禁用按钮
+                Command_SetGridCurrent.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", GridCurrent_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                GridCurrent_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetGridCurrent.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 并网功能
+
+        //并网功能
+        private string _GridConnectedFunction;
+
+        public string GridConnectedFunction
+        {
+            get { return _GridConnectedFunction; }
+            set
+            {
+                if (value == "0")
+                {
+                    _GridConnectedFunction = "50";
+                }
+                else if (value == "1")
+                {
+                    _GridConnectedFunction = "60";
+                }
+                else
+                    _GridConnectedFunction = value;
+                this.RaiseProperChanged(nameof(GridConnectedFunction));
+            }
+        }
+
+
+        private bool GridConnectedFunction_IsWorking;
+
+
+        //设置值
+        private string _GridConnectedFunction_Inputs;
+
+        public string GridConnectedFunction_Inputs
+        {
+            get { return _GridConnectedFunction_Inputs; }
+            set
+            {
+                _GridConnectedFunction_Inputs = value;
+                this.RaiseProperChanged(nameof(GridConnectedFunction_Inputs));
+                Command_SetGridConnectedFunction.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _GridConnectedFunctionOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> GridConnectedFunctionOptions
+        {
+            get { return _GridConnectedFunctionOptions; }
+            set
+            {
+                _GridConnectedFunctionOptions = value;
+                this.RaiseProperChanged(nameof(GridConnectedFunctionOptions));
+            }
+        }
+
+        public RelayCommand Command_SetGridConnectedFunction { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void GridConnectedFunctionOperation()
+        {
+            try
+            {
+                GridConnectedFunction_IsWorking = true;
+                // 禁用按钮
+                Command_SetGridConnectedFunction.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", GridConnectedFunction_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                GridConnectedFunction_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetGridConnectedFunction.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 并网协议
+
+        //并网协议
+        private string _PV_GridConnectionProtocol;
+
+        public string PV_GridConnectionProtocol
+        {
+            get { return _PV_GridConnectionProtocol; }
+            set
+            {
+                _PV_GridConnectionProtocol = value;
+                this.RaiseProperChanged(nameof(PV_GridConnectionProtocol));
+            }
+        }
+
+
+        private bool PV_GridConnectionProtocol_IsWorking;
+
+
+        //设置值
+        private string _PV_GridConnectionProtocol_Inputs;
+
+        public string PV_GridConnectionProtocol_Inputs
+        {
+            get { return _PV_GridConnectionProtocol_Inputs; }
+            set
+            {
+                _PV_GridConnectionProtocol_Inputs = value;
+                this.RaiseProperChanged(nameof(PV_GridConnectionProtocol_Inputs));
+                Command_SetPV_GridConnectionProtocol.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _PV_GridConnectionProtocolOptions = new List<string> { "India", "Germen","SouthAmerica" };
+
+        public List<string> PV_GridConnectionProtocolOptions
+        {
+            get { return _PV_GridConnectionProtocolOptions; }
+            set
+            {
+                _PV_GridConnectionProtocolOptions = value;
+                this.RaiseProperChanged(nameof(PV_GridConnectionProtocolOptions));
+            }
+        }
+
+        public RelayCommand Command_SetPV_GridConnectionProtocol { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void PV_GridConnectionProtocolOperation()
+        {
+            try
+            {
+                PV_GridConnectionProtocol_IsWorking = true;
+                // 禁用按钮
+                Command_SetPV_GridConnectionProtocol.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", PV_GridConnectionProtocol_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                PV_GridConnectionProtocol_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetPV_GridConnectionProtocol.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+        #endregion
+
 
         #region 通用方法
         // 输入验证&选择验证
         private bool Validate(string value)
         {
-            //if (value== "WorkingModeSelectedOption")
-            //{
-            //    return !string.IsNullOrWhiteSpace(WorkingModeSelectedOption);
-            //}
-            //return true;
             switch (value)
             {
                 case "WorkingModeSelectedOption":
@@ -1103,6 +2598,34 @@ namespace WpfApp1.GB3024C_Comand
                     return !string.IsNullOrWhiteSpace(OverloadRestart_Inputs);
                 case "OverTemperatureRestart_Inputs":
                     return !string.IsNullOrWhiteSpace(OverTemperatureRestart_Inputs);
+                case "LCD_Backlight_Inputs":
+                    return !string.IsNullOrWhiteSpace(LCD_Backlight_Inputs);
+                case "BMS_CommunicationControlFunction_Inputs":
+                    return !string.IsNullOrWhiteSpace(BMS_CommunicationControlFunction_Inputs);
+                case "OutputMode_Inputs":
+                    return !string.IsNullOrWhiteSpace(OutputMode_Inputs);
+                case "AC_InputRange_Inputs":
+                    return !string.IsNullOrWhiteSpace(AC_InputRange_Inputs);
+                case "ChargingPriority_Inputs":
+                    return !string.IsNullOrWhiteSpace(ChargingPriority_Inputs);
+                case "BMS_LowPower_SOC_Inputs":
+                    return !string.IsNullOrWhiteSpace(BMS_LowPower_SOC_Inputs);
+                case "BMSreturns_to_AC_mode_SOC_Inputs":
+                    return !string.IsNullOrWhiteSpace(BMSreturns_to_AC_mode_SOC_Inputs);
+                case "BMS_returns_to_battery_mode_SOC_Inputs":
+                    return !string.IsNullOrWhiteSpace(BMS_returns_to_battery_mode_SOC_Inputs);
+                case "BMS_automatically_turns_on_after_low_power_SOC_Inputs":
+                    return !string.IsNullOrWhiteSpace(BMS_automatically_turns_on_after_low_power_SOC_Inputs);
+                case "OverloadByPassFunction_Inputs":
+                    return !string.IsNullOrWhiteSpace(OverloadByPassFunction_Inputs);
+                case "OutputSettingFrequency_Inputs":
+                    return !string.IsNullOrWhiteSpace(OutputSettingFrequency_Inputs);
+                case "GridCurrent_Inputs":
+                    return !string.IsNullOrWhiteSpace(GridCurrent_Inputs);
+                case "GridConnectedFunction_Inputs":
+                    return !string.IsNullOrWhiteSpace(GridConnectedFunction_Inputs);
+                case "PV_GridConnectionProtocol_Inputs":
+                    return !string.IsNullOrWhiteSpace(PV_GridConnectionProtocol_Inputs);
                 default:
                     return false;
             }
@@ -1129,23 +2652,52 @@ namespace WpfApp1.GB3024C_Comand
                 TotalChargeCurrent = Values[1];
                 //市电总充电流
                 AC_ChargingCurrent = Values[2];
+                //输出范围
+                AC_InputRange = Values[3].Substring(0, 1);
+                //PV并网协议
+                PV_GridConnectionProtocol = Values[3].Substring(1,1);
                 //过载重启
                 OverloadRestart = Values[3].Substring(4,1);
                 //过温重启
                 OverTemperatureRestart = Values[3].Substring(6,1);
                 //电池类型
-                BatteryType = Values[5];
+                BatteryType = Values[3].Substring(2,1);
+                //系统频率
+                OutputSettingFrequency = Values[5].Substring(0,1);
+                //充电优先顺序(充电模式)
+                ChargingPriority = Values[5].Substring(5, 2);
                 //蜂鸣器状态
                 BuzzerStatus = Values[6];
+                //LCD背光
+                LCD_Backlight = Values[7];
+                //过载转接旁路
+                OverloadByPassFunction = Values[8];
+                //输出模式
+                OutputMode = Values[9];
+                //BMS通讯控制功能
+                BMS_CommunicationControlFunction = Values[10];
+                //BMS锁机电池容量
+                BMS_LowPower_SOC = Values[11];
+                //BMS返回市电模式SOC(AC充电电池容量)
+                BMSreturns_to_AC_mode_SOC = Values[12];
+                //恢复电池放电电池容量
+                BMS_returns_to_battery_mode_SOC = Values[13];
+                //BMS低电压自动开机(逆变开机电池容量)
+                BMS_automatically_turns_on_after_low_power_SOC = Values[14];
                 //强充电压
                 StrongChargeVoltage = Values[15];
                 //浮充电压
                 FloatChargeVolage = Values[16];
                 //低电锁机电压
                 LowPowerLock = Values[17];
+                //并网电流
+                GridCurrent = Values[18];
+                //并网功能
+                GridConnectedFunction = Values[19];
             }
             catch (Exception ex)
             {
+                //异常
                 return ;
             }
             
@@ -1202,8 +2754,84 @@ namespace WpfApp1.GB3024C_Comand
                     else if (OverloadRestart_Inputs == "关闭") { return "0"; }
                     else
                         return "";
+                //过温重启
+                case "OverTemperatureRestart_Inputs":
+                    if (string.IsNullOrWhiteSpace(OverTemperatureRestart_Inputs)) { return string.Empty; }
+                    else if (OverloadRestart_Inputs == "开启") { return "1"; }
+                    else if (OverloadRestart_Inputs == "关闭") { return "0"; }
+                    else
+                        return "";
+                //LCD背光
+                case "LCD_Backlight_Inputs":
+                    if (string.IsNullOrWhiteSpace(LCD_Backlight_Inputs)) { return string.Empty; }
+                    else if (LCD_Backlight_Inputs == "开启") { return "1"; }
+                    else if (LCD_Backlight_Inputs == "关闭") { return "0"; }
+                    else
+                        return "";
+                //BMS开关
+                case "BMS_CommunicationControlFunction":
+                    if (string.IsNullOrWhiteSpace(BMS_CommunicationControlFunction_Inputs)) { return string.Empty; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "开启") { return "1"; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "关闭") { return "0"; }
+                    else
+                        return "";
+                //输出模式
+                case "OutputMode_Inputs":
+                    if (string.IsNullOrWhiteSpace(OutputMode_Inputs)) { return string.Empty; }
+                    else if (OutputMode_Inputs == "SIG") { return "0"; }
+                    else if (OutputMode_Inputs == "PAL") { return "1"; }
+                    else if (OutputMode_Inputs == "3P1") { return "2"; }
+                    else if (OutputMode_Inputs == "3P2") { return "3"; }
+                    else if (OutputMode_Inputs == "3P3") { return "4"; }
+                    else
+                        return "";
+                //市电输入范围
+                case "AC_InputRange_Inputs":
+                    if (string.IsNullOrWhiteSpace(AC_InputRange_Inputs)) { return string.Empty; }
+                    else if (AC_InputRange_Inputs == "APL(宽范围)") { return "00"; }
+                    else if (AC_InputRange_Inputs == "UPS(窄范围)") { return "01"; }
+                    else return AC_InputRange_Inputs;
+                //充电模式
+                case "ChargingPriority_Inputs":
+                    if (string.IsNullOrWhiteSpace(ChargingPriority_Inputs)) { return string.Empty; }
+                    else if (ChargingPriority_Inputs == "CUT") { return "00"; }
+                    else if (ChargingPriority_Inputs == "CSO") { return "01"; }
+                    else if (ChargingPriority_Inputs == "SUN") { return "01"; }
+                    else if (ChargingPriority_Inputs == "OSO") { return "01"; }
+                    else return ChargingPriority_Inputs;
+                //过载转接旁路
+                case "OverloadByPassFunction_Inputs":
+                    if (string.IsNullOrWhiteSpace(OverloadByPassFunction_Inputs)) { return string.Empty; }
+                    else if (OverloadByPassFunction_Inputs == "开启") { return "1"; }
+                    else if (OverloadByPassFunction_Inputs == "关闭") { return "0"; }
+                    else
+                        return OverloadByPassFunction_Inputs;
+                //系统频率
+                case "OutputSettingFrequency_Inputs":
+                    if (string.IsNullOrWhiteSpace(OutputSettingFrequency_Inputs)) { return string.Empty; }
+                    else if (OutputSettingFrequency_Inputs == "50") { return "1"; }
+                    else if (OutputSettingFrequency_Inputs == "60") { return "0"; }
+                    else
+                        return OutputSettingFrequency_Inputs;
+                //并网功能
+                case "GridConnectedFunction_Inputs":
+                    if (string.IsNullOrWhiteSpace(GridConnectedFunction_Inputs)) { return string.Empty; }
+                    else if (OutputSettingFrequency_Inputs == "开启") { return "1"; }
+                    else if (OutputSettingFrequency_Inputs == "关闭") { return "0"; }
+                    else
+                        return OutputSettingFrequency_Inputs;
+                //PV并网协议
+                case "PV_GridConnectionProtocol_Inputs":
+                    if (string.IsNullOrWhiteSpace(PV_GridConnectionProtocol_Inputs)) { return string.Empty; }
+                    else if (PV_GridConnectionProtocol_Inputs == "India") { return "0"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "Germen") { return "1"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "SouthAmerica") { return "2"; }
+                    else
+                        return OutputSettingFrequency_Inputs;
                 default:
                     return "";
+               
+
             }
         }
 

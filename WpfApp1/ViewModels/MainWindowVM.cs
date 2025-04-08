@@ -80,6 +80,7 @@ namespace WpfApp1.ViewModels
             HOP = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
             HEEP1 = new HEEP1_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HEEP2 = new HEEP2_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HGEN = new HGEN_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
             OpenCom = new RelayCommand(openCom);  
         }
@@ -119,6 +120,14 @@ namespace WpfApp1.ViewModels
                 hEEP2_ViewModel = value;
                 this.RaiseProperChanged(nameof(HEEP2));
             }
+        }
+
+        private HGEN_ViewModel _HGEN;
+
+        public HGEN_ViewModel HGEN
+        {
+            get { return _HGEN; }
+            set { _HGEN = value; }
         }
 
 
@@ -541,7 +550,7 @@ namespace WpfApp1.ViewModels
                     //解析返回命令
                     HOP.AnalysisStringToElement(receive);
 
-                    AddLog($"{"Name:"+ HOP.Name +"Kanme:"+ HOP.Kame}");
+                    //AddLog($"{"Name:"+ HOP.Name +"Kanme:"+ HOP.Kame}");
 
                     string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
                     HEEP1.AnalyseStringToElement(receiveHEEP1);
