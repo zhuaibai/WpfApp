@@ -161,7 +161,33 @@ namespace WpfApp1.ViewModels
             SerialCommunicationService.InitiateCom(serialPortSettings);
         }
 
-        
+        //串口打开/关闭图标
+        private string _ComIcon  = "&#xec61;";
+
+        public string ComIcon
+        {
+            get { return _ComIcon; }
+            set
+            {
+                _ComIcon = value;
+                this.RaiseProperChanged(nameof(ComIcon));
+            }
+        }
+
+        /// <summary>
+        /// 改变串口打开图标
+        /// </summary>
+        /// <param name="flag"></param>
+        private void ChangeComIcon(bool flag)
+        {
+            if (flag) {
+                ComIcon ="" ;
+                    }
+            else
+            {
+                ComIcon = "&#xec61;";
+            }
+        }
 
 
 
@@ -196,25 +222,36 @@ namespace WpfApp1.ViewModels
         {
             if (SerialCommunicationService.IsOpen())
             {
-                MessageBoxResult dialogResult = MessageBox.Show("串口已打开，是否重新打开！", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult dialogResult = MessageBox.Show("串口已打开，是否关闭！", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (dialogResult == MessageBoxResult.OK)
                 {
-                    AddLog("准备关闭通信");
-                    //停止后台通信(如果有)
-                    StopBackgroundThread();
-                    
-                    //关闭串口
-                    AddLog("串口已关闭");
-                    SerialCommunicationService.CloseCom();
-                    
-                    
-                    //重新加载配置文件
-                    IniCom();
-                    if (!SerialCommunicationService.OpenCom())
+                    try
                     {
-                        MessageBox.Show("串口打开失败！");
-                        return;
-                    };
+                        AddLog("准备关闭通信");
+                        //停止后台通信(如果有)
+                        StopBackgroundThread();
+
+                        //关闭串口
+                        AddLog("串口已关闭");
+                        SerialCommunicationService.CloseCom();
+
+                        ChangeComIcon(false);
+
+                        ////重新加载配置文件
+                        //IniCom();
+                        //if (!SerialCommunicationService.OpenCom())
+                        //{
+                        //    MessageBox.Show("串口打开失败！");
+                        //    return;
+                        //};
+                        UpdateState("串口已关闭");
+                        comStateColor(false);
+                        AddLog($"关闭串口{SerialCommunicationService.getComName()}成功");
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
                 else
                 {
@@ -230,11 +267,14 @@ namespace WpfApp1.ViewModels
                     MessageBox.Show("串口打开失败！");
                     return ;
                 };
+                ChangeComIcon(true);
+                UpdateState("串口已打开(点击开始进行通讯)");
+                comStateColor(true);
+                AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
             }
-            UpdateState("串口已打开(点击开始进行通讯)");
-            comStateColor(true);
-            AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
+           
         }
+
         #endregion
 
         #region 信息显示窗口

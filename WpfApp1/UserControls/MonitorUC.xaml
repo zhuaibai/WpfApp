@@ -551,9 +551,9 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
@@ -1044,28 +1044,7 @@
                                 Content="设置"
                                 Cursor="Hand"
                                 Style="{StaticResource ActionButton}" />
-                            <!--  系统时间  -->
-                            <TextBlock
-                                Grid.Row="22"
-                                Style="{StaticResource ContentText}"
-                                Text="系统时间" />
-                            <TextBlock
-                                Grid.Row="22"
-                                Grid.Column="1"
-                                Style="{StaticResource ContentText}"
-                                Text="{Binding HGEN.SystemTime}" />
-                            <TextBox
-                                Grid.Row="22"
-                                Grid.Column="2"
-                                Style="{StaticResource InputBox}"
-                                Text="{Binding HGEN.SystemTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                                Grid.Row="22"
-                                Grid.Column="3"
-                                Command="{Binding DataContext.HGEN.Command_SetSystemTime, RelativeSource={RelativeSource AncestorType=Window}}"
-                                Content="设置"
-                                Cursor="Hand"
-                                Style="{StaticResource ActionButton}" />
+
                         </Grid>
                     </Border>
                     <!--  第二列  -->
@@ -1077,9 +1056,9 @@
                         CornerRadius="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
-                                <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -1365,7 +1344,254 @@
                                 Command="{Binding DataContext.HEEP1.Command_SetPV_GridConnectionProtocol, RelativeSource={RelativeSource AncestorType=Window}}"
                                 Content="设置"
                                 Style="{StaticResource ActionButton}" />
+                            <!--  PV馈能优先级  -->
+                            <TextBlock
+                                Grid.Row="12"
+                                Style="{StaticResource ContentText}"
+                                Text="PV馈能优先级" />
+                            <TextBlock
+                                Grid.Row="12"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1.PV_FeedPriority}" />
+                            <ComboBox
+                                Grid.Row="12"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1.PV_FeedPriorityOptions}"
+                                SelectedItem="{Binding HEEP1.PV_FeedPriority_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="12"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1.Command_SetPV_FeedPriority, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  AC充电时间  -->
+                            <TextBlock
+                                Grid.Row="13"
+                                Style="{StaticResource ContentText}"
+                                Text="AC充电时间" />
+                            <TextBlock
+                                Grid.Row="13"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding SpecialCommand.AC_Charging_Time}" />
+                            <TextBox
+                                Grid.Row="13"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding SpecialCommand.AC_Charging_Time_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="13"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetAC_Charging_Time, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  双输出模式  -->
+                            <TextBlock
+                                Grid.Row="14"
+                                Style="{StaticResource ContentText}"
+                                Text="双输出模式" />
+                            <TextBlock
+                                Grid.Row="14"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.DualOutputMode}" />
+                            <ComboBox
+                                Grid.Row="14"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP2.DualOutputModeOptions}"
+                                SelectedItem="{Binding HEEP2.DualOutputMode_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="14"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetDualOutputMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  第二输出关闭电压值(并机模式关闭电压值)  -->
+                            <TextBlock
+                                Grid.Row="15"
+                                Style="{StaticResource ContentText}"
+                                Text="第二输出关闭电压值" />
+                            <TextBlock
+                                Grid.Row="15"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.ParallelModeShutdownVoltage}" />
+                            <TextBox
+                                Grid.Row="15"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP2.ParallelModeShutdownVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="15"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetParallelModeShutdownVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  第二输出关闭电池SOC(并机模式关闭SOC)  -->
+                            <TextBlock
+                                Grid.Row="16"
+                                Style="{StaticResource ContentText}"
+                                Text="第二输出关闭电池SOC" />
+                            <TextBlock
+                                Grid.Row="16"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.ParallelModeShutdownSOC}" />
+                            <TextBox
+                                Grid.Row="16"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP2.ParallelModeShutdownSOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="16"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetParallelModeShutdownSOC, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  电池均衡模式  -->
+                            <TextBlock
+                                Grid.Row="17"
+                                Style="{StaticResource ContentText}"
+                                Text="电池均衡模式" />
+                            <TextBlock
+                                Grid.Row="17"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.BatteryBalancingMmode}" />
+                            <ComboBox
+                                Grid.Row="17"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP2.BatteryBalancingMmodeOptions}"
+                                SelectedItem="{Binding HEEP2.BatteryBalancingMmode_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="17"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingMmode, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  电池均衡电压  -->
+                            <TextBlock
+                                Grid.Row="18"
+                                Style="{StaticResource ContentText}"
+                                Text="电池均衡电压" />
+                            <TextBlock
+                                Grid.Row="18"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.BatteryBalancingVoltage}" />
+                            <TextBox
+                                Grid.Row="18"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP2.BatteryBalancingVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="18"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  电池均衡时间值  -->
+                            <TextBlock
+                                Grid.Row="19"
+                                Style="{StaticResource ContentText}"
+                                Text="电池均衡时间值" />
+                            <TextBlock
+                                Grid.Row="19"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.BatteryBalancingTime}" />
+                            <TextBox
+                                Grid.Row="19"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP2.BatteryBalancingTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="19"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingTime, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  电池均衡超时值  -->
+                            <TextBlock
+                                Grid.Row="20"
+                                Style="{StaticResource ContentText}"
+                                Text="电池均衡超时值" />
+                            <TextBlock
+                                Grid.Row="20"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP2.BatteryBalancingTimeoutValue}" />
+                            <TextBox
+                                Grid.Row="20"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP2.BatteryBalancingTimeoutValue_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="20"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingTimeoutValue, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  系统时间  -->
+                            <TextBlock
+                                Grid.Row="21"
+                                Style="{StaticResource ContentText}"
+                                Text="系统时间" />
+                            <TextBlock
+                                Grid.Row="21"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGEN.SystemTime}" />
+                            <TextBox
+                                Grid.Row="21"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HGEN.SystemTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="21"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGEN.Command_SetSystemTime, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="设置"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
                         </Grid>
+                    </Border>
+                    <Border
+                        Grid.Column="2"
+                        Margin="3"
+                        Padding="20"
+                        Background="#FFF0F0F0"
+                        CornerRadius="5">
+                        <UniformGrid VerticalAlignment="Top" Columns="2">
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetSystemReset, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="复位系统状态"
+                                Style="{StaticResource ActionButton}" />
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetClearPowerGeneration, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="清除发电量"
+                                Style="{StaticResource ActionButton}" />
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputOn, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="副输出开"
+                                Style="{StaticResource ActionButton}" />
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputShutdown, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="副输出关"
+                                Style="{StaticResource ActionButton}" />
+                        </UniformGrid>
                     </Border>
                 </Grid>
             </ScrollViewer>

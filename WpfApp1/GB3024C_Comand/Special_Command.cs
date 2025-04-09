@@ -46,7 +46,31 @@ namespace WpfApp1.GB3024C_Comand
                execute: () => AC_ChargingVoltageOperation(),
                canExecute: () => Validate(nameof(BatteryDischargeVoltage_Inputs)) && !BatteryDischargeVoltage_IsWorking // 增加处理状态检查
             );
-
+            //AC充电时间
+            Command_SetAC_Charging_Time = new RelayCommand(
+               execute: () => AC_ChargingVoltageOperation(),
+               canExecute: () => Validate(nameof(AC_Charging_Time_Inputs)) && !AC_Charging_Time_IsWorking // 增加处理状态检查
+            );
+            //系统复位
+            Command_SetSystemReset = new RelayCommand(
+                execute: () => SystemResetOperation(),
+                canExecute: () => !SystemReset_IsWorking // 增加处理状态检查
+             );
+            //清除发电量
+            Command_SetClearPowerGeneration = new RelayCommand(
+                execute: () => ClearPowerGenerationOperation(),
+                canExecute: () => !ClearPowerGeneration_IsWorking // 增加处理状态检查
+             );
+            //副输出关
+            Command_SetAuxiliaryOutputShutdown = new RelayCommand(
+                execute: () => AuxiliaryOutputShutdownOperation(),
+                canExecute: () => !AuxiliaryOutputShutdown_IsWorking // 增加处理状态检查
+             );
+            //副输出开
+            Command_SetAuxiliaryOutputOn = new RelayCommand(
+                execute: () => AuxiliaryOutputOnOperation(),
+                canExecute: () => !AuxiliaryOutputOn_IsWorking // 增加处理状态检查
+             );
         }
 
 
@@ -425,7 +449,455 @@ namespace WpfApp1.GB3024C_Comand
 
         #endregion
 
+        #region AC充电时间
 
+        private string _AC_ChargeingTime_Command;
+
+        public string AC_ChargeingTime_Command
+        {
+            get { return _AC_ChargeingTime_Command; }
+            set { _AC_ChargeingTime_Command = value; }
+        }
+
+
+        //AC充电时间
+        private string _AC_Charging_Time;
+
+        public string AC_Charging_Time
+        {
+            get { return _AC_Charging_Time; }
+            set
+            {
+                _AC_Charging_Time = value;
+                this.RaiseProperChanged(nameof(AC_Charging_Time));
+            }
+        }
+
+
+        private bool AC_Charging_Time_IsWorking;
+
+
+        //设置值
+        private string _AC_Charging_Time_Inputs;
+
+        public string AC_Charging_Time_Inputs
+        {
+            get { return _AC_Charging_Time_Inputs; }
+            set
+            {
+                _AC_Charging_Time_Inputs = value;
+                this.RaiseProperChanged(nameof(AC_Charging_Time_Inputs));
+                Command_SetAC_Charging_Time.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetAC_Charging_Time { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AC_Charging_TimeOperation()
+        {
+            try
+            {
+                AC_Charging_Time_IsWorking = true;
+                // 禁用按钮
+                Command_SetAC_Charging_Time.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", AC_Charging_Time_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                AC_Charging_Time_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetAC_Charging_Time.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 系统复位
+
+        //系统复位
+        private string _SystemReset;
+
+        public string SystemReset
+        {
+            get { return _SystemReset; }
+            set
+            {
+                _SystemReset = value;
+                this.RaiseProperChanged(nameof(SystemReset));
+            }
+        }
+
+
+        private bool SystemReset_IsWorking;
+
+
+        //设置值
+        private string _SystemReset_Inputs;
+
+        public string SystemReset_Inputs
+        {
+            get { return _SystemReset_Inputs; }
+            set
+            {
+                _SystemReset_Inputs = value;
+                this.RaiseProperChanged(nameof(SystemReset_Inputs));
+                Command_SetSystemReset.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetSystemReset { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void SystemResetOperation()
+        {
+            try
+            {
+                SystemReset_IsWorking = true;
+                // 禁用按钮
+                Command_SetSystemReset.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PF", "");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                SystemReset_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetSystemReset.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 清除发电量
+
+        //清除发电量
+        private string _ClearPowerGeneration;
+
+        public string ClearPowerGeneration
+        {
+            get { return _ClearPowerGeneration; }
+            set
+            {
+                _ClearPowerGeneration = value;
+                this.RaiseProperChanged(nameof(ClearPowerGeneration));
+            }
+        }
+
+
+        private bool ClearPowerGeneration_IsWorking;
+
+
+        //设置值
+        private string _ClearPowerGeneration_Inputs;
+
+        public string ClearPowerGeneration_Inputs
+        {
+            get { return _ClearPowerGeneration_Inputs; }
+            set
+            {
+                _ClearPowerGeneration_Inputs = value;
+                this.RaiseProperChanged(nameof(ClearPowerGeneration_Inputs));
+                Command_SetClearPowerGeneration.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetClearPowerGeneration { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void ClearPowerGenerationOperation()
+        {
+            try
+            {
+                ClearPowerGeneration_IsWorking = true;
+                // 禁用按钮
+                Command_SetClearPowerGeneration.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("^S???CLE", "");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                ClearPowerGeneration_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetClearPowerGeneration.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 副输出关
+
+        //副输出关
+        private string _AuxiliaryOutputShutdown;
+
+        public string AuxiliaryOutputShutdown
+        {
+            get { return _AuxiliaryOutputShutdown; }
+            set
+            {
+                _AuxiliaryOutputShutdown = value;
+                this.RaiseProperChanged(nameof(AuxiliaryOutputShutdown));
+            }
+        }
+
+
+        private bool AuxiliaryOutputShutdown_IsWorking;
+
+
+        //设置值
+        private string _AuxiliaryOutputShutdown_Inputs;
+
+        public string AuxiliaryOutputShutdown_Inputs
+        {
+            get { return _AuxiliaryOutputShutdown_Inputs; }
+            set
+            {
+                _AuxiliaryOutputShutdown_Inputs = value;
+                this.RaiseProperChanged(nameof(AuxiliaryOutputShutdown_Inputs));
+                Command_SetAuxiliaryOutputShutdown.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetAuxiliaryOutputShutdown { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AuxiliaryOutputShutdownOperation()
+        {
+            try
+            {
+                AuxiliaryOutputShutdown_IsWorking = true;
+                // 禁用按钮
+                Command_SetAuxiliaryOutputShutdown.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAULC", "00");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                AuxiliaryOutputShutdown_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetAuxiliaryOutputShutdown.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 副输出开
+
+        //副输出开
+        private string _AuxiliaryOutputOn;
+
+        public string AuxiliaryOutputOn
+        {
+            get { return _AuxiliaryOutputOn; }
+            set
+            {
+                _AuxiliaryOutputOn = value;
+                this.RaiseProperChanged(nameof(AuxiliaryOutputOn));
+            }
+        }
+
+
+        private bool AuxiliaryOutputOn_IsWorking;
+
+
+        //设置值
+        private string _AuxiliaryOutputOn_Inputs;
+
+        public string AuxiliaryOutputOn_Inputs
+        {
+            get { return _AuxiliaryOutputOn_Inputs; }
+            set
+            {
+                _AuxiliaryOutputOn_Inputs = value;
+                this.RaiseProperChanged(nameof(AuxiliaryOutputOn_Inputs));
+                Command_SetAuxiliaryOutputOn.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetAuxiliaryOutputOn { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AuxiliaryOutputOnOperation()
+        {
+            try
+            {
+                AuxiliaryOutputOn_IsWorking = true;
+                // 禁用按钮
+                Command_SetAuxiliaryOutputOn.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAULC", "01");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                AuxiliaryOutputOn_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetAuxiliaryOutputOn.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
 
         #region 通用方法
         // 输入验证&选择验证
@@ -446,6 +918,9 @@ namespace WpfApp1.GB3024C_Comand
                     return !string.IsNullOrWhiteSpace(AC_ChargingVoltage_Inputs);
                 case "BatteryDischargeVoltage_Inputs":
                     return !string.IsNullOrWhiteSpace(BatteryDischargeVoltage_Inputs);
+                case "AC_Charging_Time_Inputs":
+                    return !string.IsNullOrWhiteSpace(AC_Charging_Time_Inputs);
+               
                 default:
                     return false;
             }
@@ -460,36 +935,22 @@ namespace WpfApp1.GB3024C_Comand
         {
             switch (value)
             {
-                //设置工作模式
-                //case "WorkingModeSelectedOption":
-                //    if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
-                //    {
-                //        return string.Empty;
-                //    }
-                //    else if (WorkingModeSelectedOption == "UTI")
-                //    {
-                //        return "00";
-                //    }
-                //    else if (WorkingModeSelectedOption == "SUB")
-                //    {
-                //        return "01";
-                //    }
-                //    return "";
-                ////设置电池类型
-                //case "BatteryTypeSelectedOption":
-                //    if (string.IsNullOrWhiteSpace(BatteryTypeSelectedOption)) { return string.Empty; }
-                //    else if (BatteryTypeSelectedOption == "AGM") { return "00"; }
-                //    else if (BatteryTypeSelectedOption == "FLD") { return "01"; }
-                //    else if (BatteryTypeSelectedOption == "USE") { return "02"; }
-                //    else if (BatteryTypeSelectedOption == "LIA") { return "03"; }
-                //    else if (BatteryTypeSelectedOption == "PYL") { return "04"; }
-                //    else if (BatteryTypeSelectedOption == "TQF") { return "05"; }
-                //    else if (BatteryTypeSelectedOption == "GRO") { return "06"; }
-                //    else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
-                //    else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
-                //    else
-                //        return "00";
-                case "SBU":
+                
+            ////设置电池类型
+            //case "BatteryTypeSelectedOption":
+            //    if (string.IsNullOrWhiteSpace(BatteryTypeSelectedOption)) { return string.Empty; }
+            //    else if (BatteryTypeSelectedOption == "AGM") { return "00"; }
+            //    else if (BatteryTypeSelectedOption == "FLD") { return "01"; }
+            //    else if (BatteryTypeSelectedOption == "USE") { return "02"; }
+            //    else if (BatteryTypeSelectedOption == "LIA") { return "03"; }
+            //    else if (BatteryTypeSelectedOption == "PYL") { return "04"; }
+            //    else if (BatteryTypeSelectedOption == "TQF") { return "05"; }
+            //    else if (BatteryTypeSelectedOption == "GRO") { return "06"; }
+            //    else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
+            //    else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
+            //    else
+            //        return "00";
+            case "SBU":
                     return "";
                 default:
                     return "";

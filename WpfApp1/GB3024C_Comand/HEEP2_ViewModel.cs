@@ -61,7 +61,323 @@ namespace WpfApp1.GB3024C_Comand
                 execute: () => RestoreBatteryVoltageOfSecondOutputOperation(),
                 canExecute: () => Validate(nameof(RestoreBatteryVoltageOfSecondOutput_Inputs)) && !RestoreBatteryVoltageOfSecondOutput_IsWorking // 增加处理状态检查
             );
+            //双输出模式
+            Command_SetDualOutputMode = new RelayCommand(
+              execute: () => DualOutputModeOperation(),
+              canExecute: () => Validate(nameof(DualOutputMode_Inputs)) && !DualOutputMode_IsWorking // 增加处理状态检查
+           );
+            //并机模式关闭电压
+            Command_SetParallelModeShutdownVoltage = new RelayCommand(
+              execute: () => DualOutputModeOperation(),
+              canExecute: () => Validate(nameof(ParallelModeShutdownVoltage_Inputs)) && !ParallelModeShutdownVoltage_IsWorking // 增加处理状态检查
+            );
+            //并机模式关闭SOC
+            Command_SetParallelModeShutdownSOC = new RelayCommand(
+              execute: () => ParallelModeShutdownSOCOperation(),
+              canExecute: () => Validate(nameof(ParallelModeShutdownSOC_Inputs)) && !ParallelModeShutdownSOC_IsWorking // 增加处理状态检查
+            );
+            //电池均衡模式
+            Command_SetBatteryBalancingMmode = new RelayCommand(
+              execute: () => BatteryBalancingMmodeOperation(),
+              canExecute: () => Validate(nameof(BatteryBalancingMmode_Inputs)) && !BatteryBalancingMmode_IsWorking // 增加处理状态检查
+            );
+            //电池均衡电压
+            Command_SetBatteryBalancingVoltage = new RelayCommand(
+              execute: () => BatteryBalancingVoltageOperation(),
+              canExecute: () => Validate(nameof(BatteryBalancingVoltage_Inputs)) && !BatteryBalancingVoltage_IsWorking // 增加处理状态检查
+            );
+            //电池均衡时间
+            Command_SetBatteryBalancingTime = new RelayCommand(
+              execute: () => BatteryBalancingTimeOperation(),
+              canExecute: () => Validate(nameof(BatteryBalancingTime_Inputs)) && !BatteryBalancingTime_IsWorking // 增加处理状态检查
+            );
+            //电池均衡超时值
+            Command_SetBatteryBalancingTimeoutValue = new RelayCommand(
+              execute: () => BatteryBalancingTimeoutValueOperation(),
+              canExecute: () => Validate(nameof(BatteryBalancingTimeoutValue_Inputs)) && !BatteryBalancingTimeoutValue_IsWorking // 增加处理状态检查
+            );
         }
+        
+        #region 双输出模式(并机模式)
+
+        //双输出模式
+        private string _DualOutputMode;
+
+        public string DualOutputMode
+        {
+            get { return _DualOutputMode; }
+            set
+            {
+                if(value == "0") { _DualOutputMode = "关闭"; }
+                else if(value == "1") { _DualOutputMode = "开启"; }
+                else
+                _DualOutputMode = value;
+                this.RaiseProperChanged(nameof(DualOutputMode));
+            }
+        }
+
+
+        private bool DualOutputMode_IsWorking;
+
+
+        //设置值
+        private string _DualOutputMode_Inputs;
+
+        public string DualOutputMode_Inputs
+        {
+            get { return _DualOutputMode_Inputs; }
+            set
+            {
+                _DualOutputMode_Inputs = value;
+                this.RaiseProperChanged(nameof(DualOutputMode_Inputs));
+                Command_SetDualOutputMode.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _DualOutputModeOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> DualOutputModeOptions
+        {
+            get { return _DualOutputModeOptions; }
+            set
+            {
+                _DualOutputModeOptions = value;
+                this.RaiseProperChanged(nameof(DualOutputModeOptions));
+            }
+        }
+
+        public RelayCommand Command_SetDualOutputMode { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void DualOutputModeOperation()
+        {
+            try
+            {
+                DualOutputMode_IsWorking = true;
+                // 禁用按钮
+                Command_SetDualOutputMode.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAUL", getSelectedToCommad(DualOutputMode_Inputs));
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                DualOutputMode_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetDualOutputMode.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 并机模式关闭电压(第二输出关闭电压)
+
+        //并机模式关闭电压
+        private string _ParallelModeShutdownVoltage;
+
+        public string ParallelModeShutdownVoltage
+        {
+            get { return _ParallelModeShutdownVoltage; }
+            set
+            {
+                _ParallelModeShutdownVoltage = value;
+                this.RaiseProperChanged(nameof(ParallelModeShutdownVoltage));
+            }
+        }
+
+
+        private bool ParallelModeShutdownVoltage_IsWorking;
+
+
+        //设置值
+        private string _ParallelModeShutdownVoltage_Inputs;
+
+        public string ParallelModeShutdownVoltage_Inputs
+        {
+            get { return _ParallelModeShutdownVoltage_Inputs; }
+            set
+            {
+                _ParallelModeShutdownVoltage_Inputs = value;
+                this.RaiseProperChanged(nameof(ParallelModeShutdownVoltage_Inputs));
+                Command_SetParallelModeShutdownVoltage.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetParallelModeShutdownVoltage { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void ParallelModeShutdownVoltageOperation()
+        {
+            try
+            {
+                ParallelModeShutdownVoltage_IsWorking = true;
+                // 禁用按钮
+                Command_SetParallelModeShutdownVoltage.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ParallelModeShutdownVoltage_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                ParallelModeShutdownVoltage_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetParallelModeShutdownVoltage.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 并机模式关闭SOC
+
+        //并机模式关闭SOC
+        private string _ParallelModeShutdownSOC;
+
+        public string ParallelModeShutdownSOC
+        {
+            get { return _ParallelModeShutdownSOC; }
+            set
+            {
+                _ParallelModeShutdownSOC = value;
+                this.RaiseProperChanged(nameof(ParallelModeShutdownSOC));
+            }
+        }
+
+
+        private bool ParallelModeShutdownSOC_IsWorking;
+
+
+        //设置值
+        private string _ParallelModeShutdownSOC_Inputs;
+
+        public string ParallelModeShutdownSOC_Inputs
+        {
+            get { return _ParallelModeShutdownSOC_Inputs; }
+            set
+            {
+                _ParallelModeShutdownSOC_Inputs = value;
+                this.RaiseProperChanged(nameof(ParallelModeShutdownSOC_Inputs));
+                Command_SetParallelModeShutdownSOC.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetParallelModeShutdownSOC { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void ParallelModeShutdownSOCOperation()
+        {
+            try
+            {
+                ParallelModeShutdownSOC_IsWorking = true;
+                // 禁用按钮
+                Command_SetParallelModeShutdownSOC.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ParallelModeShutdownSOC_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                ParallelModeShutdownSOC_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetParallelModeShutdownSOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
 
         #region 返回市电电池电压
 
@@ -232,6 +548,376 @@ namespace WpfApp1.GB3024C_Comand
                 //Status = "就绪";
                 // 重新启用按钮
                 Command_SetReturnBatteryModeVoltage.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 电池均衡模式
+
+        //电池均衡模式
+        private string _BatteryBalancingMmode;
+
+        public string BatteryBalancingMmode
+        {
+            get { return _BatteryBalancingMmode; }
+            set
+            {
+                if(value == "0") { _BatteryBalancingMmode = "关闭"; }
+                else if(value == "1") { _BatteryBalancingMmode = "开启"; }
+                else
+                _BatteryBalancingMmode = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingMmode));
+            }
+        }
+
+
+        private bool BatteryBalancingMmode_IsWorking;
+
+
+        //设置值
+        private string _BatteryBalancingMmode_Inputs;
+
+        public string BatteryBalancingMmode_Inputs
+        {
+            get { return _BatteryBalancingMmode_Inputs; }
+            set
+            {
+                _BatteryBalancingMmode_Inputs = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingMmode_Inputs));
+                Command_SetBatteryBalancingMmode.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _BatteryBalancingMmodeOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> BatteryBalancingMmodeOptions
+        {
+            get { return _BatteryBalancingMmodeOptions; }
+            set
+            {
+                _BatteryBalancingMmodeOptions = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingMmodeOptions));
+            }
+        }
+
+        public RelayCommand Command_SetBatteryBalancingMmode { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BatteryBalancingMmodeOperation()
+        {
+            try
+            {
+                BatteryBalancingMmode_IsWorking = true;
+                // 禁用按钮
+                Command_SetBatteryBalancingMmode.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingMmode_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BatteryBalancingMmode_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBatteryBalancingMmode.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 电池均衡电压
+
+        //电池均衡电压
+        private string _BatteryBalancingVoltage;
+
+        public string BatteryBalancingVoltage
+        {
+            get { return _BatteryBalancingVoltage; }
+            set
+            {
+                _BatteryBalancingVoltage = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingVoltage));
+            }
+        }
+
+
+        private bool BatteryBalancingVoltage_IsWorking;
+
+
+        //设置值
+        private string _BatteryBalancingVoltage_Inputs;
+
+        public string BatteryBalancingVoltage_Inputs
+        {
+            get { return _BatteryBalancingVoltage_Inputs; }
+            set
+            {
+                _BatteryBalancingVoltage_Inputs = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingVoltage_Inputs));
+                Command_SetBatteryBalancingVoltage.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBatteryBalancingVoltage { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BatteryBalancingVoltageOperation()
+        {
+            try
+            {
+                BatteryBalancingVoltage_IsWorking = true;
+                // 禁用按钮
+                Command_SetBatteryBalancingVoltage.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingVoltage_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BatteryBalancingVoltage_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBatteryBalancingVoltage.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 电池均衡时间
+
+        //电池均衡时间
+        private string _BatteryBalancingTime;
+
+        public string BatteryBalancingTime
+        {
+            get { return _BatteryBalancingTime; }
+            set
+            {
+                _BatteryBalancingTime = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingTime));
+            }
+        }
+
+
+        private bool BatteryBalancingTime_IsWorking;
+
+
+        //设置值
+        private string _BatteryBalancingTime_Inputs;
+
+        public string BatteryBalancingTime_Inputs
+        {
+            get { return _BatteryBalancingTime_Inputs; }
+            set
+            {
+                _BatteryBalancingTime_Inputs = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingTime_Inputs));
+                Command_SetBatteryBalancingTime.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBatteryBalancingTime { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BatteryBalancingTimeOperation()
+        {
+            try
+            {
+                BatteryBalancingTime_IsWorking = true;
+                // 禁用按钮
+                Command_SetBatteryBalancingTime.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingTime_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BatteryBalancingTime_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBatteryBalancingTime.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 电池均衡超时值
+
+        //电池均衡超时值
+        private string _BatteryBalancingTimeoutValue;
+
+        public string BatteryBalancingTimeoutValue
+        {
+            get { return _BatteryBalancingTimeoutValue; }
+            set
+            {
+                _BatteryBalancingTimeoutValue = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingTimeoutValue));
+            }
+        }
+
+
+        private bool BatteryBalancingTimeoutValue_IsWorking;
+
+
+        //设置值
+        private string _BatteryBalancingTimeoutValue_Inputs;
+
+        public string BatteryBalancingTimeoutValue_Inputs
+        {
+            get { return _BatteryBalancingTimeoutValue_Inputs; }
+            set
+            {
+                _BatteryBalancingTimeoutValue_Inputs = value;
+                this.RaiseProperChanged(nameof(BatteryBalancingTimeoutValue_Inputs));
+                Command_SetBatteryBalancingTimeoutValue.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBatteryBalancingTimeoutValue { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BatteryBalancingTimeoutValueOperation()
+        {
+            try
+            {
+                BatteryBalancingTimeoutValue_IsWorking = true;
+                // 禁用按钮
+                Command_SetBatteryBalancingTimeoutValue.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingTimeoutValue_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BatteryBalancingTimeoutValue_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBatteryBalancingTimeoutValue.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
@@ -713,6 +1399,20 @@ namespace WpfApp1.GB3024C_Comand
                 //恢复第二输出的电池电压(V)
                 case "RestoreBatteryVoltageOfSecondOutput_Inputs":
                     return !string.IsNullOrWhiteSpace(RestoreBatteryVoltageOfSecondOutput_Inputs);
+                case "DualOutputMode_Inputs":
+                    return !string.IsNullOrWhiteSpace(DualOutputMode_Inputs);
+                case "ParallelModeShutdownVoltage_Inputs":
+                    return !string.IsNullOrWhiteSpace(ParallelModeShutdownVoltage_Inputs);
+                case "ParallelModeShutdownSOC_Inputs":
+                    return !string.IsNullOrWhiteSpace(ParallelModeShutdownSOC_Inputs);
+                case "BatteryBalancingMmode_Inputs":
+                    return !string.IsNullOrWhiteSpace(BatteryBalancingMmode_Inputs);
+                case "BatteryBalancingVoltage_Inputs":
+                    return !string.IsNullOrWhiteSpace(BatteryBalancingVoltage_Inputs);
+                case "BatteryBalancingTime_Inputs":
+                    return !string.IsNullOrWhiteSpace(BatteryBalancingTime_Inputs);
+                case "BatteryBalancingTimeoutValue_Inputs":
+                    return !string.IsNullOrWhiteSpace(BatteryBalancingTimeoutValue_Inputs);
                 default:
                     return false;
             }
@@ -741,6 +1441,20 @@ namespace WpfApp1.GB3024C_Comand
                 //AC_ChargingCurrent = Values[2];
                 ////电池类型
                 //BatteryType = Values[5];
+                //双输出模式(并机模式)
+                DualOutputMode = Values[0].Substring(1,1);
+                //并机模式关闭电压
+                ParallelModeShutdownVoltage = Values[1];
+                //并机模式关闭SOC
+                ParallelModeShutdownSOC = Values[2];
+                //电池均衡模式
+                BatteryBalancingMmode = Values[6];
+                //电池均衡电压
+                BatteryBalancingVoltage = Values[7];
+                //电池均衡时间
+                BatteryBalancingTime = Values[8];
+                //电池均衡超时值
+                BatteryBalancingTimeoutValue = Values[9];
                 //电池均衡间隔时间(Day)
                 BatteryBalancingInterval = Values[10];
                 //第二输出放电时间
@@ -774,6 +1488,21 @@ namespace WpfApp1.GB3024C_Comand
         {
             switch (value)
             {
+                //设置双输出模式(并机模式)
+                case "DualOutputMode_Inputs":
+                    if (string.IsNullOrWhiteSpace(DualOutputMode_Inputs))
+                    {
+                        return string.Empty;
+                    }
+                    else if (DualOutputMode_Inputs == "开起")
+                    {
+                        return "01";
+                    }
+                    else if (DualOutputMode_Inputs == "关闭")
+                    {
+                        return "00";
+                    }
+                    return DualOutputMode_Inputs;
                 case "SBU":
                     return "";
                 default:

@@ -161,6 +161,11 @@ namespace WpfApp1.GB3024C_Comand
               execute: () => PV_GridConnectionProtocolOperation(),
               canExecute: () => Validate(nameof(PV_GridConnectionProtocol_Inputs)) && !PV_GridConnectionProtocol_IsWorking
              );
+            //PV馈能优先级
+            Command_SetPV_FeedPriority = new RelayCommand(
+              execute: () => PV_FeedPriorityOperation(),
+              canExecute: () => Validate(nameof(PV_FeedPriority_Inputs)) && !PV_FeedPriority_IsWorking
+             );
             #endregion
         }
 
@@ -2571,6 +2576,113 @@ namespace WpfApp1.GB3024C_Comand
         }
         #endregion
 
+        #region PV馈能优先级
+
+        //PV馈能优先级
+        private string _PV_FeedPriority;
+
+        public string PV_FeedPriority
+        {
+            get { return _PV_FeedPriority; }
+            set
+            {
+                if (value == "0")
+                {
+                    _GridConnectedFunction = "BLU";
+                }
+                else if (value == "1")
+                {
+                    _GridConnectedFunction = "LBU";
+                }
+                _PV_FeedPriority = value;
+                this.RaiseProperChanged(nameof(PV_FeedPriority));
+            }
+        }
+
+
+        private bool PV_FeedPriority_IsWorking;
+
+
+        //设置值
+        private string _PV_FeedPriority_Inputs;
+
+        public string PV_FeedPriority_Inputs
+        {
+            get { return _PV_FeedPriority_Inputs; }
+            set
+            {
+                _PV_FeedPriority_Inputs = value;
+                this.RaiseProperChanged(nameof(PV_FeedPriority_Inputs));
+                Command_SetPV_FeedPriority.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _PV_FeedPriorityOptions = new List<string> { "BLU", "LBU" };
+
+        public List<string> PV_FeedPriorityOptions
+        {
+            get { return _PV_FeedPriorityOptions; }
+            set
+            {
+                _PV_FeedPriorityOptions = value;
+                this.RaiseProperChanged(nameof(PV_FeedPriorityOptions));
+            }
+        }
+
+        public RelayCommand Command_SetPV_FeedPriority { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void PV_FeedPriorityOperation()
+        {
+            try
+            {
+                PV_FeedPriority_IsWorking = true;
+                // 禁用按钮
+                Command_SetPV_FeedPriority.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", PV_FeedPriority_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                PV_FeedPriority_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetPV_FeedPriority.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
 
         #region 通用方法
         // 输入验证&选择验证
@@ -2626,6 +2738,8 @@ namespace WpfApp1.GB3024C_Comand
                     return !string.IsNullOrWhiteSpace(GridConnectedFunction_Inputs);
                 case "PV_GridConnectionProtocol_Inputs":
                     return !string.IsNullOrWhiteSpace(PV_GridConnectionProtocol_Inputs);
+                case "PV_FeedPriority_Inputs":
+                    return !string.IsNullOrWhiteSpace(PV_FeedPriority_Inputs);
                 default:
                     return false;
             }
@@ -2652,8 +2766,10 @@ namespace WpfApp1.GB3024C_Comand
                 TotalChargeCurrent = Values[1];
                 //市电总充电流
                 AC_ChargingCurrent = Values[2];
-                //输出范围
+                //输入范围
                 AC_InputRange = Values[3].Substring(0, 1);
+                //PV馈能优先级
+                PV_FeedPriority = Values[3].Substring(1, 1);
                 //PV并网协议
                 PV_GridConnectionProtocol = Values[3].Substring(1,1);
                 //过载重启
@@ -2826,6 +2942,13 @@ namespace WpfApp1.GB3024C_Comand
                     else if (PV_GridConnectionProtocol_Inputs == "India") { return "0"; }
                     else if (PV_GridConnectionProtocol_Inputs == "Germen") { return "1"; }
                     else if (PV_GridConnectionProtocol_Inputs == "SouthAmerica") { return "2"; }
+                    else
+                        return OutputSettingFrequency_Inputs;
+                //PV馈能优先级
+                case "PV_FeedPriority_Inputs":
+                    if (string.IsNullOrWhiteSpace(PV_FeedPriority_Inputs)) { return string.Empty; }
+                    else if (PV_FeedPriority_Inputs == "BLU") { return "0"; }
+                    else if (PV_FeedPriority_Inputs == "LBU") { return "1"; }
                     else
                         return OutputSettingFrequency_Inputs;
                 default:
