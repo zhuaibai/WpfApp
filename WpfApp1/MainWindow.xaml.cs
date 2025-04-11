@@ -26,12 +26,9 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            
+            ChangeLanguageToChinese(Owner,new RoutedEventArgs());
+
             this.DataContext = new MainWindowVM();
-
-
-           
-
         }
 
         /// <summary>
@@ -133,6 +130,31 @@ namespace WpfApp1
                 Log.Visibility = Visibility.Collapsed;
             };
             storyboard.Begin();
+        }
+
+        /// <summary>
+        /// 语言切换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChangeLanguage(object sender, RoutedEventArgs e)
+        {
+            App.UpdateLanguage("Lan-en-us");
+            EnglishBtn.Visibility = Visibility.Collapsed;
+            ChineseBtn.Visibility = Visibility.Visible;
+            
+        }
+
+        /// <summary>
+        /// 语言切换
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChangeLanguageToChinese(object sender, RoutedEventArgs e)
+        {
+            ChineseBtn.Visibility = Visibility.Collapsed;
+            EnglishBtn.Visibility = Visibility.Visible;
+            App.UpdateLanguage("Lan-zh-cn");
         }
     }
 }

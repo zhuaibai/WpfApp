@@ -510,7 +510,7 @@
             Grid.RowSpan="2"
             Grid.ColumnSpan="4"
             Background="White"
-            Visibility="Visible">
+            Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -548,7 +548,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
+                                
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*" />
@@ -732,11 +732,11 @@
                                 Command="{Binding DataContext.HEEP1.Command_SetAC_ChargingCurrent, RelativeSource={RelativeSource AncestorType=Window}}"
                                 Content="设置"
                                 Style="{StaticResource ActionButton}" />
-                            <!--  返回市电充电电压  -->
+                            <!--  返回市电模式电压  -->
                             <TextBlock
                                 Grid.Row="8"
                                 Style="{StaticResource ContentText}"
-                                Text="返回市电充电电压" />
+                                Text="返回市电模式电压" />
                             <TextBlock
                                 Grid.Row="8"
                                 Grid.Column="1"
@@ -1084,7 +1084,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
+                                
                             </Grid.RowDefinitions>
 
                             <!--  标题行  -->

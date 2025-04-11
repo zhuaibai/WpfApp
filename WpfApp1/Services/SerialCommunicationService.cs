@@ -11,10 +11,26 @@ namespace WpfApp1.Services
 {
     public static class  SerialCommunicationService
     {
-       
+       //串口
         static SerialPort SerialPort { get; set; }
 
+        //串口类
         static SerialPortSettings SerialPortModel { get; set; }
+
+        //机器类型
+        public static string _MachineType = "";
+        public static string MachineType
+        {
+            get { return _MachineType; }
+            set {
+                if (value == "(HPVINV01\r") _MachineType = "A";
+                else if(value =="(HPVINV02\r") _MachineType = "B";
+                else if(value == "(HPVINV03\r") _MachineType = "C";
+                else if(value == "(HPVINV04\r") _MachineType = "D";
+                else
+                _MachineType = value; }
+        }
+
 
         /// <summary>
         /// 初始化
@@ -128,7 +144,7 @@ namespace WpfApp1.Services
             {
                 SerialPort.Write(Command, 0, Command.Length);
                 // 设置读取超时时间【1s】
-                SerialPort.ReadTimeout = 1000;
+                SerialPort.ReadTimeout = 2000;
                 // 需要读取的字节数
                 int bytesToRead =  returnCount;
                 //读取输入缓冲区

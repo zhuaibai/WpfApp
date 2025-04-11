@@ -83,7 +83,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _OutputVoltageOptions = new List<string> { "开启", "关闭" };
+        private List<string> _OutputVoltageOptions = new List<string> { "220", "230","240" };
 
         public List<string> OutputVoltageOptions
         {
@@ -122,8 +122,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputVoltage_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("V", OutputVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -161,7 +161,18 @@ namespace WpfApp1.GB3024C_Comand
         /// <param name="value"></param>
         public void AnalysisStringToElement(string value)
         {
-            if (!string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            string[] Values = value.Split(" ");
+
+            try
+            {
+                //输出电压
+                OutputVoltage = Values[0].Substring(1, 5);
+            }
+            catch (Exception ex)
             {
 
             }

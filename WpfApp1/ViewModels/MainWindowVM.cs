@@ -161,18 +161,31 @@ namespace WpfApp1.ViewModels
             SerialCommunicationService.InitiateCom(serialPortSettings);
         }
 
-        //串口打开/关闭图标
-        private string _ComIcon  = "&#xec61;";
+        //串口打开图标
+        private Visibility _ComIconOpen  = Visibility.Visible;
 
-        public string ComIcon
+        public Visibility ComIconOpen
         {
-            get { return _ComIcon; }
+            get { return _ComIconOpen; }
             set
             {
-                _ComIcon = value;
-                this.RaiseProperChanged(nameof(ComIcon));
+                _ComIconOpen = value;
+                this.RaiseProperChanged(nameof(ComIconOpen));
             }
         }
+
+        private Visibility _ComIconClose = Visibility.Collapsed;
+
+        public Visibility ComIconClose
+        {
+            get { return _ComIconClose ; }
+            set
+            {
+                _ComIconClose = value;
+                this.RaiseProperChanged(nameof(ComIconClose));
+            }
+        }
+
 
         /// <summary>
         /// 改变串口打开图标
@@ -180,12 +193,15 @@ namespace WpfApp1.ViewModels
         /// <param name="flag"></param>
         private void ChangeComIcon(bool flag)
         {
-            if (flag) {
-                ComIcon ="" ;
-                    }
+            if (flag)
+            {
+                ComIconClose = Visibility.Visible;
+                ComIconOpen = Visibility.Collapsed;
+            }
             else
             {
-                ComIcon = "&#xec61;";
+                ComIconClose = Visibility.Collapsed;
+                ComIconOpen = Visibility.Visible;
             }
         }
 
@@ -583,20 +599,47 @@ namespace WpfApp1.ViewModels
             {
                 while (!token.IsCancellationRequested)
                 {
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
+                    // 等待暂停或取消信号
+                    _pauseEvent.Wait(token);
+                    //发送查询机器指令
+                    string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+                    //解析指令
+                    SerialCommunicationService.MachineType = receive_MachineType;
 
+                    _pauseEvent.Wait(token); // 等待暂停或取消信号
                     //发送HOP指令
                     string receive = SerialCommunicationService.SendCommand(HOP.Command, 40);
                     //解析返回命令
                     HOP.AnalysisStringToElement(receive);
 
-                    //AddLog($"{"Name:"+ HOP.Name +"Kanme:"+ HOP.Kame}");
-
+                    _pauseEvent.Wait(token); // 等待暂停或取消信号
+                    //发送HEEP1指令
                     string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
+                    //解析返回指令
                     HEEP1.AnalyseStringToElement(receiveHEEP1);
+
+                    _pauseEvent.Wait(token); // 等待暂停或取消信号
+                    //发送HEEP2指令
+                    string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+                    //解析返回指令
+                    HEEP2.AnalyseStringToElement(receive_HEEP2);
+
+                    _pauseEvent.Wait(token); // 等待暂停或取消信号
+                    //发送HEEP2指令
+                    string receive_HOP = SerialCommunicationService.SendCommand(HOP.Command, 50);
+                    //解析返回指令
+                    HOP.AnalysisStringToElement(receive_HOP);
+
+                    _pauseEvent.Wait(token); // 等待暂停或取消信号
+                    //发送HEEP2指令
+                    string receive_HGEN = SerialCommunicationService.SendCommand(HGEN.Command, 60);
+                    //解析返回指令
+                    HGEN.AnalyseStringToElement(receive_HGEN);
+
+
                     // 模拟常规通信
                     await Task.Delay(1000, token);
-                    AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
+                    //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
                 }
             }
             catch (OperationCanceledException)

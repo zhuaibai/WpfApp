@@ -20,6 +20,8 @@ namespace WpfApp1.GB3024C_Comand
         private string command = "HEEP1\r";
         public string Command { get { return command; } }
 
+        public string MachineType; 
+
         ManualResetEventSlim _pauseEvent;//线程的开启、暂停
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
         Action<string> AddLog;           //添加日志委托
@@ -147,7 +149,7 @@ namespace WpfApp1.GB3024C_Comand
             );
             //并网电流
             Command_SetGridCurrent = new RelayCommand(
-              execute: () => OutputSettingFrequencyOperation(),
+              execute: () => GridCurrentOperation(),
               canExecute: () => Validate(nameof(GridCurrent_Inputs)) && !GridCurrent_IsWorking
              );
 
@@ -169,6 +171,7 @@ namespace WpfApp1.GB3024C_Comand
             #endregion
         }
 
+        
 
         #region 工作模式
         /// <summary>
@@ -181,6 +184,16 @@ namespace WpfApp1.GB3024C_Comand
             get { return _WorkingMode; }
             set
             {
+                if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                {
+                    if (value == "(0") { _WorkingMode = "UTI"; }
+                    else if(value == "(1") { _WorkingMode = "SUB"; }
+                    else if (value == "(2") { _WorkingMode = "SBU"; }
+                }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                {
+                    if (value == "(0") { _WorkingMode = "SUB"; }
+                    else if (value == "(1") { _WorkingMode = "SBU"; }
+                }else
                 _WorkingMode = value;
                 this.RaiseProperChanged(nameof(WorkingMode));
 
@@ -376,6 +389,18 @@ namespace WpfApp1.GB3024C_Comand
             get { return _BatteryType; }
             set
             {
+                if(value == "0") { _BatteryType = "AGM"; }
+                else if(value == "1") { _BatteryType = "FLD"; }
+                else if(value == "2") { _BatteryType = "USE"; }
+                else if(value =="3") { _BatteryType = "LIA"; }
+                else if(value == "4") { _BatteryType = "PYL"; }
+                else if(value == "5") { _BatteryType = "TQF"; }
+                else if(value == "6") { _BatteryType = "GRO"; }
+                else if(value == "7") { _BatteryType = "LIB"; }
+                else if(value == "8") { _BatteryType = "LIC"; }
+                
+
+                else
                 _BatteryType = value;
                 this.RaiseProperChanged(nameof(BatteryType));
             }
@@ -384,7 +409,7 @@ namespace WpfApp1.GB3024C_Comand
 
 
         //电池类型可选项
-        private List<string> _BatteryTypeOptions = new List<string> { "AGM","FLD","USER"};
+        private List<string> _BatteryTypeOptions = new List<string> { "AGM","FLD","USE","LIA","PYL","TQF","GRO","LIB","LIC"};
 
         public List<string> BatteryTypeOptions
         {
@@ -437,7 +462,7 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    //Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     string receive = SerialCommunicationService.SendSettingCommand("PBT", getSelectedToCommad(nameof(BatteryTypeSelectedOption)));
 
                 })
@@ -525,8 +550,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    //Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", StrongChargeVoltage_Inputs);
+                    Thread.Sleep(1000);
+                    string receive = SerialCommunicationService.SendSettingCommand("PCVV", StrongChargeVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -614,8 +639,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    //Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", FloatChargeVolage_Inputs);
+                    Thread.Sleep(1000);
+                    string receive = SerialCommunicationService.SendSettingCommand("PBFT", FloatChargeVolage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -702,7 +727,7 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     string receive = SerialCommunicationService.SendSettingCommand("MNCHGC", TotalChargeCurrent_Inputs);
                     string dsad = receive;
                 })
@@ -791,7 +816,7 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     string receive = SerialCommunicationService.SendSettingCommand("MUCHGC", AC_ChargingCurrent_Inputs);
 
                 })
@@ -819,7 +844,7 @@ namespace WpfApp1.GB3024C_Comand
 
         #endregion
 
-        #region 凤鸣器状态
+        #region 蜂鸣器状态
 
         private string _BuzzerStatus;
 
@@ -830,6 +855,7 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "1")
                 {
+                    
                     _BuzzerStatus = "开启";
                 }
                 else if (value == "0")
@@ -903,8 +929,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BuzzerStatus_Inputs);
+                    Thread.Sleep(1000);
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(BuzzerStatus_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1011,8 +1037,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OverloadRestart_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(OverloadRestart_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1122,8 +1148,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OverTemperatureRestart_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(OverTemperatureRestart_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1152,7 +1178,7 @@ namespace WpfApp1.GB3024C_Comand
 
         #endregion
 
-        #region 背光开启
+        #region LCD背光开启
 
         private string _LCD_Backlight;
 
@@ -1233,8 +1259,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", LCD_Backlight_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(LCD_Backlight_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1308,7 +1334,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _OutputModeOptions = new List<string> { "开启", "关闭" };
+        private List<string> _OutputModeOptions = new List<string> { "SIG", "PAL","3P1","3P2","3P3" };
 
         public List<string> OutputModeOptions
         {
@@ -1347,8 +1373,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputMode_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("POPM",getSelectedToCommad(nameof(OutputMode_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1458,8 +1484,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_CommunicationControlFunction_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("BMSC", getSelectedToCommad(nameof(BMS_CommunicationControlFunction_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1568,8 +1594,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PGR", AC_InputRange_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PGR",getSelectedToCommad(nameof(AC_InputRange_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1607,18 +1633,31 @@ namespace WpfApp1.GB3024C_Comand
             get { return _ChargingPriority; }
             set
             {
-                if (value != null)
-                {
+                
+                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                    {
+                        if (value == "0")
+                        {
+                            _ChargingPriority = "CUT";
+                        }
+                        else if (value == "1") { _ChargingPriority = "CSO"; }
+                        else if (value == "2") { _ChargingPriority = "SUN"; }
+                        else if (value == "3") { _ChargingPriority = "OSO"; }
+                        else { _ChargingPriority = value; }
+                    }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                    {
                     if (value == "0")
                     {
-                        _ChargingPriority = "CUT";
+                        _ChargingPriority = "CSO";
                     }
-                    else if (value == "1") { _ChargingPriority = "CSO"; }
-                    else if (value == "2") { _ChargingPriority = "SUN"; }
+                    else if (value == "1") { _ChargingPriority = "SUN"; }
+                    else if (value == "2") { _ChargingPriority = "OSO"; }
                     else if (value == "3") { _ChargingPriority = "OSO"; }
                     else { _ChargingPriority = value; }
-                }else
-                _ChargingPriority = "";
+                }
+                    
+                else
+                _ChargingPriority = value;
                 this.RaiseProperChanged(nameof(ChargingPriority));
             }
         }
@@ -1681,8 +1720,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ChargingPriority_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PCP",getSelectedToCommad(nameof(ChargingPriority_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1769,8 +1808,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_LowPower_SOC_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("BMSSDC", BMS_LowPower_SOC_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1858,8 +1897,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMSreturns_to_AC_mode_SOC_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("BMSB2UC", BMSreturns_to_AC_mode_SOC_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1946,8 +1985,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_returns_to_battery_mode_SOC_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("BMSU2BC", BMS_returns_to_battery_mode_SOC_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -2035,8 +2074,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BMS_automatically_turns_on_after_low_power_SOC_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("BMSSRC", BMS_automatically_turns_on_after_low_power_SOC_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -2144,8 +2183,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OverloadByPassFunction_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(OverloadByPassFunction_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2184,9 +2223,9 @@ namespace WpfApp1.GB3024C_Comand
                 if(value == "0")
                 {
                     _OutputSettingFrequency = "50";
-                }else if(_OutputSettingFrequency == "1")
+                }else if(value == "1")
                 {
-                    value = "60";
+                    _OutputSettingFrequency = "60";
                 }else
                 _OutputSettingFrequency = value;
                 this.RaiseProperChanged(nameof(OutputSettingFrequency));
@@ -2251,8 +2290,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutputSettingFrequency_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("F", OutputSettingFrequency_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -2340,8 +2379,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", GridCurrent_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PGFC", GridCurrent_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -2380,11 +2419,11 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _GridConnectedFunction = "50";
+                    _GridConnectedFunction = "关闭";
                 }
                 else if (value == "1")
                 {
-                    _GridConnectedFunction = "60";
+                    _GridConnectedFunction = "开启";
                 }
                 else
                     _GridConnectedFunction = value;
@@ -2450,8 +2489,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", GridConnectedFunction_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("GRIDFEED", getSelectedToCommad(nameof(GridConnectedFunction_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2487,6 +2526,11 @@ namespace WpfApp1.GB3024C_Comand
             get { return _PV_GridConnectionProtocol; }
             set
             {
+                if(value == "0") { _PV_GridConnectionProtocol = "India"; }
+                else if(value == "1") { _PV_GridConnectionProtocol = "Germen"; }
+                else if(value == "2") { _PV_GridConnectionProtocol = "SouthAmerica"; }
+                else if(value == "3") { _PV_GridConnectionProtocol = "Pakistan"; }
+                else
                 _PV_GridConnectionProtocol = value;
                 this.RaiseProperChanged(nameof(PV_GridConnectionProtocol));
             }
@@ -2511,7 +2555,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _PV_GridConnectionProtocolOptions = new List<string> { "India", "Germen","SouthAmerica" };
+        private List<string> _PV_GridConnectionProtocolOptions = new List<string> { "India", "Germen","SouthAmerica","Pakistan" };
 
         public List<string> PV_GridConnectionProtocolOptions
         {
@@ -2550,8 +2594,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", PV_GridConnectionProtocol_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("^S???RS", getSelectedToCommad(nameof(PV_GridConnectionProtocol_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2588,12 +2632,13 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _GridConnectedFunction = "BLU";
+                    _PV_FeedPriority = "BLU";
                 }
                 else if (value == "1")
                 {
-                    _GridConnectedFunction = "LBU";
+                    _PV_FeedPriority = "LBU";
                 }
+                else
                 _PV_FeedPriority = value;
                 this.RaiseProperChanged(nameof(PV_FeedPriority));
             }
@@ -2657,8 +2702,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", PV_FeedPriority_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PVENGUSE",getSelectedToCommad(nameof(PV_FeedPriority_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2769,7 +2814,7 @@ namespace WpfApp1.GB3024C_Comand
                 //输入范围
                 AC_InputRange = Values[3].Substring(0, 1);
                 //PV馈能优先级
-                PV_FeedPriority = Values[3].Substring(1, 1);
+                PV_FeedPriority = Values[3].Substring(3, 1);
                 //PV并网协议
                 PV_GridConnectionProtocol = Values[3].Substring(1,1);
                 //过载重启
@@ -2781,7 +2826,7 @@ namespace WpfApp1.GB3024C_Comand
                 //系统频率
                 OutputSettingFrequency = Values[5].Substring(0,1);
                 //充电优先顺序(充电模式)
-                ChargingPriority = Values[5].Substring(5, 2);
+                ChargingPriority = Values[5].Substring(2, 1);
                 //蜂鸣器状态
                 BuzzerStatus = Values[6];
                 //LCD背光
@@ -2829,17 +2874,33 @@ namespace WpfApp1.GB3024C_Comand
             switch (value)
             {
                 //设置工作模式
-                case "BuzzerStatusSelectedOptions":
-                    if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
+                case "WorkingModeSelectedOption":
+                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
                     {
-                        return string.Empty;
-                    }
-                    else if (WorkingModeSelectedOption == "UTI")
+                        if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
+                        {
+                            return string.Empty;
+                        }
+                        else if (WorkingModeSelectedOption == "UTI")
+                        {
+                            return "00";
+                        }
+                        else if (WorkingModeSelectedOption == "SUB")
+                        {
+                            return "01";
+                        }else if (WorkingModeSelectedOption == "SBU") { return "02"; }
+                        
+                    }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
                     {
-                        return "00";
-                    } else if (WorkingModeSelectedOption == "SUB")
-                    {
-                        return "01";
+                        if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
+                        {
+                            return string.Empty;
+                        }
+                        else if (WorkingModeSelectedOption == "SUB")
+                        {
+                            return "00";
+                        }
+                        else if (WorkingModeSelectedOption == "SBU") { return "01"; }
                     }
                     return "";
                 //设置电池类型
@@ -2859,46 +2920,46 @@ namespace WpfApp1.GB3024C_Comand
                  //设置蜂鸣器状态
                 case "BuzzerStatus_Inputs":
                     if (string.IsNullOrWhiteSpace(BuzzerStatus_Inputs)) {  return string.Empty; }
-                    else if (BuzzerStatus_Inputs == "开启") { return "1"; }
-                    else if(BuzzerStatus_Inputs == "关闭") { return "0"; }
+                    else if (BuzzerStatus_Inputs == "开启") { return "PEa"; }
+                    else if(BuzzerStatus_Inputs == "关闭") { return "PDa"; }
                     else
                     return "";
                 //过载重启
                 case "OverloadRestart_Inputs":
                     if (string.IsNullOrWhiteSpace(OverloadRestart_Inputs)) { return string.Empty; }
-                    else if (OverloadRestart_Inputs == "开启") { return "1"; }
-                    else if (OverloadRestart_Inputs == "关闭") { return "0"; }
+                    else if (OverloadRestart_Inputs == "开启") { return "PEu"; }
+                    else if (OverloadRestart_Inputs == "关闭") { return "PDu"; }
                     else
                         return "";
                 //过温重启
                 case "OverTemperatureRestart_Inputs":
                     if (string.IsNullOrWhiteSpace(OverTemperatureRestart_Inputs)) { return string.Empty; }
-                    else if (OverloadRestart_Inputs == "开启") { return "1"; }
-                    else if (OverloadRestart_Inputs == "关闭") { return "0"; }
+                    else if (OverTemperatureRestart_Inputs == "开启") { return "PEv"; }
+                    else if (OverTemperatureRestart_Inputs == "关闭") { return "PDv"; }
                     else
                         return "";
-                //LCD背光
+                //LCD背光开启
                 case "LCD_Backlight_Inputs":
                     if (string.IsNullOrWhiteSpace(LCD_Backlight_Inputs)) { return string.Empty; }
-                    else if (LCD_Backlight_Inputs == "开启") { return "1"; }
-                    else if (LCD_Backlight_Inputs == "关闭") { return "0"; }
+                    else if (LCD_Backlight_Inputs == "开启") { return "PEx"; }
+                    else if (LCD_Backlight_Inputs == "关闭") { return "PDx"; }
                     else
                         return "";
                 //BMS开关
-                case "BMS_CommunicationControlFunction":
+                case "BMS_CommunicationControlFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(BMS_CommunicationControlFunction_Inputs)) { return string.Empty; }
-                    else if (BMS_CommunicationControlFunction_Inputs == "开启") { return "1"; }
-                    else if (BMS_CommunicationControlFunction_Inputs == "关闭") { return "0"; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "开启") { return "01"; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "关闭") { return "00"; }
                     else
                         return "";
                 //输出模式
                 case "OutputMode_Inputs":
                     if (string.IsNullOrWhiteSpace(OutputMode_Inputs)) { return string.Empty; }
-                    else if (OutputMode_Inputs == "SIG") { return "0"; }
-                    else if (OutputMode_Inputs == "PAL") { return "1"; }
-                    else if (OutputMode_Inputs == "3P1") { return "2"; }
-                    else if (OutputMode_Inputs == "3P2") { return "3"; }
-                    else if (OutputMode_Inputs == "3P3") { return "4"; }
+                    else if (OutputMode_Inputs == "SIG") { return "00"; }
+                    else if (OutputMode_Inputs == "PAL") { return "01"; }
+                    else if (OutputMode_Inputs == "3P1") { return "02"; }
+                    else if (OutputMode_Inputs == "3P2") { return "03"; }
+                    else if (OutputMode_Inputs == "3P3") { return "04"; }
                     else
                         return "";
                 //市电输入范围
@@ -2909,17 +2970,26 @@ namespace WpfApp1.GB3024C_Comand
                     else return AC_InputRange_Inputs;
                 //充电模式
                 case "ChargingPriority_Inputs":
-                    if (string.IsNullOrWhiteSpace(ChargingPriority_Inputs)) { return string.Empty; }
-                    else if (ChargingPriority_Inputs == "CUT") { return "00"; }
-                    else if (ChargingPriority_Inputs == "CSO") { return "01"; }
-                    else if (ChargingPriority_Inputs == "SUN") { return "01"; }
-                    else if (ChargingPriority_Inputs == "OSO") { return "01"; }
-                    else return ChargingPriority_Inputs;
+                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                    {
+                        if (ChargingPriority_Inputs == "CUT") { return "00"; }
+                        else if (ChargingPriority_Inputs == "CSO") { return "01"; }
+                        else if (ChargingPriority_Inputs == "SNU") { return "02"; }
+                        else if (ChargingPriority_Inputs == "OSO") { return "03"; }
+                    }
+                    else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                    {
+                        if (ChargingPriority_Inputs == "CUT") { return ""; }
+                        else if (ChargingPriority_Inputs == "CSO") { return "00"; }
+                        else if (ChargingPriority_Inputs == "SNU") { return "01"; }
+                        else if (ChargingPriority_Inputs == "OSO") { return "02"; }
+                    }
+                    return ChargingPriority_Inputs;
                 //过载转接旁路
                 case "OverloadByPassFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(OverloadByPassFunction_Inputs)) { return string.Empty; }
-                    else if (OverloadByPassFunction_Inputs == "开启") { return "1"; }
-                    else if (OverloadByPassFunction_Inputs == "关闭") { return "0"; }
+                    else if (OverloadByPassFunction_Inputs == "开启") { return "PEb"; }
+                    else if (OverloadByPassFunction_Inputs == "关闭") { return "PDb"; }
                     else
                         return OverloadByPassFunction_Inputs;
                 //系统频率
@@ -2932,23 +3002,24 @@ namespace WpfApp1.GB3024C_Comand
                 //并网功能
                 case "GridConnectedFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(GridConnectedFunction_Inputs)) { return string.Empty; }
-                    else if (OutputSettingFrequency_Inputs == "开启") { return "1"; }
-                    else if (OutputSettingFrequency_Inputs == "关闭") { return "0"; }
+                    else if (GridConnectedFunction_Inputs == "开启") { return "01"; }
+                    else if (GridConnectedFunction_Inputs == "关闭") { return "00"; }
                     else
                         return OutputSettingFrequency_Inputs;
                 //PV并网协议
                 case "PV_GridConnectionProtocol_Inputs":
                     if (string.IsNullOrWhiteSpace(PV_GridConnectionProtocol_Inputs)) { return string.Empty; }
-                    else if (PV_GridConnectionProtocol_Inputs == "India") { return "0"; }
-                    else if (PV_GridConnectionProtocol_Inputs == "Germen") { return "1"; }
-                    else if (PV_GridConnectionProtocol_Inputs == "SouthAmerica") { return "2"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "India") { return "00"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "Germen") { return "01"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "SouthAmerica") { return "02"; }
+                    else if (PV_GridConnectionProtocol_Inputs == "Pakistan") { return "03"; }
                     else
                         return OutputSettingFrequency_Inputs;
                 //PV馈能优先级
                 case "PV_FeedPriority_Inputs":
                     if (string.IsNullOrWhiteSpace(PV_FeedPriority_Inputs)) { return string.Empty; }
-                    else if (PV_FeedPriority_Inputs == "BLU") { return "0"; }
-                    else if (PV_FeedPriority_Inputs == "LBU") { return "1"; }
+                    else if (PV_FeedPriority_Inputs == "BLU") { return "00"; }
+                    else if (PV_FeedPriority_Inputs == "LBU") { return "01"; }
                     else
                         return OutputSettingFrequency_Inputs;
                 default:

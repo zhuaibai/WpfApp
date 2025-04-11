@@ -105,10 +105,18 @@
                 Tag="&#xe62c;" />
             <Button
                 Background="#FF1677FF"
-                Content="打开串口"
                 Command="{Binding OpenCom}"
+                Content="{DynamicResource 开启}"
                 Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xec61;" />
+                Tag="&#xec61;"
+                Visibility="{Binding ComIconOpen}" />
+            <Button
+                Background="#FFF75231"
+                Command="{Binding OpenCom}"
+                Content="{DynamicResource 关闭}"
+                Style="{StaticResource MenuStyleBtn}"
+                Tag="&#xe800;"
+                Visibility="{Binding ComIconClose}" />
             <Border
                 Margin="10,20,5,20"
                 BorderBrush="White"
@@ -145,6 +153,20 @@
                 Content="日志"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe8ac;" />
+            <Button
+                x:Name="EnglishBtn"
+                Background="#FF1677FF"
+                Click="ChangeLanguage"
+                Content="En-Language"
+                Style="{StaticResource MenuStyleBtn}"
+                Tag="&#xe617;" />
+            <Button
+                x:Name="ChineseBtn"
+                Background="#FF1677FF"
+                Click="ChangeLanguageToChinese"
+                Content="中文"
+                Style="{StaticResource MenuStyleBtn}"
+                Tag="&#xe653;" />
         </StackPanel>
         <!--  下拉菜单弹出层  -->
         <Popup
@@ -223,16 +245,15 @@
                     Height="20"
                     Margin="5,0"
                     Background="{Binding ComStatus}"
-                    
                     CornerRadius="10" />
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Text="串口状态:" />
                 <TextBlock
+                    Margin="5,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Margin="5,0,0,0"
                     Foreground="{Binding ComStatus}"
                     Text="{Binding Status}" />
             </StackPanel>

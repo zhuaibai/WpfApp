@@ -48,7 +48,7 @@ namespace WpfApp1.GB3024C_Comand
             );
             //AC充电时间
             Command_SetAC_Charging_Time = new RelayCommand(
-               execute: () => AC_ChargingVoltageOperation(),
+               execute: () => AC_Charging_TimeOperation(),
                canExecute: () => Validate(nameof(AC_Charging_Time_Inputs)) && !AC_Charging_Time_IsWorking // 增加处理状态检查
             );
             //系统复位
@@ -73,6 +73,18 @@ namespace WpfApp1.GB3024C_Comand
              );
         }
 
+        #region 获取机器类型
+
+        private string _QueryMachineType = "QPRTL\r";
+
+        public string QueryMachineType
+        {
+            get { return _QueryMachineType = "QPRTL\r"; }
+            set { _QueryMachineType  = value; }
+        }
+
+
+        #endregion
 
         #region 恒压充电电压
 
@@ -519,8 +531,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", AC_Charging_Time_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("^S???ACCT", AC_Charging_Time_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -696,7 +708,7 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
+                    Thread.Sleep(1000);//没有这个延时会报错
                     string receive = SerialCommunicationService.SendSettingCommand("^S???CLE", "");
 
                 })
@@ -784,8 +796,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PDAULC", "00");
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAULON", "00");
 
                 })
                 , timeoutCts.Token);
@@ -872,8 +884,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PDAULC", "01");
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAULON", "01");
 
                 })
                 , timeoutCts.Token);

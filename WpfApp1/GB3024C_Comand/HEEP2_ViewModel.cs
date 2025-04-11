@@ -33,7 +33,7 @@ namespace WpfApp1.GB3024C_Comand
             );
             //返回电池模式电压
             Command_SetReturnBatteryModeVoltage = new RelayCommand(
-                execute: () => ReturnMainsBatteryVoltageOperation(),
+                execute: () => ReturnBatteryModeVoltageOperation(),
                 canExecute: () => Validate(nameof(ReturnBatteryModeVoltage_Inputs)) && !ReturnBatteryModeVoltage_IsWorking // 增加处理状态检查
             );
             //电池均衡间隔时间(Day)
@@ -68,7 +68,7 @@ namespace WpfApp1.GB3024C_Comand
            );
             //并机模式关闭电压
             Command_SetParallelModeShutdownVoltage = new RelayCommand(
-              execute: () => DualOutputModeOperation(),
+              execute: () => ParallelModeShutdownVoltageOperation(),
               canExecute: () => Validate(nameof(ParallelModeShutdownVoltage_Inputs)) && !ParallelModeShutdownVoltage_IsWorking // 增加处理状态检查
             );
             //并机模式关闭SOC
@@ -174,8 +174,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PDAUL", getSelectedToCommad(DualOutputMode_Inputs));
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDAULC", getSelectedToCommad(nameof(DualOutputMode_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -263,8 +263,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ParallelModeShutdownVoltage_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDSDV", ParallelModeShutdownVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -351,8 +351,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ParallelModeShutdownSOC_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDSDS", ParallelModeShutdownSOC_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -441,7 +441,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     //Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ReturnMainsBatteryVoltage_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("PBCV", ReturnMainsBatteryVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -529,8 +529,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    //Thread.Sleep(2000);
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ReturnBatteryModeVoltage_Inputs);
+                    Thread.Sleep(1000);
+                    string receive = SerialCommunicationService.SendSettingCommand("PBDV", ReturnBatteryModeVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -632,8 +632,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingMmode_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQE",getSelectedToCommad(nameof(BatteryBalancingMmode_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -721,8 +721,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingVoltage_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQV", BatteryBalancingVoltage_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -810,8 +810,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingTime_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQT", BatteryBalancingTime_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -899,8 +899,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingTimeoutValue_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQOT", BatteryBalancingTimeoutValue_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -987,8 +987,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BatteryBalancingInterval_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQP", BatteryBalancingInterval_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1076,8 +1076,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", SecondOutputDischargeTime_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDDCGT", SecondOutputDischargeTime_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1165,8 +1165,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", DelayTimeToRestoreTheSecondOutput_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDDLYT", DelayTimeToRestoreTheSecondOutput_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1255,8 +1255,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", RestoreBatteryVoltageOfSecondOutput_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDSRV", RestoreBatteryVoltageOfSecondOutput_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1344,8 +1344,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", RestoreBatteryCapacityOfSecondOutput_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDSRS", RestoreBatteryCapacityOfSecondOutput_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -1433,20 +1433,17 @@ namespace WpfApp1.GB3024C_Comand
             string[] Values = value.Split(" ");
             try
             {
-                ////工作模式
-                //WorkingMode = Values[0];
-                ////总充电流
-                //TotalChargeCurrent = Values[1];
-                ////市电总充电流
-                //AC_ChargingCurrent = Values[2];
-                ////电池类型
-                //BatteryType = Values[5];
+               
                 //双输出模式(并机模式)
                 DualOutputMode = Values[0].Substring(1,1);
                 //并机模式关闭电压
                 ParallelModeShutdownVoltage = Values[1];
                 //并机模式关闭SOC
                 ParallelModeShutdownSOC = Values[2];
+                //返回市电模式电压
+                ReturnMainsBatteryVoltage = Values[4];
+                //返回电池模式电压
+                ReturnBatteryModeVoltage = Values[5];
                 //电池均衡模式
                 BatteryBalancingMmode = Values[6];
                 //电池均衡电压
@@ -1494,7 +1491,7 @@ namespace WpfApp1.GB3024C_Comand
                     {
                         return string.Empty;
                     }
-                    else if (DualOutputMode_Inputs == "开起")
+                    else if (DualOutputMode_Inputs == "开启")
                     {
                         return "01";
                     }
@@ -1503,8 +1500,22 @@ namespace WpfApp1.GB3024C_Comand
                         return "00";
                     }
                     return DualOutputMode_Inputs;
-                case "SBU":
-                    return "";
+                //电池均衡模式
+                case "BatteryBalancingMmode_Inputs":
+
+                    if (string.IsNullOrWhiteSpace(BatteryBalancingMmode_Inputs))
+                    {
+                        return string.Empty;
+                    }
+                    else if (BatteryBalancingMmode_Inputs == "开启")
+                    {
+                        return "1";
+                    }
+                    else if (BatteryBalancingMmode_Inputs == "关闭")
+                    {
+                        return "0";
+                    }
+                    return DualOutputMode_Inputs;
                 default:
                     return "";
             }

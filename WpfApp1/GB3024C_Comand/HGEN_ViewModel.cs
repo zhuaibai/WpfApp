@@ -94,8 +94,8 @@ namespace WpfApp1.GB3024C_Comand
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", SystemTime_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("^S???DAT", SystemTime_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -154,7 +154,7 @@ namespace WpfApp1.GB3024C_Comand
             try
             {
                 //系统时间
-                SystemTime = Values[0]+" " + Values[1];
+                SystemTime = Values[0].Substring(1,6)+" " + Values[1];
             }
             catch (Exception ex)
             {
