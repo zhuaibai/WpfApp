@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WpfApp1.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:helper="clr-namespace:WpfApp1.Behavior"
     d:DesignHeight="700"
     d:DesignWidth="1200"
     Background="White"
@@ -665,7 +666,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP1.StrongChargeVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                 />
                             <!--  浮充电压  -->
                             <TextBlock
                                 Grid.Row="5"
@@ -687,7 +688,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP1.FloatChargeVolage_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                 />
                             <!--  总充电电流  -->
                             <TextBlock
                                 Grid.Row="6"
@@ -703,7 +704,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP1.TotalChargeCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                 />
                             <Button
                                 Grid.Row="6"
                                 Grid.Column="3"
@@ -725,7 +726,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP1.AC_ChargingCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                 />
                             <Button
                                 Grid.Row="7"
                                 Grid.Column="3"
@@ -747,7 +748,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP2.ReturnMainsBatteryVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                />
                             <Button
                                 Grid.Row="8"
                                 Grid.Column="3"
@@ -769,7 +770,7 @@
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
                                 Text="{Binding HEEP2.ReturnBatteryModeVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Center" />
+                                 />
                             <Button
                                 Grid.Row="9"
                                 Grid.Column="3"
