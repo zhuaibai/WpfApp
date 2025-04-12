@@ -691,10 +691,6 @@ namespace WpfApp1.ViewModels
         }
         #endregion
 
-        #region 设置指令测试
-
-        
-        #endregion
 
     }
 }
