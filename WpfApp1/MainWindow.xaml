@@ -90,7 +90,7 @@
                 x:Name="btnMenu"
                 Background="#FF1677FF"
                 Click="btnMenu_Click"
-                Content="功能选项"
+                Content="{DynamicResource 功能选项}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe867;" />
             <Border
@@ -100,20 +100,20 @@
             <Button
                 Background="#FF1677FF"
                 Click="SerialSettingButton_Click"
-                Content="串口设置"
+                Content="{DynamicResource 串口设置}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe62c;" />
             <Button
                 Background="#FF1677FF"
                 Command="{Binding OpenCom}"
-                Content="{DynamicResource 开启}"
+                Content="{DynamicResource 打开串口}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xec61;"
                 Visibility="{Binding ComIconOpen}" />
             <Button
                 Background="#FFF75231"
                 Command="{Binding OpenCom}"
-                Content="{DynamicResource 关闭}"
+                Content="{DynamicResource 关闭串口}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe800;"
                 Visibility="{Binding ComIconClose}" />
@@ -123,34 +123,34 @@
                 BorderThickness="2,0,0,0" />
             <Button
                 Background="#FF1677FF"
-                Content="命令测试"
+                Content="{DynamicResource 命令测试}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe602;" />
             <Button
                 Background="#FF1677FF"
-                Content="更新下载"
+                Content="{DynamicResource 更新下载}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe616;" />
             <Button
                 Background="#FF1677FF"
                 Click="OpenSettingsButton_Click"
-                Content="指令设置"
+                Content="{DynamicResource 指令设置}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe765;" />
             <Button
                 Background="#FF81ED7B"
-                Content="开机"
+                Content="{DynamicResource 开机}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe601;" />
             <Button
                 Background="#FFF75231"
-                Content="关机"
+                Content="{DynamicResource 关机}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe601;" />
             <Button
                 Background="#FF1677FF"
                 Click="Log_Click"
-                Content="日志"
+                Content="{DynamicResource 日志}"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe8ac;" />
             <Button
@@ -249,7 +249,7 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="串口状态:" />
+                    Text="{DynamicResource 串口状态}" />
                 <TextBlock
                     Margin="5,0,0,0"
                     HorizontalAlignment="Center"
@@ -261,29 +261,29 @@
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="发送帧:" />
+                    Text="{DynamicResource 发送帧}" />
                 <TextBlock
                     Margin="7,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="Red"
-                    Text="0" />
+                    Text="{Binding SerialCountVM.SendFrame}" />
                 <TextBlock
                     Margin="50,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="接受帧:" />
+                    Text="{DynamicResource 接收帧}" />
                 <TextBlock
                     Margin="7,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="Red"
-                    Text="0" />
+                    Text="{Binding SerialCountVM.ReceiveFrame}" />
                 <TextBlock
                     Margin="50,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="计数清零:" />
+                    Text="{DynamicResource 计数清零}" />
                 <TextBlock
                     Margin="7,0"
                     HorizontalAlignment="Center"
@@ -296,7 +296,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
-                <TextBlock Text="启动时间:" />
+                <TextBlock Text="{DynamicResource 启动时间}" />
                 <TextBlock Margin="8,0,20,0" Text="2025-3-18 10:24:50" />
             </StackPanel>
         </Grid>

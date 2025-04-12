@@ -163,7 +163,7 @@ namespace WpfApp1.ViewModels
                     serializer.Serialize(writer, _settings);
                 }
                 Console.WriteLine("设置已保存");
-                MessageBox.Show("设置已保存");
+                MessageBox.Show("设置已保存,请重新打开串口生效!\r\nThe settings have been saved, please re-open the serial port to take effect!");
             }
             catch (Exception ex)
             {

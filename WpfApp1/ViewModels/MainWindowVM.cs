@@ -75,7 +75,10 @@ namespace WpfApp1.ViewModels
 
             //初始化串口信息
             IniCom();
-
+            SerialCountVM = new SerialCountVM();
+            SerialCommunicationService.AddReceiveFrame=SerialCountVM.AddReceiveFrame;
+            SerialCommunicationService.AddSendFrame=SerialCountVM.AddSendFrame;
+            
             //初始化ViewModel
             HOP = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
             HEEP1 = new HEEP1_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
@@ -238,7 +241,7 @@ namespace WpfApp1.ViewModels
         {
             if (SerialCommunicationService.IsOpen())
             {
-                MessageBoxResult dialogResult = MessageBox.Show("串口已打开，是否关闭！", "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                MessageBoxResult dialogResult = MessageBox.Show(App.GetText("串口已打开，是否关闭?"), "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if (dialogResult == MessageBoxResult.OK)
                 {
                     try
@@ -484,13 +487,32 @@ namespace WpfApp1.ViewModels
         private ManualResetEventSlim _pauseEvent = new ManualResetEventSlim(true);//暂停线程专用
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // 异步竞争
 
+        //帧计数
+        private SerialCountVM _SerialCountVM;
+
+        public SerialCountVM SerialCountVM
+        {
+            get { return _SerialCountVM; }
+            set
+            {
+                _SerialCountVM = value;
+                this.RaiseProperChanged(nameof(SerialCountVM));
+            }
+        }
+
+
+
 
         // 后台线程是否正在运行
         private bool _isRunning;
         public bool IsRunning
         {
             get => _isRunning;
-            set => OnPropertyChanged();
+            set
+            {
+                _isRunning = value;
+                OnPropertyChanged();
+            }
         }
 
         // 状态信息
@@ -567,25 +589,30 @@ namespace WpfApp1.ViewModels
         public ICommand StopCommand { get; }
         public ICommand ExecuteSpecialCommand { get; }
         public ICommand OpenCom {  get; }
-       
+
         /// <summary>
         /// 启动后台通信线程
         /// </summary>
         private void StartBackgroundThread()
         {
-            if (IsRunning) return;
+           
             if (!SerialCommunicationService.IsOpen())
             {
-                MessageBox.Show("请先打开串口!","提示",MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(App.GetText("请先打开串口!"), "提示", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            IsRunning = true;
-            _cts = new CancellationTokenSource();
-            _pauseEvent.Set();
-            UpdateState("正在通信");
-            comStateColor(true);
-            Task.Run(() => BackgroundWorker(_cts.Token));
-            AddLog("后台通信线程已启动");
+            if (IsRunning) { return; } 
+            else
+            {
+                IsRunning = true;
+                _cts = new CancellationTokenSource();
+                _pauseEvent.Set();
+                UpdateState("正在通信");
+                comStateColor(true);
+                Task.Run(() => BackgroundWorker(_cts.Token));
+                AddLog("后台通信线程已启动");
+            }
+            
         }
 
        
@@ -644,12 +671,13 @@ namespace WpfApp1.ViewModels
             }
             catch (OperationCanceledException)
             {
-                AddLog("后台通信已正常终止");
-                UpdateState("已停止通信");
+                AddLog("后台通信已终止");
+                UpdateState("已停止通信....");
+                IsRunning = false;
             }
             finally
             {
-                IsRunning = false;
+                
             }
         }
 

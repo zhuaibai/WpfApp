@@ -17,6 +17,11 @@ namespace WpfApp1.Services
         //串口类
         static SerialPortSettings SerialPortModel { get; set; }
 
+        //串口发送帧数
+        public static Action<int> AddSendFrame; 
+        //串口接收帧数
+        public static Action<int> AddReceiveFrame; 
+
         //机器类型
         public static string _MachineType = "";
         public static string MachineType
@@ -138,24 +143,29 @@ namespace WpfApp1.Services
             SerialPort.WriteTimeout = 1000;
             //写命令
             byte[] Command = Encoding.ASCII.GetBytes(command);
-            
+            //接收帧数
+            int totalBytesRead =0;
             //收报文
             try
             {
                 SerialPort.Write(Command, 0, Command.Length);
+                //添加发送帧数
+                AddSendFrame(Command.Length);
                 // 设置读取超时时间【1s】
                 SerialPort.ReadTimeout = 2000;
                 // 需要读取的字节数
                 int bytesToRead =  returnCount;
                 //读取输入缓冲区
                 byte[] buffer = new byte[bytesToRead];
-                int totalBytesRead = 0;
+                totalBytesRead = 0;
                 //设置读取超时，1s内达不到所需字节就触发超时异常
                 while (totalBytesRead < bytesToRead)
                 {
                     int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
                     totalBytesRead += bytesRead;
                 }
+                //增加接收返回帧数
+                AddReceiveFrame(totalBytesRead);
                 //获取返回转字符串
                 string DataBuffer = Encoding.ASCII.GetString(buffer);
                 return DataBuffer;
@@ -164,6 +174,8 @@ namespace WpfApp1.Services
             {
                 // 超时未
                 //MessageBox.Show("超时未收到ACK");
+                //增加接收返回帧数
+                AddReceiveFrame(totalBytesRead);
                 return string.Empty;
             }
         }
@@ -176,6 +188,7 @@ namespace WpfApp1.Services
         /// <returns></returns>
         public static string SendCommand(byte[] command, int returnCount)
         {
+            int totalBytesRead = 0;
             //收报文
             try
             {
@@ -185,19 +198,23 @@ namespace WpfApp1.Services
                 //写命令
                 byte[] Command = command;
                 SerialPort.Write(Command, 0, Command.Length);
+                //添加发送帧数
+                AddSendFrame(Command.Length);
                 // 设置读取超时时间【1s】
                 SerialPort.ReadTimeout = 1000;
                 // 需要读取的字节数
                 int bytesToRead = returnCount;
                 //读取输入缓冲区
                 byte[] buffer = new byte[bytesToRead];
-                int totalBytesRead = 0;
+                totalBytesRead = 0;
                 //设置读取超时，1s内达不到所需字节就触发超时异常
                 while (totalBytesRead < bytesToRead)
                 {
                     int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
                     totalBytesRead += bytesRead;
                 }
+                //增加接收返回帧数
+                AddReceiveFrame(totalBytesRead);
                 //获取返回转字符串
                 string DataBuffer = Encoding.ASCII.GetString(buffer);
                 return DataBuffer;
@@ -206,6 +223,8 @@ namespace WpfApp1.Services
             {
                 // 超时未
                 //MessageBox.Show("超时未收到ACK");
+                //增加接收返回帧数
+                AddReceiveFrame(totalBytesRead);
                 return string.Empty;
             }
             catch (Exception ex)
