@@ -5,7 +5,7 @@
 
     <s:String x:Key="开启">On</s:String>
     <s:String x:Key="关闭">Off</s:String>
-    <s:String x:Key="启动时间">StartupTime</s:String>
+    <s:String x:Key="启动时间">Time:</s:String>
     <s:String x:Key="功能选项">FunctionOptions</s:String>
     <s:String x:Key="串口设置">SerialConfig</s:String>
     <s:String x:Key="打开串口">OpenPort</s:String>
@@ -79,4 +79,8 @@
     <s:String x:Key="开始">Start</s:String>
     <s:String x:Key="停止">Stop</s:String>
     <s:String x:Key="设置已保存,请重新打开串口生效!">The settings have been saved, please re-open the serial port to take effect!</s:String>
+    <s:String x:Key="串口已打开(点击开始进行通讯)">The serial port is turned on (click to start communication)</s:String>
+    <s:String x:Key="串口已关闭">The serial port is closed</s:String>
+    <s:String x:Key="正在通信">Communicating...</s:String>
+    <s:String x:Key="已停止通信!">Communication has stopped!</s:String>
 </ResourceDictionary>

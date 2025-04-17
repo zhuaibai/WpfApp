@@ -79,14 +79,70 @@ namespace WpfApp1.ViewModels
             SerialCommunicationService.AddReceiveFrame=SerialCountVM.AddReceiveFrame;
             SerialCommunicationService.AddSendFrame=SerialCountVM.AddSendFrame;
             
-            //初始化ViewModel
+            //初始化  GB   ViewModel
             HOP = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
             HEEP1 = new HEEP1_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HEEP2 = new HEEP2_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HGEN = new HGEN_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
-            OpenCom = new RelayCommand(openCom);  
+            OpenCom = new RelayCommand(openCom);
+
+            //初始化实时时间ViewModel
+            Clock = new ClockViewModel();
         }
+
+        #region 下拉框选择机器类型
+
+        private string? _selectedItem;
+        public string? SelectedMachineItem
+        {
+            get => _selectedItem;
+            set
+            {
+                _selectedItem = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> MachineItems { get; } = new()
+    {
+        "GB3024",
+        "VQ3024",
+    };
+        public ICommand SelectionChangedCommand { get
+            {
+                return new RelayCommand(OnSelectionChanged);
+            } }
+        //选中项改变
+        private void OnSelectionChanged()
+        { 
+            // 这里处理选择变更逻辑
+            System.Diagnostics.Debug.WriteLine($"选中项: {SelectedMachineItem}");
+
+            // 如果需要，可以在这里添加业务逻辑
+            if (SelectedMachineItem != null)
+            {
+                // 执行你的命令逻辑
+            }
+        }
+        #endregion
+
+        #region 实时时间
+        /// <summary>
+        /// 实时时间
+        /// </summary>
+        private ClockViewModel _Clock;
+
+        public ClockViewModel Clock 
+        {
+            get { return _Clock; }
+            set
+            {
+                _Clock = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         #region 指令ViewModel
 
@@ -177,6 +233,7 @@ namespace WpfApp1.ViewModels
             }
         }
 
+        //串口关闭图标
         private Visibility _ComIconClose = Visibility.Collapsed;
 
         public Visibility ComIconClose
@@ -198,11 +255,13 @@ namespace WpfApp1.ViewModels
         {
             if (flag)
             {
+                //串口打开
                 ComIconClose = Visibility.Visible;
                 ComIconOpen = Visibility.Collapsed;
             }
             else
             {
+                //串口关闭
                 ComIconClose = Visibility.Collapsed;
                 ComIconOpen = Visibility.Visible;
             }
@@ -263,7 +322,7 @@ namespace WpfApp1.ViewModels
                         //    MessageBox.Show("串口打开失败！");
                         //    return;
                         //};
-                        UpdateState("串口已关闭");
+                        UpdateState(App.GetText("串口已关闭"));
                         comStateColor(false);
                         AddLog($"关闭串口{SerialCommunicationService.getComName()}成功");
                     }
@@ -287,7 +346,7 @@ namespace WpfApp1.ViewModels
                     return ;
                 };
                 ChangeComIcon(true);
-                UpdateState("串口已打开(点击开始进行通讯)");
+                UpdateState(App.GetText("串口已打开(点击开始进行通讯)"));
                 comStateColor(true);
                 AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
             }
@@ -310,8 +369,23 @@ namespace WpfApp1.ViewModels
 					 return contentUC = new MonitorUC(); 
 				}
 				return contentUC; }
-			set { contentUC = value; RaiseProperChanged(nameof(ContentControl)); }
+			set { contentUC = value; RaiseProperChanged(nameof(ContentUC)); }
 		}
+
+        public ICommand SwitchViewToVQ { 
+            get
+            {
+                return new RelayCommand(switchViewToVQ);
+            }
+        }
+
+        /// <summary>
+        /// 切换界面到VQ
+        /// </summary>
+        public void switchViewToVQ()
+        {
+            ContentUC = new AC_Monitor();
+        }
         #endregion
 
         #region PV信息
@@ -607,7 +681,7 @@ namespace WpfApp1.ViewModels
                 IsRunning = true;
                 _cts = new CancellationTokenSource();
                 _pauseEvent.Set();
-                UpdateState("正在通信");
+                UpdateState(App.GetText("正在通信"));
                 comStateColor(true);
                 Task.Run(() => BackgroundWorker(_cts.Token));
                 AddLog("后台通信线程已启动");
@@ -624,6 +698,7 @@ namespace WpfApp1.ViewModels
         {
             try
             {
+
                 while (!token.IsCancellationRequested)
                 {
                     // 等待暂停或取消信号
@@ -672,7 +747,7 @@ namespace WpfApp1.ViewModels
             catch (OperationCanceledException)
             {
                 AddLog("后台通信已终止");
-                UpdateState("已停止通信....");
+                UpdateState(App.GetText("已停止通信!"));
                 IsRunning = false;
             }
             finally

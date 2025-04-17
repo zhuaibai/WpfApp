@@ -108,8 +108,8 @@ namespace WpfApp1.GB3024C_Comand
             get { return _DualOutputMode; }
             set
             {
-                if(value == "0") { _DualOutputMode = "关闭"; }
-                else if(value == "1") { _DualOutputMode = "开启"; }
+                if(value == "0") { _DualOutputMode =App.GetText("关闭"); }
+                else if(value == "1") { _DualOutputMode = App.GetText("开启"); }
                 else
                 _DualOutputMode = value;
                 this.RaiseProperChanged(nameof(DualOutputMode));
@@ -135,7 +135,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _DualOutputModeOptions = new List<string> { "开启", "关闭" };
+        private List<string> _DualOutputModeOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> DualOutputModeOptions
         {
@@ -566,8 +566,8 @@ namespace WpfApp1.GB3024C_Comand
             get { return _BatteryBalancingMmode; }
             set
             {
-                if(value == "0") { _BatteryBalancingMmode = "关闭"; }
-                else if(value == "1") { _BatteryBalancingMmode = "开启"; }
+                if(value == "0") { _BatteryBalancingMmode = App.GetText("关闭"); }
+                else if(value == "1") { _BatteryBalancingMmode = App.GetText("开启"); }
                 else
                 _BatteryBalancingMmode = value;
                 this.RaiseProperChanged(nameof(BatteryBalancingMmode));
@@ -593,7 +593,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _BatteryBalancingMmodeOptions = new List<string> { "开启", "关闭" };
+        private List<string> _BatteryBalancingMmodeOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> BatteryBalancingMmodeOptions
         {
@@ -1491,11 +1491,11 @@ namespace WpfApp1.GB3024C_Comand
                     {
                         return string.Empty;
                     }
-                    else if (DualOutputMode_Inputs == "开启")
+                    else if (DualOutputMode_Inputs == "开启/On")
                     {
                         return "01";
                     }
-                    else if (DualOutputMode_Inputs == "关闭")
+                    else if (DualOutputMode_Inputs == "关闭/Off")
                     {
                         return "00";
                     }
@@ -1507,11 +1507,11 @@ namespace WpfApp1.GB3024C_Comand
                     {
                         return string.Empty;
                     }
-                    else if (BatteryBalancingMmode_Inputs == "开启")
+                    else if (BatteryBalancingMmode_Inputs == "开启/On")
                     {
                         return "1";
                     }
-                    else if (BatteryBalancingMmode_Inputs == "关闭")
+                    else if (BatteryBalancingMmode_Inputs == "关闭Off")
                     {
                         return "0";
                     }

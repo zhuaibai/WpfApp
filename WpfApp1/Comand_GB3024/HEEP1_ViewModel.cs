@@ -856,11 +856,11 @@ namespace WpfApp1.GB3024C_Comand
                 if (value == "1")
                 {
                     
-                    _BuzzerStatus = "开启";
+                    _BuzzerStatus = App.GetText("开启");
                 }
                 else if (value == "0")
                 {
-                    _BuzzerStatus = "关闭";
+                    _BuzzerStatus = App.GetText("关闭");
                 }
                 else
                 {
@@ -889,7 +889,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _BuzzerStatusOptions = new List<string> { "开启","关闭"};
+        private List<string> _BuzzerStatusOptions = new List<string> { "开启/On","关闭/Off"};
 
         public List<string> BuzzerStatusOptions
         {
@@ -969,10 +969,10 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if(value == "0")
                 {
-                    _OverloadRestart = "关闭";
+                    _OverloadRestart = App.GetText("关闭");
                 }else if(value == "1")
                 {
-                    _OverloadRestart = "开启";
+                    _OverloadRestart = App.GetText("开启");
                 }else
                 _OverloadRestart = value;
                 this.RaiseProperChanged(nameof(OverloadRestart));
@@ -998,7 +998,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _OverloadRestartOptions = new List<string> { "开启", "关闭" };
+        private List<string> _OverloadRestartOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> OverloadRestartOptions
         {
@@ -1078,11 +1078,11 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _OverTempperatureRestart = "关闭";
+                    _OverTempperatureRestart = App.GetText("关闭");
                 }
                 else if (value == "1")
                 {
-                    _OverTempperatureRestart = "开启";
+                    _OverTempperatureRestart = App.GetText("开启");
                 }
                 else
                     _OverTempperatureRestart = value;
@@ -1109,7 +1109,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _OverTemperatureRestartOptions = new List<string> { "开启", "关闭" };
+        private List<string> _OverTemperatureRestartOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> OverTemperatureRestartOptions
         {
@@ -1189,11 +1189,11 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _LCD_Backlight = "关闭";
+                    _LCD_Backlight = App.GetText("关闭");
                 }
                 else if (value == "1")
                 {
-                    _LCD_Backlight = "开启";
+                    _LCD_Backlight = App.GetText("开启");
                 }
                 else
                 _LCD_Backlight = value;
@@ -1220,7 +1220,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _LCD_BacklightOptions = new List<string> { "开启", "关闭" };
+        private List<string> _LCD_BacklightOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> LCD_BacklightOptions
         {
@@ -1414,11 +1414,11 @@ namespace WpfApp1.GB3024C_Comand
 
                 if (value == "0")
                 {
-                    _BMS_CommunicationControlFunction = "关闭";
+                    _BMS_CommunicationControlFunction = App.GetText("关闭");
                 }
                 else if (value == "1")
                 {
-                    _BMS_CommunicationControlFunction = "开启";
+                    _BMS_CommunicationControlFunction = App.GetText("开启");
                 }
                 else
                     _BMS_CommunicationControlFunction = value;
@@ -1445,7 +1445,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _BMS_CommunicationControlFunctionOptions = new List<string> { "开启", "关闭" };
+        private List<string> _BMS_CommunicationControlFunctionOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> BMS_CommunicationControlFunctionOptions
         {
@@ -2113,11 +2113,11 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _OverloadByPassFunction = "关闭";
+                    _OverloadByPassFunction = App.GetText("关闭");
                 }
                 else if (value == "1")
                 {
-                    _OverloadByPassFunction = "开启";
+                    _OverloadByPassFunction = App.GetText("开启");
                 }
                 else
                     _OverloadByPassFunction = value;
@@ -2144,7 +2144,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _OverloadByPassFunctionOptions = new List<string> { "开启", "关闭" };
+        private List<string> _OverloadByPassFunctionOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> OverloadByPassFunctionOptions
         {
@@ -2419,11 +2419,11 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "0")
                 {
-                    _GridConnectedFunction = "关闭";
+                    _GridConnectedFunction = App.GetText("关闭");
                 }
                 else if (value == "1")
                 {
-                    _GridConnectedFunction = "开启";
+                    _GridConnectedFunction = App.GetText("开启");
                 }
                 else
                     _GridConnectedFunction = value;
@@ -2450,7 +2450,7 @@ namespace WpfApp1.GB3024C_Comand
         }
 
         //下拉选项
-        private List<string> _GridConnectedFunctionOptions = new List<string> { "开启", "关闭" };
+        private List<string> _GridConnectedFunctionOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> GridConnectedFunctionOptions
         {
@@ -2920,36 +2920,36 @@ namespace WpfApp1.GB3024C_Comand
                  //设置蜂鸣器状态
                 case "BuzzerStatus_Inputs":
                     if (string.IsNullOrWhiteSpace(BuzzerStatus_Inputs)) {  return string.Empty; }
-                    else if (BuzzerStatus_Inputs == "开启") { return "PEa"; }
-                    else if(BuzzerStatus_Inputs == "关闭") { return "PDa"; }
+                    else if (BuzzerStatus_Inputs == "开启/On") { return "PEa"; }
+                    else if(BuzzerStatus_Inputs == "关闭/Off") { return "PDa"; }
                     else
                     return "";
                 //过载重启
                 case "OverloadRestart_Inputs":
                     if (string.IsNullOrWhiteSpace(OverloadRestart_Inputs)) { return string.Empty; }
-                    else if (OverloadRestart_Inputs == "开启") { return "PEu"; }
-                    else if (OverloadRestart_Inputs == "关闭") { return "PDu"; }
+                    else if (OverloadRestart_Inputs == "开启/On") { return "PEu"; }
+                    else if (OverloadRestart_Inputs == "关闭/Off") { return "PDu"; }
                     else
                         return "";
                 //过温重启
                 case "OverTemperatureRestart_Inputs":
                     if (string.IsNullOrWhiteSpace(OverTemperatureRestart_Inputs)) { return string.Empty; }
-                    else if (OverTemperatureRestart_Inputs == "开启") { return "PEv"; }
-                    else if (OverTemperatureRestart_Inputs == "关闭") { return "PDv"; }
+                    else if (OverTemperatureRestart_Inputs == "开启/On") { return "PEv"; }
+                    else if (OverTemperatureRestart_Inputs == "关闭/Off") { return "PDv"; }
                     else
                         return "";
                 //LCD背光开启
                 case "LCD_Backlight_Inputs":
                     if (string.IsNullOrWhiteSpace(LCD_Backlight_Inputs)) { return string.Empty; }
-                    else if (LCD_Backlight_Inputs == "开启") { return "PEx"; }
-                    else if (LCD_Backlight_Inputs == "关闭") { return "PDx"; }
+                    else if (LCD_Backlight_Inputs == "开启/On") { return "PEx"; }
+                    else if (LCD_Backlight_Inputs == "关闭/Off") { return "PDx"; }
                     else
                         return "";
                 //BMS开关
                 case "BMS_CommunicationControlFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(BMS_CommunicationControlFunction_Inputs)) { return string.Empty; }
-                    else if (BMS_CommunicationControlFunction_Inputs == "开启") { return "01"; }
-                    else if (BMS_CommunicationControlFunction_Inputs == "关闭") { return "00"; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "开启/On") { return "01"; }
+                    else if (BMS_CommunicationControlFunction_Inputs == "关闭/Off") { return "00"; }
                     else
                         return "";
                 //输出模式
@@ -2988,8 +2988,8 @@ namespace WpfApp1.GB3024C_Comand
                 //过载转接旁路
                 case "OverloadByPassFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(OverloadByPassFunction_Inputs)) { return string.Empty; }
-                    else if (OverloadByPassFunction_Inputs == "开启") { return "PEb"; }
-                    else if (OverloadByPassFunction_Inputs == "关闭") { return "PDb"; }
+                    else if (OverloadByPassFunction_Inputs == "开启/On") { return "PEb"; }
+                    else if (OverloadByPassFunction_Inputs == "关闭/Off") { return "PDb"; }
                     else
                         return OverloadByPassFunction_Inputs;
                 //系统频率
@@ -3002,8 +3002,8 @@ namespace WpfApp1.GB3024C_Comand
                 //并网功能
                 case "GridConnectedFunction_Inputs":
                     if (string.IsNullOrWhiteSpace(GridConnectedFunction_Inputs)) { return string.Empty; }
-                    else if (GridConnectedFunction_Inputs == "开启") { return "01"; }
-                    else if (GridConnectedFunction_Inputs == "关闭") { return "00"; }
+                    else if (GridConnectedFunction_Inputs == "开启/On") { return "01"; }
+                    else if (GridConnectedFunction_Inputs == "关闭/Off") { return "00"; }
                     else
                         return OutputSettingFrequency_Inputs;
                 //PV并网协议

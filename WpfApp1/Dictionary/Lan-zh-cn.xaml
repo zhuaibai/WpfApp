@@ -70,7 +70,7 @@
     <s:String x:Key="清除发电量">清除发电量</s:String>
     <s:String x:Key="副输出开">副输出开</s:String>
     <s:String x:Key="副输出关">副输出关</s:String>
-    <s:String x:Key="启动时间">启动时间</s:String>
+    <s:String x:Key="启动时间">时间:</s:String>
     <s:String x:Key="概览图">概览图</s:String>
     <s:String x:Key="参数设置">参数设置</s:String>
     <s:String x:Key="软件升级">软件升级</s:String>
@@ -79,4 +79,8 @@
     <s:String x:Key="开始">开始</s:String>
     <s:String x:Key="停止">停止</s:String>
     <s:String x:Key="设置已保存,请重新打开串口生效!">设置已保存,请重新打开串口生效!</s:String>
+    <s:String x:Key="串口已打开(点击开始进行通讯)">串口已打开(点击开始进行通讯)</s:String>
+    <s:String x:Key="串口已关闭">串口已关闭</s:String>
+    <s:String x:Key="正在通信">正在通信...</s:String>
+    <s:String x:Key="已停止通信!">已停止通信!.</s:String>
 </ResourceDictionary>

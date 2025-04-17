@@ -5,6 +5,7 @@
     xmlns:convert="clr-namespace:WpfApp1.Convert"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:lo="clr-namespace:WpfApp1.Behavior"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:WpfApp1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
@@ -76,6 +77,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        
     </Window.Resources>
 
     <Grid>
@@ -125,6 +128,7 @@
                 Background="#FF1677FF"
                 Content="{DynamicResource 命令测试}"
                 Style="{StaticResource MenuStyleBtn}"
+                Command="{Binding SwitchViewToVQ}"
                 Tag="&#xe602;" />
             <Button
                 Background="#FF1677FF"
@@ -167,6 +171,20 @@
                 Content="中文"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe653;" />
+            <ComboBox ItemsSource="{Binding MachineItems}"
+                  SelectedItem="{Binding SelectedMachineItem}"
+                  MaxHeight="30"
+                      Margin="10"
+                      
+                      >
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
+            </ComboBox>
         </StackPanel>
         <!--  下拉菜单弹出层  -->
         <Popup
@@ -186,7 +204,7 @@
                     CornerRadius="7"
                     Effect="{StaticResource DropShadow}">
                     <StackPanel>
-                        <Button>
+                        <Button Command="{Binding SwitchViewToVQ}">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Template">
@@ -235,9 +253,9 @@
         <!--  第三行 底部  -->
         <Grid Grid.Row="2" Background="#FFD9E8FF">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Border
@@ -255,6 +273,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{Binding ComStatus}"
+                    ToolTip="{Binding Status}"
                     Text="{Binding Status}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -296,8 +315,8 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
-                <TextBlock Text="{DynamicResource 启动时间}" />
-                <TextBlock Margin="8,0,20,0" Text="2025-3-18 10:24:50" />
+                
+                <TextBlock Margin="8,0,20,0" Text="{Binding Clock.CurrentTime}" />
             </StackPanel>
         </Grid>
         <!--  日志显示  -->
