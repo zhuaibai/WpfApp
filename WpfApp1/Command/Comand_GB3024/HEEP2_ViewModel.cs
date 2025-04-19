@@ -7,7 +7,7 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.GB3024C_Comand
+namespace WpfApp1.Command.Comand_GB3024
 {
     public class HEEP2_ViewModel : BaseViewModel
     {
@@ -97,7 +97,7 @@ namespace WpfApp1.GB3024C_Comand
               canExecute: () => Validate(nameof(BatteryBalancingTimeoutValue_Inputs)) && !BatteryBalancingTimeoutValue_IsWorking // 增加处理状态检查
             );
         }
-        
+
         #region 双输出模式(并机模式)
 
         //双输出模式
@@ -108,11 +108,11 @@ namespace WpfApp1.GB3024C_Comand
             get { return _DualOutputMode; }
             set
             {
-                if(value == "0") { _DualOutputMode =App.GetText("关闭"); }
-                else if(value == "1") { _DualOutputMode = App.GetText("开启"); }
+                if (value == "0") { _DualOutputMode = App.GetText("关闭"); }
+                else if (value == "1") { _DualOutputMode = App.GetText("开启"); }
                 else
-                _DualOutputMode = value;
-                this.RaiseProperChanged(nameof(DualOutputMode));
+                    _DualOutputMode = value;
+                RaiseProperChanged(nameof(DualOutputMode));
             }
         }
 
@@ -129,7 +129,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _DualOutputMode_Inputs = value;
-                this.RaiseProperChanged(nameof(DualOutputMode_Inputs));
+                RaiseProperChanged(nameof(DualOutputMode_Inputs));
                 Command_SetDualOutputMode.RaiseCanExecuteChanged();
             }
         }
@@ -143,7 +143,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _DualOutputModeOptions = value;
-                this.RaiseProperChanged(nameof(DualOutputModeOptions));
+                RaiseProperChanged(nameof(DualOutputModeOptions));
             }
         }
 
@@ -213,7 +213,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ParallelModeShutdownVoltage = value;
-                this.RaiseProperChanged(nameof(ParallelModeShutdownVoltage));
+                RaiseProperChanged(nameof(ParallelModeShutdownVoltage));
             }
         }
 
@@ -230,7 +230,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ParallelModeShutdownVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(ParallelModeShutdownVoltage_Inputs));
+                RaiseProperChanged(nameof(ParallelModeShutdownVoltage_Inputs));
                 Command_SetParallelModeShutdownVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -301,7 +301,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ParallelModeShutdownSOC = value;
-                this.RaiseProperChanged(nameof(ParallelModeShutdownSOC));
+                RaiseProperChanged(nameof(ParallelModeShutdownSOC));
             }
         }
 
@@ -318,7 +318,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ParallelModeShutdownSOC_Inputs = value;
-                this.RaiseProperChanged(nameof(ParallelModeShutdownSOC_Inputs));
+                RaiseProperChanged(nameof(ParallelModeShutdownSOC_Inputs));
                 Command_SetParallelModeShutdownSOC.RaiseCanExecuteChanged();
             }
         }
@@ -390,7 +390,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ReturnMainsBatteryVoltage = value;
-                this.RaiseProperChanged(nameof(ReturnMainsBatteryVoltage));
+                RaiseProperChanged(nameof(ReturnMainsBatteryVoltage));
             }
         }
 
@@ -407,7 +407,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ReturnMainsBatteryVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(ReturnMainsBatteryVoltage_Inputs));
+                RaiseProperChanged(nameof(ReturnMainsBatteryVoltage_Inputs));
                 Command_SetReturnMainsBatteryVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -479,7 +479,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ReturnBatteryModeVoltage = value;
-                this.RaiseProperChanged(nameof(ReturnBatteryModeVoltage));
+                RaiseProperChanged(nameof(ReturnBatteryModeVoltage));
             }
         }
 
@@ -496,7 +496,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ReturnBatteryModeVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(ReturnBatteryModeVoltage_Inputs));
+                RaiseProperChanged(nameof(ReturnBatteryModeVoltage_Inputs));
                 Command_SetReturnBatteryModeVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -566,11 +566,11 @@ namespace WpfApp1.GB3024C_Comand
             get { return _BatteryBalancingMmode; }
             set
             {
-                if(value == "0") { _BatteryBalancingMmode = App.GetText("关闭"); }
-                else if(value == "1") { _BatteryBalancingMmode = App.GetText("开启"); }
+                if (value == "0") { _BatteryBalancingMmode = App.GetText("关闭"); }
+                else if (value == "1") { _BatteryBalancingMmode = App.GetText("开启"); }
                 else
-                _BatteryBalancingMmode = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingMmode));
+                    _BatteryBalancingMmode = value;
+                RaiseProperChanged(nameof(BatteryBalancingMmode));
             }
         }
 
@@ -587,7 +587,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingMmode_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingMmode_Inputs));
+                RaiseProperChanged(nameof(BatteryBalancingMmode_Inputs));
                 Command_SetBatteryBalancingMmode.RaiseCanExecuteChanged();
             }
         }
@@ -601,7 +601,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingMmodeOptions = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingMmodeOptions));
+                RaiseProperChanged(nameof(BatteryBalancingMmodeOptions));
             }
         }
 
@@ -633,7 +633,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PBEQE",getSelectedToCommad(nameof(BatteryBalancingMmode_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("PBEQE", getSelectedToCommad(nameof(BatteryBalancingMmode_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -671,7 +671,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingVoltage = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingVoltage));
+                RaiseProperChanged(nameof(BatteryBalancingVoltage));
             }
         }
 
@@ -688,7 +688,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingVoltage_Inputs));
+                RaiseProperChanged(nameof(BatteryBalancingVoltage_Inputs));
                 Command_SetBatteryBalancingVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -760,7 +760,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingTime = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingTime));
+                RaiseProperChanged(nameof(BatteryBalancingTime));
             }
         }
 
@@ -777,7 +777,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingTime_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingTime_Inputs));
+                RaiseProperChanged(nameof(BatteryBalancingTime_Inputs));
                 Command_SetBatteryBalancingTime.RaiseCanExecuteChanged();
             }
         }
@@ -849,7 +849,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingTimeoutValue = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingTimeoutValue));
+                RaiseProperChanged(nameof(BatteryBalancingTimeoutValue));
             }
         }
 
@@ -866,7 +866,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingTimeoutValue_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingTimeoutValue_Inputs));
+                RaiseProperChanged(nameof(BatteryBalancingTimeoutValue_Inputs));
                 Command_SetBatteryBalancingTimeoutValue.RaiseCanExecuteChanged();
             }
         }
@@ -937,7 +937,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingInterval = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingInterval));
+                RaiseProperChanged(nameof(BatteryBalancingInterval));
             }
         }
 
@@ -954,7 +954,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryBalancingInterval_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryBalancingInterval_Inputs));
+                RaiseProperChanged(nameof(BatteryBalancingInterval_Inputs));
                 Command_SetBatteryBalancingInterval.RaiseCanExecuteChanged();
             }
         }
@@ -1026,7 +1026,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SecondOutputDischargeTime = value;
-                this.RaiseProperChanged(nameof(SecondOutputDischargeTime));
+                RaiseProperChanged(nameof(SecondOutputDischargeTime));
             }
         }
 
@@ -1043,7 +1043,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SecondOutputDischargeTime_Inputs = value;
-                this.RaiseProperChanged(nameof(SecondOutputDischargeTime_Inputs));
+                RaiseProperChanged(nameof(SecondOutputDischargeTime_Inputs));
                 Command_SetSecondOutputDischargeTime.RaiseCanExecuteChanged();
             }
         }
@@ -1115,7 +1115,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _DelayTimeToRestoreTheSecondOutput = value;
-                this.RaiseProperChanged(nameof(DelayTimeToRestoreTheSecondOutput));
+                RaiseProperChanged(nameof(DelayTimeToRestoreTheSecondOutput));
             }
         }
 
@@ -1132,7 +1132,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _DelayTimeToRestoreTheSecondOutput_Inputs = value;
-                this.RaiseProperChanged(nameof(DelayTimeToRestoreTheSecondOutput_Inputs));
+                RaiseProperChanged(nameof(DelayTimeToRestoreTheSecondOutput_Inputs));
                 Command_SetDelayTimeToRestoreTheSecondOutput.RaiseCanExecuteChanged();
             }
         }
@@ -1205,7 +1205,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _RestoreBatteryVoltageOfSecondOutput = value;
-                this.RaiseProperChanged(nameof(RestoreBatteryVoltageOfSecondOutput));
+                RaiseProperChanged(nameof(RestoreBatteryVoltageOfSecondOutput));
             }
         }
 
@@ -1222,7 +1222,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _RestoreBatteryVoltageOfSecondOutput_Inputs = value;
-                this.RaiseProperChanged(nameof(RestoreBatteryVoltageOfSecondOutput_Inputs));
+                RaiseProperChanged(nameof(RestoreBatteryVoltageOfSecondOutput_Inputs));
                 Command_SetRestoreBatteryVoltageOfSecondOutput.RaiseCanExecuteChanged();
             }
         }
@@ -1290,11 +1290,11 @@ namespace WpfApp1.GB3024C_Comand
 
         public string RestoreBatteryCapacityOfSecondOutput
         {
-            get { return  _RestoreBatteryCapacityOfSecondOutput; }
+            get { return _RestoreBatteryCapacityOfSecondOutput; }
             set
             {
-                 _RestoreBatteryCapacityOfSecondOutput = value;
-                this.RaiseProperChanged(nameof(RestoreBatteryCapacityOfSecondOutput));
+                _RestoreBatteryCapacityOfSecondOutput = value;
+                RaiseProperChanged(nameof(RestoreBatteryCapacityOfSecondOutput));
             }
         }
 
@@ -1311,7 +1311,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _RestoreBatteryCapacityOfSecondOutput_Inputs = value;
-                this.RaiseProperChanged(nameof(RestoreBatteryCapacityOfSecondOutput_Inputs));
+                RaiseProperChanged(nameof(RestoreBatteryCapacityOfSecondOutput_Inputs));
                 Command_SetRestoreBatteryCapacityOfSecondOutput.RaiseCanExecuteChanged();
             }
         }
@@ -1433,9 +1433,9 @@ namespace WpfApp1.GB3024C_Comand
             string[] Values = value.Split(" ");
             try
             {
-               
+
                 //双输出模式(并机模式)
-                DualOutputMode = Values[0].Substring(1,1);
+                DualOutputMode = Values[0].Substring(1, 1);
                 //并机模式关闭电压
                 ParallelModeShutdownVoltage = Values[1];
                 //并机模式关闭SOC

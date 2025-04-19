@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:convert="clr-namespace:WpfApp1.Convert"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:lo="clr-namespace:WpfApp1.Behavior"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:lo="clr-namespace:WpfApp1.Behavior"
     xmlns:local="clr-namespace:WpfApp1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="MainWindow"
@@ -21,7 +21,7 @@
             Opacity="0.6"
             ShadowDepth="3"
             Color="#40000000" />
-
+        
 
         <!--  开关按钮样式  -->
         <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
@@ -77,8 +77,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
+
+
+
     </Window.Resources>
 
     <Grid>
@@ -126,9 +127,9 @@
                 BorderThickness="2,0,0,0" />
             <Button
                 Background="#FF1677FF"
+                Command="{Binding SwitchViewToVQ}"
                 Content="{DynamicResource 命令测试}"
                 Style="{StaticResource MenuStyleBtn}"
-                Command="{Binding SwitchViewToVQ}"
                 Tag="&#xe602;" />
             <Button
                 Background="#FF1677FF"
@@ -156,7 +157,9 @@
                 Click="Log_Click"
                 Content="{DynamicResource 日志}"
                 Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe8ac;" />
+                Tag="&#xe8ac;" 
+                
+                Command="{Binding ChangeCommand}"/>
             <Button
                 x:Name="EnglishBtn"
                 Background="#FF1677FF"
@@ -171,19 +174,18 @@
                 Content="中文"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe653;" />
-            <ComboBox ItemsSource="{Binding MachineItems}"
-                  SelectedItem="{Binding SelectedMachineItem}"
-                  MaxHeight="30"
-                      Margin="10"
-                      
-                      >
+            <ComboBox
+                MaxHeight="30"
+                Margin="10"
+                ItemsSource="{Binding MachineItems}"
+                SelectedItem="{Binding SelectedMachineItem}"
+                Style="{StaticResource cmbstyle}">
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-
             </ComboBox>
         </StackPanel>
         <!--  下拉菜单弹出层  -->
@@ -254,7 +256,7 @@
         <Grid Grid.Row="2" Background="#FFD9E8FF">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*" />
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
@@ -273,8 +275,8 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{Binding ComStatus}"
-                    ToolTip="{Binding Status}"
-                    Text="{Binding Status}" />
+                    Text="{Binding Status}"
+                    ToolTip="{Binding Status}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <TextBlock
@@ -315,7 +317,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
-                
+
                 <TextBlock Margin="8,0,20,0" Text="{Binding Clock.CurrentTime}" />
             </StackPanel>
         </Grid>

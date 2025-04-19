@@ -83,4 +83,32 @@
     <s:String x:Key="串口已关闭">串口已关闭</s:String>
     <s:String x:Key="正在通信">正在通信...</s:String>
     <s:String x:Key="已停止通信!">已停止通信!.</s:String>
+    <s:String x:Key="市电电压">市电电压</s:String>
+    <s:String x:Key="市电频率">市电频率</s:String>
+    <s:String x:Key="市电功率">市电功率</s:String>
+    <s:String x:Key="温度限制">市电功率</s:String>
+    <s:String x:Key="当前允许最大逆变功率">当前允许最大逆变功率(W)</s:String>
+    <s:String x:Key="版本号">版本号</s:String>
+    <s:String x:Key="发布日期">发布日期</s:String>
+    <s:String x:Key="程序完整性">程序完整性</s:String>
+    <s:String x:Key="输出频率">输出频率</s:String>
+    <s:String x:Key="视在功率">视在功率(VA)</s:String>
+    <s:String x:Key="有功功率">有功功率(VA)</s:String>
+    <s:String x:Key="负载百分比">负载百分比(%)</s:String>
+    <s:String x:Key="直流分量">直流分量</s:String>
+    <s:String x:Key="额定功率">额定功率</s:String>
+    <s:String x:Key="电感电流">电感电流</s:String>
+    <s:String x:Key="电感功率">电感功率</s:String>
+    <s:String x:Key="母线电压">母线电压</s:String>
+    <s:String x:Key="PFC工作状态">PFC工作状态</s:String>
+    <s:String x:Key="PV电压">PV电压</s:String>
+    <s:String x:Key="PV电流">PV电流</s:String>
+    <s:String x:Key="逆变温度">逆变温度</s:String>
+    <s:String x:Key="当前最高温度">当前最高温度</s:String>
+    <s:String x:Key="风扇转速">风扇转速</s:String>
+    <s:String x:Key="风扇使能">风扇使能</s:String>
+    <s:String x:Key="CT电流">CT电流</s:String>
+    <s:String x:Key="CT功率">CT功率</s:String>
+    <s:String x:Key="调零功率">调零功率</s:String>
+    
 </ResourceDictionary>

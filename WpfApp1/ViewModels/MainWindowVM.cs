@@ -14,7 +14,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Serialization;
 using WpfApp1.Command;
-using WpfApp1.GB3024C_Comand;
+using WpfApp1.Command.Comand_GB3024;
+using WpfApp1.Command.Command_VQ3024;
 using WpfApp1.Models;
 using WpfApp1.Services;
 using WpfApp1.UserControls;
@@ -26,13 +27,7 @@ namespace WpfApp1.ViewModels
 		public MainWindowVM() 
 		{
 
-            #region 初始化PV信息
-            //初始化PV信息
-            PVList = new List<PV_Model>();
-			PVList.Add(new PV_Model() { PV_Name = "电压(V)", PV1 = "0", PV2 = "0" });
-			PVList.Add(new PV_Model() { PV_Name = "电流(A)", PV1 = "0", PV2 = "0" });
-			PVList.Add(new PV_Model() { PV_Name = "功率(W)", PV1 = "0", PV2 = "0", PV_Count="0"});
-            #endregion
+            
 
             #region 初始化电量信息
             //初始化电量信息
@@ -70,12 +65,14 @@ namespace WpfApp1.ViewModels
             StopCommand = new RelayCommand(StopBackgroundThread);
             
 
-            #endregion
+            
 
 
             //初始化串口信息
             IniCom();
+            //发送帧，接收帧
             SerialCountVM = new SerialCountVM();
+            //绑定委托
             SerialCommunicationService.AddReceiveFrame=SerialCountVM.AddReceiveFrame;
             SerialCommunicationService.AddSendFrame=SerialCountVM.AddSendFrame;
             
@@ -86,14 +83,17 @@ namespace WpfApp1.ViewModels
             HGEN = new HGEN_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
             OpenCom = new RelayCommand(openCom);
-
+            //初始化  VQ   VIew
+            HOP_VQ = new HOP_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HGRID_VQ = new HGRID_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             //初始化实时时间ViewModel
             Clock = new ClockViewModel();
         }
+        #endregion
 
         #region 下拉框选择机器类型
 
-        private string? _selectedItem;
+        private string? _selectedItem ="GB3024";
         public string? SelectedMachineItem
         {
             get => _selectedItem;
@@ -104,15 +104,23 @@ namespace WpfApp1.ViewModels
             }
         }
 
-        public ObservableCollection<string> MachineItems { get; } = new()
-    {
+     
+
+        public ObservableCollection<string> MachineItems { get; } = new(){
         "GB3024",
         "VQ3024",
-    };
-        public ICommand SelectionChangedCommand { get
+        "PTF"
+         };
+
+        //切换指令
+        public ICommand SelectionChangedCommand 
+        { 
+            get
             {
                 return new RelayCommand(OnSelectionChanged);
-            } }
+            } 
+        }
+
         //选中项改变
         private void OnSelectionChanged()
         { 
@@ -123,6 +131,27 @@ namespace WpfApp1.ViewModels
             if (SelectedMachineItem != null)
             {
                 // 执行你的命令逻辑
+                SwitchViewToVQorGB(SelectedMachineItem);
+            }
+        }
+
+        /// <summary>
+        /// 切换界面到VQ
+        /// </summary>
+        public void SwitchViewToVQorGB(string view)
+        {
+
+            if (view == "VQ3024")
+            {
+                ContentUC = new AC_Monitor();
+            }
+            else if(view =="GB3024")
+            {
+                ContentUC = new MonitorUC();
+            }
+            else
+            {
+                ContentUC = new PTF_Monitor();
             }
         }
         #endregion
@@ -144,7 +173,7 @@ namespace WpfApp1.ViewModels
         }
         #endregion
 
-        #region 指令ViewModel
+        #region GB指令ViewModel
 
         private HOPViewModel hopVm;
         public HOPViewModel HOP
@@ -203,6 +232,38 @@ namespace WpfApp1.ViewModels
         }
 
         #endregion
+
+        #region VQ指令ViewModel
+
+        private HOP_ViewModel _HOP_VQ;
+
+        public HOP_ViewModel HOP_VQ
+        {
+            get { return _HOP_VQ; }
+            set
+            {
+                _HOP_VQ = value;
+                this.RaiseProperChanged(nameof(HOP_VQ));
+            }
+        }
+
+        private HGRID_ViewModel _HGRID_VQ ;
+
+        public HGRID_ViewModel HGRID_VQ
+        {
+            get { return _HGRID_VQ; }
+            set
+            {
+                _HGRID_VQ = value;
+                this.RaiseProperChanged(nameof(HGRID_VQ));
+            }
+        }
+
+
+
+
+        #endregion
+
 
         #region 串口工具
 
@@ -372,33 +433,9 @@ namespace WpfApp1.ViewModels
 			set { contentUC = value; RaiseProperChanged(nameof(ContentUC)); }
 		}
 
-        public ICommand SwitchViewToVQ { 
-            get
-            {
-                return new RelayCommand(switchViewToVQ);
-            }
-        }
+        
 
-        /// <summary>
-        /// 切换界面到VQ
-        /// </summary>
-        public void switchViewToVQ()
-        {
-            ContentUC = new AC_Monitor();
-        }
-        #endregion
-
-        #region PV信息
-        /// <summary>
-        /// PV信息
-        /// </summary>
-        private List<PV_Model> _PVList;
-		public List<PV_Model> PVList
-		{
-			get { return _PVList; }
-			set { _PVList = value; RaiseProperChanged(nameof(PVList)); }
-		}
-
+        
         #endregion
 
         #region 电量信息
@@ -698,50 +735,24 @@ namespace WpfApp1.ViewModels
         {
             try
             {
-
+                //COM通讯
                 while (!token.IsCancellationRequested)
                 {
-                    // 等待暂停或取消信号
-                    _pauseEvent.Wait(token);
-                    //发送查询机器指令
-                    string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
-                    //解析指令
-                    SerialCommunicationService.MachineType = receive_MachineType;
-
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
-                    //发送HOP指令
-                    string receive = SerialCommunicationService.SendCommand(HOP.Command, 40);
-                    //解析返回命令
-                    HOP.AnalysisStringToElement(receive);
-
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
-                    //发送HEEP1指令
-                    string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
-                    //解析返回指令
-                    HEEP1.AnalyseStringToElement(receiveHEEP1);
-
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
-                    //发送HEEP2指令
-                    string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
-                    //解析返回指令
-                    HEEP2.AnalyseStringToElement(receive_HEEP2);
-
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
-                    //发送HEEP2指令
-                    string receive_HOP = SerialCommunicationService.SendCommand(HOP.Command, 50);
-                    //解析返回指令
-                    HOP.AnalysisStringToElement(receive_HOP);
-
-                    _pauseEvent.Wait(token); // 等待暂停或取消信号
-                    //发送HEEP2指令
-                    string receive_HGEN = SerialCommunicationService.SendCommand(HGEN.Command, 60);
-                    //解析返回指令
-                    HGEN.AnalyseStringToElement(receive_HGEN);
-
-
+                    if (SelectedMachineItem == "GB3024")
+                    {
+                        //GB3024通讯
+                        CommunicationWithGB3024(token);
+                    }
+                    if (SelectedMachineItem == "VQ3024")
+                    {
+                        //VQ3024通讯
+                        CommunicationWithVQ3024(token);
+                    }
                     // 模拟常规通信
                     await Task.Delay(1000, token);
                     //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
+
+                    
                 }
             }
             catch (OperationCanceledException)
@@ -755,7 +766,70 @@ namespace WpfApp1.ViewModels
                 
             }
         }
+        /// <summary>
+        /// GB3024通讯
+        /// </summary>
+        /// <param name="token"></param>
+        private void CommunicationWithGB3024(CancellationToken token)
+        {
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token);
+            //发送查询机器指令
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            //解析指令
+            SerialCommunicationService.MachineType = receive_MachineType;
 
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HOP指令
+            string receive = SerialCommunicationService.SendCommand(HOP.Command, 40);
+            //解析返回命令
+            HOP.AnalysisStringToElement(receive);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HEEP1指令
+            string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
+            //解析返回指令
+            HEEP1.AnalyseStringToElement(receiveHEEP1);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HEEP2指令
+            string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+            //解析返回指令
+            HEEP2.AnalyseStringToElement(receive_HEEP2);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HEEP2指令
+            string receive_HOP = SerialCommunicationService.SendCommand(HOP.Command, 50);
+            //解析返回指令
+            HOP.AnalysisStringToElement(receive_HOP);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HEEP2指令
+            string receive_HGEN = SerialCommunicationService.SendCommand(HGEN.Command, 60);
+            //解析返回指令
+            HGEN.AnalyseStringToElement(receive_HGEN);
+        }
+
+        /// <summary>
+        /// GB3024通讯
+        /// </summary>
+        /// <param name="token"></param>
+        private void CommunicationWithVQ3024(CancellationToken token)
+        {
+            //发送VQ2024
+            string Receive = "";
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HOP指令
+            Receive = SerialCommunicationService.SendCommand(HOP_VQ.Command, 60);
+            //解析返回指令
+            HGEN.AnalyseStringToElement(Receive);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+                                     //发送HEEP2指令
+            Receive = SerialCommunicationService.SendCommand(HGRID_VQ.Command, 60);
+            //解析返回指令
+            HGEN.AnalyseStringToElement(Receive);
+        }
         /// <summary>
         /// 停止后台通信
         /// </summary>

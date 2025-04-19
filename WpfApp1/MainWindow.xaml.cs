@@ -25,6 +25,7 @@ namespace WpfApp1
     {
         public MainWindow()
         {
+           
             InitializeComponent();
             ChangeLanguageToChinese(Owner,new RoutedEventArgs());
 

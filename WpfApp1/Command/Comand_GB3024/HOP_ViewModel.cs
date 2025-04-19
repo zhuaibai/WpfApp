@@ -9,7 +9,7 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.GB3024C_Comand
+namespace WpfApp1.Command.Comand_GB3024
 {
     public class HOPViewModel : BaseViewModel
     {
@@ -60,7 +60,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputVoltage = value;
-                this.RaiseProperChanged(nameof(OutputVoltage));
+                RaiseProperChanged(nameof(OutputVoltage));
             }
         }
 
@@ -77,13 +77,13 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(OutputVoltage_Inputs));
+                RaiseProperChanged(nameof(OutputVoltage_Inputs));
                 Command_SetOutputVoltage.RaiseCanExecuteChanged();
             }
         }
 
         //下拉选项
-        private List<string> _OutputVoltageOptions = new List<string> { "220", "230","240" };
+        private List<string> _OutputVoltageOptions = new List<string> { "220", "230", "240" };
 
         public List<string> OutputVoltageOptions
         {
@@ -91,7 +91,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputVoltageOptions = value;
-                this.RaiseProperChanged(nameof(OutputVoltageOptions));
+                RaiseProperChanged(nameof(OutputVoltageOptions));
             }
         }
 

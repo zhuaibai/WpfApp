@@ -7,9 +7,9 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.GB3024C_Comand
+namespace WpfApp1.Command.Comand_GB3024
 {
-    public class HGEN_ViewModel:BaseViewModel
+    public class HGEN_ViewModel : BaseViewModel
     {
         //指令
         private string command = "HGEN\r";
@@ -44,7 +44,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SystemTime = value;
-                this.RaiseProperChanged(nameof(SystemTime));
+                RaiseProperChanged(nameof(SystemTime));
             }
         }
 
@@ -61,7 +61,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SystemTime_Inputs = value;
-                this.RaiseProperChanged(nameof(SystemTime_Inputs));
+                RaiseProperChanged(nameof(SystemTime_Inputs));
                 Command_SetSystemTime.RaiseCanExecuteChanged();
             }
         }
@@ -154,11 +154,11 @@ namespace WpfApp1.GB3024C_Comand
             try
             {
                 //系统时间
-                SystemTime = Values[0].Substring(1,6)+" " + Values[1];
+                SystemTime = Values[0].Substring(1, 6) + " " + Values[1];
             }
             catch (Exception ex)
             {
-                return ;
+                return;
             }
         }
 

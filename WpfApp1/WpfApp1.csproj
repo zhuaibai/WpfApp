@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resource\iconfont.ttf" />
+    <None Remove="Resource\Fonts\iconfont.ttf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,7 +7,7 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.VQ3024_Command
+namespace WpfApp1.Command.Command_VQ3024
 {
     public class HOP_ViewModel : BaseViewModel
     {
@@ -83,7 +83,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _OutputVoltage = value;
-                this.RaiseProperChanged(nameof(OutputVoltage));
+                RaiseProperChanged(nameof(OutputVoltage));
             }
         }
 
@@ -100,7 +100,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _OutputVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(OutputVoltage_Inputs));
+                RaiseProperChanged(nameof(OutputVoltage_Inputs));
                 Command_SetOutputVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -172,7 +172,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _OutputFrequency = value;
-                this.RaiseProperChanged(nameof(OutputFrequency));
+                RaiseProperChanged(nameof(OutputFrequency));
             }
         }
 
@@ -189,7 +189,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _OutputFrequency_Inputs = value;
-                this.RaiseProperChanged(nameof(OutputFrequency_Inputs));
+                RaiseProperChanged(nameof(OutputFrequency_Inputs));
                 Command_SetOutputFrequency.RaiseCanExecuteChanged();
             }
         }
@@ -260,7 +260,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _ReactivePower = value;
-                this.RaiseProperChanged(nameof(ReactivePower));
+                RaiseProperChanged(nameof(ReactivePower));
             }
         }
 
@@ -277,7 +277,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _ReactivePower_Inputs = value;
-                this.RaiseProperChanged(nameof(ReactivePower_Inputs));
+                RaiseProperChanged(nameof(ReactivePower_Inputs));
                 Command_SetReactivePower.RaiseCanExecuteChanged();
             }
         }
@@ -349,7 +349,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _ActivePower = value;
-                this.RaiseProperChanged(nameof(ActivePower));
+                RaiseProperChanged(nameof(ActivePower));
             }
         }
 
@@ -366,7 +366,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _ActivePower_Inputs = value;
-                this.RaiseProperChanged(nameof(ActivePower_Inputs));
+                RaiseProperChanged(nameof(ActivePower_Inputs));
                 Command_SetActivePower.RaiseCanExecuteChanged();
             }
         }
@@ -439,7 +439,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _PercentageOfLoad = value;
-                this.RaiseProperChanged(nameof(PercentageOfLoad));
+                RaiseProperChanged(nameof(PercentageOfLoad));
             }
         }
 
@@ -456,7 +456,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _PercentageOfLoad_Inputs = value;
-                this.RaiseProperChanged(nameof(PercentageOfLoad_Inputs));
+                RaiseProperChanged(nameof(PercentageOfLoad_Inputs));
                 Command_SetPercentageOfLoad.RaiseCanExecuteChanged();
             }
         }
@@ -528,7 +528,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _InverterCurrent = value;
-                this.RaiseProperChanged(nameof(InverterCurrent));
+                RaiseProperChanged(nameof(InverterCurrent));
             }
         }
 
@@ -545,7 +545,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _InverterCurrent_Inputs = value;
-                this.RaiseProperChanged(nameof(InverterCurrent_Inputs));
+                RaiseProperChanged(nameof(InverterCurrent_Inputs));
                 Command_SetInverterCurrent.RaiseCanExecuteChanged();
             }
         }
@@ -616,7 +616,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _MOS_TubeCurrent = value;
-                this.RaiseProperChanged(nameof(MOS_TubeCurrent));
+                RaiseProperChanged(nameof(MOS_TubeCurrent));
             }
         }
 
@@ -633,7 +633,7 @@ namespace WpfApp1.VQ3024_Command
             set
             {
                 _MOS_TubeCurrent_Inputs = value;
-                this.RaiseProperChanged(nameof(MOS_TubeCurrent_Inputs));
+                RaiseProperChanged(nameof(MOS_TubeCurrent_Inputs));
                 Command_SetMOS_TubeCurrent.RaiseCanExecuteChanged();
             }
         }

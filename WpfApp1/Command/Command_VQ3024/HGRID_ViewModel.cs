@@ -7,9 +7,9 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.Command_VQ3024
+namespace WpfApp1.Command.Command_VQ3024
 {
-    public class HGRID_ViewModel:BaseViewModel
+    public class HGRID_ViewModel : BaseViewModel
     {
         //指令
         private string command = "HGRID\r";
@@ -78,7 +78,7 @@ namespace WpfApp1.Command_VQ3024
             #endregion
         }
 
-       
+
 
         #region 市电电压
 
@@ -91,7 +91,7 @@ namespace WpfApp1.Command_VQ3024
             set
             {
                 _MainsVoltage = value;
-                this.RaiseProperChanged(nameof(MainsVoltage));
+                RaiseProperChanged(nameof(MainsVoltage));
             }
         }
 
@@ -108,7 +108,7 @@ namespace WpfApp1.Command_VQ3024
             set
             {
                 _MainsVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(MainsVoltage_Inputs));
+                RaiseProperChanged(nameof(MainsVoltage_Inputs));
                 Command_SetMainsVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -181,7 +181,7 @@ namespace WpfApp1.Command_VQ3024
             set
             {
                 _MainsFrequency = value;
-                this.RaiseProperChanged(nameof(MainsFrequency));
+                RaiseProperChanged(nameof(MainsFrequency));
             }
         }
 
@@ -198,7 +198,7 @@ namespace WpfApp1.Command_VQ3024
             set
             {
                 _MainsFrequency_Inputs = value;
-                this.RaiseProperChanged(nameof(MainsFrequency_Inputs));
+                RaiseProperChanged(nameof(MainsFrequency_Inputs));
                 Command_SetMainsFrequency.RaiseCanExecuteChanged();
             }
         }
@@ -313,7 +313,7 @@ namespace WpfApp1.Command_VQ3024
             try
             {
                 //市电电压
-                MainsVoltage = Values[0].Substring(1,5);
+                MainsVoltage = Values[0].Substring(1, 5);
                 //市电频率
                 MainsFrequency = Values[1];
                 ////无功功率

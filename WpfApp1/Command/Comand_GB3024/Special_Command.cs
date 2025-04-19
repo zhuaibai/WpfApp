@@ -7,12 +7,12 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.GB3024C_Comand
+namespace WpfApp1.Command.Comand_GB3024
 {
-    public class Special_Command:BaseViewModel
+    public class Special_Command : BaseViewModel
     {
 
-        
+
 
         ManualResetEventSlim _pauseEvent;//线程的开启、暂停
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
@@ -80,7 +80,7 @@ namespace WpfApp1.GB3024C_Comand
         public string QueryMachineType
         {
             get { return _QueryMachineType = "QPRTL\r"; }
-            set { _QueryMachineType  = value; }
+            set { _QueryMachineType = value; }
         }
 
 
@@ -102,7 +102,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ConstantVoltageCV = value;
-                this.RaiseProperChanged(nameof(ConstantVoltageCV));
+                RaiseProperChanged(nameof(ConstantVoltageCV));
             }
         }
 
@@ -111,7 +111,7 @@ namespace WpfApp1.GB3024C_Comand
         /// <summary>
         /// 设置值
         /// </summary>
-        private string _ConstantVoltageCV_Inputs    ;
+        private string _ConstantVoltageCV_Inputs;
 
         public string ConstantVoltageCV_Inputs
         {
@@ -119,7 +119,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ConstantVoltageCV_Inputs = value;
-                this.RaiseProperChanged(nameof(ConstantVoltageCV_Inputs));
+                RaiseProperChanged(nameof(ConstantVoltageCV_Inputs));
                 Command_SetConstantVoltageCV.RaiseCanExecuteChanged();
             }
         }
@@ -189,12 +189,12 @@ namespace WpfApp1.GB3024C_Comand
 
         #region 浮充充电电压
 
-        private string QBFT_command  = "QBFT";
+        private string QBFT_command = "QBFT";
 
         public string QBFT_Command
         {
-            get { return QBFT_command ; }
-            
+            get { return QBFT_command; }
+
         }
 
         /// <summary>
@@ -202,13 +202,13 @@ namespace WpfApp1.GB3024C_Comand
         /// </summary>
         private string _FloatChargeCV;
 
-        public string FloatChargeCV 
+        public string FloatChargeCV
         {
             get { return _FloatChargeCV; }
             set
             {
                 _FloatChargeCV = value;
-                this.RaiseProperChanged(nameof(FloatChargeCV));
+                RaiseProperChanged(nameof(FloatChargeCV));
             }
         }
 
@@ -222,7 +222,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _FloatChargeCV_Inputs = value;
-                this.RaiseProperChanged(nameof(FloatChargeCV_Inputs));
+                RaiseProperChanged(nameof(FloatChargeCV_Inputs));
                 Command_FloatChargeCV.RaiseCanExecuteChanged();
             }
         }
@@ -292,7 +292,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_ChargingVoltage = value;
-                this.RaiseProperChanged(nameof(AC_ChargingVoltage));
+                RaiseProperChanged(nameof(AC_ChargingVoltage));
             }
         }
 
@@ -309,7 +309,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_ChargingVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(AC_ChargingVoltage_Inputs));
+                RaiseProperChanged(nameof(AC_ChargingVoltage_Inputs));
                 Command_SetAC_ChargingVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -382,7 +382,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryDischargeVoltage = value;
-                this.RaiseProperChanged(nameof(BatteryDischargeVoltage));
+                RaiseProperChanged(nameof(BatteryDischargeVoltage));
             }
         }
 
@@ -399,7 +399,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryDischargeVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(BatteryDischargeVoltage_Inputs));
+                RaiseProperChanged(nameof(BatteryDischargeVoltage_Inputs));
                 Command_SetBatteryDischargeVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -481,7 +481,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_Charging_Time = value;
-                this.RaiseProperChanged(nameof(AC_Charging_Time));
+                RaiseProperChanged(nameof(AC_Charging_Time));
             }
         }
 
@@ -498,7 +498,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_Charging_Time_Inputs = value;
-                this.RaiseProperChanged(nameof(AC_Charging_Time_Inputs));
+                RaiseProperChanged(nameof(AC_Charging_Time_Inputs));
                 Command_SetAC_Charging_Time.RaiseCanExecuteChanged();
             }
         }
@@ -569,7 +569,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SystemReset = value;
-                this.RaiseProperChanged(nameof(SystemReset));
+                RaiseProperChanged(nameof(SystemReset));
             }
         }
 
@@ -586,7 +586,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _SystemReset_Inputs = value;
-                this.RaiseProperChanged(nameof(SystemReset_Inputs));
+                RaiseProperChanged(nameof(SystemReset_Inputs));
                 Command_SetSystemReset.RaiseCanExecuteChanged();
             }
         }
@@ -658,7 +658,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ClearPowerGeneration = value;
-                this.RaiseProperChanged(nameof(ClearPowerGeneration));
+                RaiseProperChanged(nameof(ClearPowerGeneration));
             }
         }
 
@@ -675,7 +675,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ClearPowerGeneration_Inputs = value;
-                this.RaiseProperChanged(nameof(ClearPowerGeneration_Inputs));
+                RaiseProperChanged(nameof(ClearPowerGeneration_Inputs));
                 Command_SetClearPowerGeneration.RaiseCanExecuteChanged();
             }
         }
@@ -746,7 +746,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AuxiliaryOutputShutdown = value;
-                this.RaiseProperChanged(nameof(AuxiliaryOutputShutdown));
+                RaiseProperChanged(nameof(AuxiliaryOutputShutdown));
             }
         }
 
@@ -763,7 +763,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AuxiliaryOutputShutdown_Inputs = value;
-                this.RaiseProperChanged(nameof(AuxiliaryOutputShutdown_Inputs));
+                RaiseProperChanged(nameof(AuxiliaryOutputShutdown_Inputs));
                 Command_SetAuxiliaryOutputShutdown.RaiseCanExecuteChanged();
             }
         }
@@ -834,7 +834,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AuxiliaryOutputOn = value;
-                this.RaiseProperChanged(nameof(AuxiliaryOutputOn));
+                RaiseProperChanged(nameof(AuxiliaryOutputOn));
             }
         }
 
@@ -851,7 +851,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AuxiliaryOutputOn_Inputs = value;
-                this.RaiseProperChanged(nameof(AuxiliaryOutputOn_Inputs));
+                RaiseProperChanged(nameof(AuxiliaryOutputOn_Inputs));
                 Command_SetAuxiliaryOutputOn.RaiseCanExecuteChanged();
             }
         }
@@ -932,7 +932,7 @@ namespace WpfApp1.GB3024C_Comand
                     return !string.IsNullOrWhiteSpace(BatteryDischargeVoltage_Inputs);
                 case "AC_Charging_Time_Inputs":
                     return !string.IsNullOrWhiteSpace(AC_Charging_Time_Inputs);
-               
+
                 default:
                     return false;
             }
@@ -947,22 +947,22 @@ namespace WpfApp1.GB3024C_Comand
         {
             switch (value)
             {
-                
-            ////设置电池类型
-            //case "BatteryTypeSelectedOption":
-            //    if (string.IsNullOrWhiteSpace(BatteryTypeSelectedOption)) { return string.Empty; }
-            //    else if (BatteryTypeSelectedOption == "AGM") { return "00"; }
-            //    else if (BatteryTypeSelectedOption == "FLD") { return "01"; }
-            //    else if (BatteryTypeSelectedOption == "USE") { return "02"; }
-            //    else if (BatteryTypeSelectedOption == "LIA") { return "03"; }
-            //    else if (BatteryTypeSelectedOption == "PYL") { return "04"; }
-            //    else if (BatteryTypeSelectedOption == "TQF") { return "05"; }
-            //    else if (BatteryTypeSelectedOption == "GRO") { return "06"; }
-            //    else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
-            //    else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
-            //    else
-            //        return "00";
-            case "SBU":
+
+                ////设置电池类型
+                //case "BatteryTypeSelectedOption":
+                //    if (string.IsNullOrWhiteSpace(BatteryTypeSelectedOption)) { return string.Empty; }
+                //    else if (BatteryTypeSelectedOption == "AGM") { return "00"; }
+                //    else if (BatteryTypeSelectedOption == "FLD") { return "01"; }
+                //    else if (BatteryTypeSelectedOption == "USE") { return "02"; }
+                //    else if (BatteryTypeSelectedOption == "LIA") { return "03"; }
+                //    else if (BatteryTypeSelectedOption == "PYL") { return "04"; }
+                //    else if (BatteryTypeSelectedOption == "TQF") { return "05"; }
+                //    else if (BatteryTypeSelectedOption == "GRO") { return "06"; }
+                //    else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
+                //    else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
+                //    else
+                //        return "00";
+                case "SBU":
                     return "";
                 default:
                     return "";

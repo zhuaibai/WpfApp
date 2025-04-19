@@ -4,12 +4,12 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WpfApp1.GB3024C_Comand;
+using WpfApp1.Command;
 using WpfApp1.Models;
 
 namespace WpfApp1.Services
 {
-    public static class  SerialCommunicationService
+    public  class  SerialCommunicationService
     {
        //串口
         static SerialPort SerialPort { get; set; }

@@ -12,7 +12,7 @@ using WpfApp1.Services;
 using WpfApp1.ViewModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace WpfApp1.GB3024C_Comand
+namespace WpfApp1.Command.Comand_GB3024
 {
     public class HEEP1_ViewModel : BaseViewModel
     {
@@ -20,7 +20,7 @@ namespace WpfApp1.GB3024C_Comand
         private string command = "HEEP1\r";
         public string Command { get { return command; } }
 
-        public string MachineType; 
+        public string MachineType;
 
         ManualResetEventSlim _pauseEvent;//线程的开启、暂停
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
@@ -42,7 +42,7 @@ namespace WpfApp1.GB3024C_Comand
             //设置低电锁机电压
             Command_SetLowPowerLock = new RelayCommand(
                 execute: () => LowPowerLockOperation(),
-                canExecute: () => Validate(nameof(LowPowerLock_Inputs))&&!_LowPowerLockIsWorking
+                canExecute: () => Validate(nameof(LowPowerLock_Inputs)) && !_LowPowerLockIsWorking
             );
             //设置电池类型
             Command_SetBatteryType = new RelayCommand(
@@ -171,7 +171,7 @@ namespace WpfApp1.GB3024C_Comand
             #endregion
         }
 
-        
+
 
         #region 工作模式
         /// <summary>
@@ -187,15 +187,17 @@ namespace WpfApp1.GB3024C_Comand
                 if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
                 {
                     if (value == "(0") { _WorkingMode = "UTI"; }
-                    else if(value == "(1") { _WorkingMode = "SUB"; }
+                    else if (value == "(1") { _WorkingMode = "SUB"; }
                     else if (value == "(2") { _WorkingMode = "SBU"; }
-                }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                }
+                else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
                 {
                     if (value == "(0") { _WorkingMode = "SUB"; }
                     else if (value == "(1") { _WorkingMode = "SBU"; }
-                }else
-                _WorkingMode = value;
-                this.RaiseProperChanged(nameof(WorkingMode));
+                }
+                else
+                    _WorkingMode = value;
+                RaiseProperChanged(nameof(WorkingMode));
 
             }
         }
@@ -211,7 +213,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _WorkingModeOptions = value;
-                this.RaiseProperChanged(nameof(WorkingModeOptions));
+                RaiseProperChanged(nameof(WorkingModeOptions));
                 Command_SetWorkingMode.RaiseCanExecuteChanged();
             }
         }
@@ -237,7 +239,7 @@ namespace WpfApp1.GB3024C_Comand
         //工作模式正在设置中...
         private bool _WorkingModeIsWorking;
 
-       
+
 
         /// <summary>
         /// 点击工作模式设置
@@ -302,7 +304,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _LowPowerLock = value;
-                this.RaiseProperChanged(nameof(LowPowerLock));
+                RaiseProperChanged(nameof(LowPowerLock));
             }
         }
 
@@ -318,7 +320,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _LowPowerLock_Inputs = value;
-                this.RaiseProperChanged(nameof(LowPowerLock_Inputs));
+                RaiseProperChanged(nameof(LowPowerLock_Inputs));
                 Command_SetLowPowerLock.RaiseCanExecuteChanged();
             }
         }
@@ -389,27 +391,27 @@ namespace WpfApp1.GB3024C_Comand
             get { return _BatteryType; }
             set
             {
-                if(value == "0") { _BatteryType = "AGM"; }
-                else if(value == "1") { _BatteryType = "FLD"; }
-                else if(value == "2") { _BatteryType = "USE"; }
-                else if(value =="3") { _BatteryType = "LIA"; }
-                else if(value == "4") { _BatteryType = "PYL"; }
-                else if(value == "5") { _BatteryType = "TQF"; }
-                else if(value == "6") { _BatteryType = "GRO"; }
-                else if(value == "7") { _BatteryType = "LIB"; }
-                else if(value == "8") { _BatteryType = "LIC"; }
-                
+                if (value == "0") { _BatteryType = "AGM"; }
+                else if (value == "1") { _BatteryType = "FLD"; }
+                else if (value == "2") { _BatteryType = "USE"; }
+                else if (value == "3") { _BatteryType = "LIA"; }
+                else if (value == "4") { _BatteryType = "PYL"; }
+                else if (value == "5") { _BatteryType = "TQF"; }
+                else if (value == "6") { _BatteryType = "GRO"; }
+                else if (value == "7") { _BatteryType = "LIB"; }
+                else if (value == "8") { _BatteryType = "LIC"; }
+
 
                 else
-                _BatteryType = value;
-                this.RaiseProperChanged(nameof(BatteryType));
+                    _BatteryType = value;
+                RaiseProperChanged(nameof(BatteryType));
             }
         }
         private bool _BatteryIsWorking;
 
 
         //电池类型可选项
-        private List<string> _BatteryTypeOptions = new List<string> { "AGM","FLD","USE","LIA","PYL","TQF","GRO","LIB","LIC"};
+        private List<string> _BatteryTypeOptions = new List<string> { "AGM", "FLD", "USE", "LIA", "PYL", "TQF", "GRO", "LIB", "LIC" };
 
         public List<string> BatteryTypeOptions
         {
@@ -417,7 +419,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryTypeOptions = value;
-                this.RaiseProperChanged(nameof(BatteryTypeOptions));
+                RaiseProperChanged(nameof(BatteryTypeOptions));
             }
         }
 
@@ -430,12 +432,12 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BatteryTypeSelectedOption = value;
-                this.RaiseProperChanged(nameof(BatteryTypeSelectedOption));
+                RaiseProperChanged(nameof(BatteryTypeSelectedOption));
                 Command_SetBatteryType.RaiseCanExecuteChanged();
             }
         }
         //设置命令
-        public RelayCommand Command_SetBatteryType {  get; set; }
+        public RelayCommand Command_SetBatteryType { get; set; }
 
         /// <summary>
         /// 设置电池类型
@@ -500,7 +502,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _StrongChargeVoltage = value;
-                this.RaiseProperChanged(nameof(StrongChargeVoltage));
+                RaiseProperChanged(nameof(StrongChargeVoltage));
             }
         }
 
@@ -517,7 +519,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _StrongChargeVoltage_Inputs = value;
-                this.RaiseProperChanged(nameof(StrongChargeVoltage_Inputs));
+                RaiseProperChanged(nameof(StrongChargeVoltage_Inputs));
                 Command_SetStrongChargeVoltage.RaiseCanExecuteChanged();
             }
         }
@@ -589,7 +591,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _FloatChargeVoltage = value;
-                this.RaiseProperChanged(nameof(FloatChargeVolage));
+                RaiseProperChanged(nameof(FloatChargeVolage));
             }
         }
 
@@ -606,7 +608,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _FloatChargeVolage_Inputs = value;
-                this.RaiseProperChanged(nameof(FloatChargeVolage_Inputs));
+                RaiseProperChanged(nameof(FloatChargeVolage_Inputs));
                 Command_SetFloatChargeVolage.RaiseCanExecuteChanged();
             }
         }
@@ -678,7 +680,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _TotalChargeCurrent = value;
-                this.RaiseProperChanged(nameof(TotalChargeCurrent));
+                RaiseProperChanged(nameof(TotalChargeCurrent));
             }
         }
 
@@ -694,7 +696,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _TotalChargeCurrent_Inputs = value;
-                this.RaiseProperChanged(nameof(TotalChargeCurrent_Inputs));
+                RaiseProperChanged(nameof(TotalChargeCurrent_Inputs));
                 Command_SetTotalChargeCurrent.RaiseCanExecuteChanged();
             }
         }
@@ -766,7 +768,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_ChargingCurrent = value;
-                this.RaiseProperChanged(nameof(AC_ChargingCurrent));
+                RaiseProperChanged(nameof(AC_ChargingCurrent));
             }
         }
 
@@ -783,7 +785,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_ChargingCurrent_Inputs = value;
-                this.RaiseProperChanged(nameof(AC_ChargingCurrent_Inputs));
+                RaiseProperChanged(nameof(AC_ChargingCurrent_Inputs));
                 Command_SetAC_ChargingCurrent.RaiseCanExecuteChanged();
             }
         }
@@ -855,7 +857,7 @@ namespace WpfApp1.GB3024C_Comand
             {
                 if (value == "1")
                 {
-                    
+
                     _BuzzerStatus = App.GetText("开启");
                 }
                 else if (value == "0")
@@ -866,7 +868,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     _BuzzerStatus = "";
                 }
-                this.RaiseProperChanged(nameof(BuzzerStatus));
+                RaiseProperChanged(nameof(BuzzerStatus));
             }
         }
 
@@ -883,13 +885,13 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BuzzerStatus_Inputs = value;
-                this.RaiseProperChanged(nameof(BuzzerStatus_Inputs));
+                RaiseProperChanged(nameof(BuzzerStatus_Inputs));
                 Command_SetBuzzerStatus.RaiseCanExecuteChanged();
             }
         }
 
         //下拉选项
-        private List<string> _BuzzerStatusOptions = new List<string> { "开启/On","关闭/Off"};
+        private List<string> _BuzzerStatusOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> BuzzerStatusOptions
         {
@@ -897,7 +899,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BuzzerStatusOptions = value;
-                this.RaiseProperChanged(nameof(BuzzerStatusOptions));
+                RaiseProperChanged(nameof(BuzzerStatusOptions));
             }
         }
 
@@ -967,15 +969,17 @@ namespace WpfApp1.GB3024C_Comand
             get { return _OverloadRestart; }
             set
             {
-                if(value == "0")
+                if (value == "0")
                 {
                     _OverloadRestart = App.GetText("关闭");
-                }else if(value == "1")
+                }
+                else if (value == "1")
                 {
                     _OverloadRestart = App.GetText("开启");
-                }else
-                _OverloadRestart = value;
-                this.RaiseProperChanged(nameof(OverloadRestart));
+                }
+                else
+                    _OverloadRestart = value;
+                RaiseProperChanged(nameof(OverloadRestart));
             }
         }
 
@@ -992,7 +996,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverloadRestart_Inputs = value;
-                this.RaiseProperChanged(nameof(OverloadRestart_Inputs));
+                RaiseProperChanged(nameof(OverloadRestart_Inputs));
                 Command_SetOverloadRestart.RaiseCanExecuteChanged();
             }
         }
@@ -1006,7 +1010,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverloadRestartOptions = value;
-                this.RaiseProperChanged(nameof(OverloadRestartOptions));
+                RaiseProperChanged(nameof(OverloadRestartOptions));
             }
         }
 
@@ -1086,7 +1090,7 @@ namespace WpfApp1.GB3024C_Comand
                 }
                 else
                     _OverTempperatureRestart = value;
-                this.RaiseProperChanged(nameof(OverTemperatureRestart));
+                RaiseProperChanged(nameof(OverTemperatureRestart));
             }
         }
 
@@ -1103,7 +1107,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverTemperatureRestart_Inputs = value;
-                this.RaiseProperChanged(nameof(OverTemperatureRestart_Inputs));
+                RaiseProperChanged(nameof(OverTemperatureRestart_Inputs));
                 Command_SetOverTemperatureRestart.RaiseCanExecuteChanged();
             }
         }
@@ -1117,7 +1121,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverTemperatureRestartOptions = value;
-                this.RaiseProperChanged(nameof(OverTemperatureRestartOptions));
+                RaiseProperChanged(nameof(OverTemperatureRestartOptions));
             }
         }
 
@@ -1196,8 +1200,8 @@ namespace WpfApp1.GB3024C_Comand
                     _LCD_Backlight = App.GetText("开启");
                 }
                 else
-                _LCD_Backlight = value;
-                this.RaiseProperChanged(nameof(LCD_Backlight));
+                    _LCD_Backlight = value;
+                RaiseProperChanged(nameof(LCD_Backlight));
             }
         }
 
@@ -1214,7 +1218,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _LCD_Backlight_Inputs = value;
-                this.RaiseProperChanged(nameof(LCD_Backlight_Inputs));
+                RaiseProperChanged(nameof(LCD_Backlight_Inputs));
                 Command_SetLCD_Backlight.RaiseCanExecuteChanged();
             }
         }
@@ -1228,7 +1232,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _LCD_BacklightOptions = value;
-                this.RaiseProperChanged(nameof(LCD_BacklightOptions));
+                RaiseProperChanged(nameof(LCD_BacklightOptions));
             }
         }
 
@@ -1260,7 +1264,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(LCD_Backlight_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(LCD_Backlight_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1304,14 +1308,16 @@ namespace WpfApp1.GB3024C_Comand
                 else if (value == "1")
                 {
                     _OutputMode = "PAL";
-                } else if (value == "2")
+                }
+                else if (value == "2")
                 {
                     _OutputMode = "3P1";
-                }else if(value == "3") { _OutputMode = "3P2"; }
-                else if(value == "4") { _OutputMode = "3P3"; }
+                }
+                else if (value == "3") { _OutputMode = "3P2"; }
+                else if (value == "4") { _OutputMode = "3P3"; }
                 else
                     _OutputMode = value;
-                this.RaiseProperChanged(nameof(OutputMode));
+                RaiseProperChanged(nameof(OutputMode));
             }
         }
 
@@ -1328,13 +1334,13 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputMode_Inputs = value;
-                this.RaiseProperChanged(nameof(OutputMode_Inputs));
+                RaiseProperChanged(nameof(OutputMode_Inputs));
                 Command_SetOutputMode.RaiseCanExecuteChanged();
             }
         }
 
         //下拉选项
-        private List<string> _OutputModeOptions = new List<string> { "SIG", "PAL","3P1","3P2","3P3" };
+        private List<string> _OutputModeOptions = new List<string> { "SIG", "PAL", "3P1", "3P2", "3P3" };
 
         public List<string> OutputModeOptions
         {
@@ -1342,7 +1348,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputModeOptions = value;
-                this.RaiseProperChanged(nameof(OutputModeOptions));
+                RaiseProperChanged(nameof(OutputModeOptions));
             }
         }
 
@@ -1374,7 +1380,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("POPM",getSelectedToCommad(nameof(OutputMode_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("POPM", getSelectedToCommad(nameof(OutputMode_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1422,7 +1428,7 @@ namespace WpfApp1.GB3024C_Comand
                 }
                 else
                     _BMS_CommunicationControlFunction = value;
-                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunction));
+                RaiseProperChanged(nameof(BMS_CommunicationControlFunction));
             }
         }
 
@@ -1439,7 +1445,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_CommunicationControlFunction_Inputs = value;
-                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunction_Inputs));
+                RaiseProperChanged(nameof(BMS_CommunicationControlFunction_Inputs));
                 Command_SetBMS_CommunicationControlFunction.RaiseCanExecuteChanged();
             }
         }
@@ -1453,7 +1459,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_CommunicationControlFunctionOptions = value;
-                this.RaiseProperChanged(nameof(BMS_CommunicationControlFunctionOptions));
+                RaiseProperChanged(nameof(BMS_CommunicationControlFunctionOptions));
             }
         }
 
@@ -1532,7 +1538,7 @@ namespace WpfApp1.GB3024C_Comand
                 }
                 else
                     _AC_InputRange = value;
-                this.RaiseProperChanged(nameof(AC_InputRange));
+                RaiseProperChanged(nameof(AC_InputRange));
             }
         }
 
@@ -1549,7 +1555,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_InputRange_Inputs = value;
-                this.RaiseProperChanged(nameof(AC_InputRange_Inputs));
+                RaiseProperChanged(nameof(AC_InputRange_Inputs));
                 Command_SetAC_InputRange.RaiseCanExecuteChanged();
             }
         }
@@ -1563,7 +1569,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _AC_InputRangeOptions = value;
-                this.RaiseProperChanged(nameof(AC_InputRangeOptions));
+                RaiseProperChanged(nameof(AC_InputRangeOptions));
             }
         }
 
@@ -1595,7 +1601,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PGR",getSelectedToCommad(nameof(AC_InputRange_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("PGR", getSelectedToCommad(nameof(AC_InputRange_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1633,19 +1639,20 @@ namespace WpfApp1.GB3024C_Comand
             get { return _ChargingPriority; }
             set
             {
-                
-                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+
+                if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                {
+                    if (value == "0")
                     {
-                        if (value == "0")
-                        {
-                            _ChargingPriority = "CUT";
-                        }
-                        else if (value == "1") { _ChargingPriority = "CSO"; }
-                        else if (value == "2") { _ChargingPriority = "SUN"; }
-                        else if (value == "3") { _ChargingPriority = "OSO"; }
-                        else { _ChargingPriority = value; }
-                    }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
-                    {
+                        _ChargingPriority = "CUT";
+                    }
+                    else if (value == "1") { _ChargingPriority = "CSO"; }
+                    else if (value == "2") { _ChargingPriority = "SUN"; }
+                    else if (value == "3") { _ChargingPriority = "OSO"; }
+                    else { _ChargingPriority = value; }
+                }
+                else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                {
                     if (value == "0")
                     {
                         _ChargingPriority = "CSO";
@@ -1655,10 +1662,10 @@ namespace WpfApp1.GB3024C_Comand
                     else if (value == "3") { _ChargingPriority = "OSO"; }
                     else { _ChargingPriority = value; }
                 }
-                    
+
                 else
-                _ChargingPriority = value;
-                this.RaiseProperChanged(nameof(ChargingPriority));
+                    _ChargingPriority = value;
+                RaiseProperChanged(nameof(ChargingPriority));
             }
         }
 
@@ -1673,9 +1680,9 @@ namespace WpfApp1.GB3024C_Comand
         {
             get { return _ChargingPriority_Inputs; }
             set
-            { 
+            {
                 _ChargingPriority_Inputs = value;
-                this.RaiseProperChanged(nameof(ChargingPriority_Inputs));
+                RaiseProperChanged(nameof(ChargingPriority_Inputs));
                 Command_SetChargingPriority.RaiseCanExecuteChanged();
             }
         }
@@ -1689,7 +1696,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _ChargingPriorityOptions = value;
-                this.RaiseProperChanged(nameof(ChargingPriorityOptions));
+                RaiseProperChanged(nameof(ChargingPriorityOptions));
             }
         }
 
@@ -1721,7 +1728,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PCP",getSelectedToCommad(nameof(ChargingPriority_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("PCP", getSelectedToCommad(nameof(ChargingPriority_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1758,7 +1765,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_LowPower_SOC = value;
-                this.RaiseProperChanged(nameof(BMS_LowPower_SOC));
+                RaiseProperChanged(nameof(BMS_LowPower_SOC));
             }
         }
 
@@ -1775,7 +1782,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_LowPower_SOC_Inputs = value;
-                this.RaiseProperChanged(nameof(BMS_LowPower_SOC_Inputs));
+                RaiseProperChanged(nameof(BMS_LowPower_SOC_Inputs));
                 Command_SetBMS_LowPower_SOC.RaiseCanExecuteChanged();
             }
         }
@@ -1847,7 +1854,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMSreturns_to_AC_mode_SOC = value;
-                this.RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC));
+                RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC));
             }
         }
 
@@ -1864,7 +1871,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMSreturns_to_AC_mode_SOC_Inputs = value;
-                this.RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC_Inputs));
+                RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC_Inputs));
                 Command_SetBMSreturns_to_AC_mode_SOC.RaiseCanExecuteChanged();
             }
         }
@@ -1935,7 +1942,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_returns_to_battery_mode_SOC = value;
-                this.RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC));
+                RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC));
             }
         }
 
@@ -1952,7 +1959,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_returns_to_battery_mode_SOC_Inputs = value;
-                this.RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC_Inputs));
+                RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC_Inputs));
                 Command_SetBMS_returns_to_battery_mode_SOC.RaiseCanExecuteChanged();
             }
         }
@@ -2024,7 +2031,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_automatically_turns_on_after_low_power_SOC = value;
-                this.RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC));
+                RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC));
             }
         }
 
@@ -2041,7 +2048,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _BMS_automatically_turns_on_after_low_power_SOC_Inputs = value;
-                this.RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC_Inputs));
+                RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC_Inputs));
                 Command_SetBMS_automatically_turns_on_after_low_power_SOC.RaiseCanExecuteChanged();
             }
         }
@@ -2121,7 +2128,7 @@ namespace WpfApp1.GB3024C_Comand
                 }
                 else
                     _OverloadByPassFunction = value;
-                this.RaiseProperChanged(nameof(OverloadByPassFunction));
+                RaiseProperChanged(nameof(OverloadByPassFunction));
             }
         }
 
@@ -2138,7 +2145,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverloadByPassFunction_Inputs = value;
-                this.RaiseProperChanged(nameof(OverloadByPassFunction_Inputs));
+                RaiseProperChanged(nameof(OverloadByPassFunction_Inputs));
                 Command_SetOverloadByPassFunction.RaiseCanExecuteChanged();
             }
         }
@@ -2152,7 +2159,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OverloadByPassFunctionOptions = value;
-                this.RaiseProperChanged(nameof(OverloadByPassFunctionOptions));
+                RaiseProperChanged(nameof(OverloadByPassFunctionOptions));
             }
         }
 
@@ -2220,15 +2227,17 @@ namespace WpfApp1.GB3024C_Comand
             get { return _OutputSettingFrequency; }
             set
             {
-                if(value == "0")
+                if (value == "0")
                 {
                     _OutputSettingFrequency = "50";
-                }else if(value == "1")
+                }
+                else if (value == "1")
                 {
                     _OutputSettingFrequency = "60";
-                }else
-                _OutputSettingFrequency = value;
-                this.RaiseProperChanged(nameof(OutputSettingFrequency));
+                }
+                else
+                    _OutputSettingFrequency = value;
+                RaiseProperChanged(nameof(OutputSettingFrequency));
             }
         }
 
@@ -2245,7 +2254,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputSettingFrequency_Inputs = value;
-                this.RaiseProperChanged(nameof(OutputSettingFrequency_Inputs));
+                RaiseProperChanged(nameof(OutputSettingFrequency_Inputs));
                 Command_SetOutputSettingFrequency.RaiseCanExecuteChanged();
             }
         }
@@ -2259,7 +2268,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _OutputSettingFrequencyOptions = value;
-                this.RaiseProperChanged(nameof(OutputSettingFrequencyOptions));
+                RaiseProperChanged(nameof(OutputSettingFrequencyOptions));
             }
         }
 
@@ -2329,7 +2338,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _GridCurrent = value;
-                this.RaiseProperChanged(nameof(GridCurrent));
+                RaiseProperChanged(nameof(GridCurrent));
             }
         }
 
@@ -2346,7 +2355,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _GridCurrent_Inputs = value;
-                this.RaiseProperChanged(nameof(GridCurrent_Inputs));
+                RaiseProperChanged(nameof(GridCurrent_Inputs));
                 Command_SetGridCurrent.RaiseCanExecuteChanged();
             }
         }
@@ -2427,7 +2436,7 @@ namespace WpfApp1.GB3024C_Comand
                 }
                 else
                     _GridConnectedFunction = value;
-                this.RaiseProperChanged(nameof(GridConnectedFunction));
+                RaiseProperChanged(nameof(GridConnectedFunction));
             }
         }
 
@@ -2444,7 +2453,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _GridConnectedFunction_Inputs = value;
-                this.RaiseProperChanged(nameof(GridConnectedFunction_Inputs));
+                RaiseProperChanged(nameof(GridConnectedFunction_Inputs));
                 Command_SetGridConnectedFunction.RaiseCanExecuteChanged();
             }
         }
@@ -2458,7 +2467,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _GridConnectedFunctionOptions = value;
-                this.RaiseProperChanged(nameof(GridConnectedFunctionOptions));
+                RaiseProperChanged(nameof(GridConnectedFunctionOptions));
             }
         }
 
@@ -2526,13 +2535,13 @@ namespace WpfApp1.GB3024C_Comand
             get { return _PV_GridConnectionProtocol; }
             set
             {
-                if(value == "0") { _PV_GridConnectionProtocol = "India"; }
-                else if(value == "1") { _PV_GridConnectionProtocol = "Germen"; }
-                else if(value == "2") { _PV_GridConnectionProtocol = "SouthAmerica"; }
-                else if(value == "3") { _PV_GridConnectionProtocol = "Pakistan"; }
+                if (value == "0") { _PV_GridConnectionProtocol = "India"; }
+                else if (value == "1") { _PV_GridConnectionProtocol = "Germen"; }
+                else if (value == "2") { _PV_GridConnectionProtocol = "SouthAmerica"; }
+                else if (value == "3") { _PV_GridConnectionProtocol = "Pakistan"; }
                 else
-                _PV_GridConnectionProtocol = value;
-                this.RaiseProperChanged(nameof(PV_GridConnectionProtocol));
+                    _PV_GridConnectionProtocol = value;
+                RaiseProperChanged(nameof(PV_GridConnectionProtocol));
             }
         }
 
@@ -2549,13 +2558,13 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _PV_GridConnectionProtocol_Inputs = value;
-                this.RaiseProperChanged(nameof(PV_GridConnectionProtocol_Inputs));
+                RaiseProperChanged(nameof(PV_GridConnectionProtocol_Inputs));
                 Command_SetPV_GridConnectionProtocol.RaiseCanExecuteChanged();
             }
         }
 
         //下拉选项
-        private List<string> _PV_GridConnectionProtocolOptions = new List<string> { "India", "Germen","SouthAmerica","Pakistan" };
+        private List<string> _PV_GridConnectionProtocolOptions = new List<string> { "India", "Germen", "SouthAmerica", "Pakistan" };
 
         public List<string> PV_GridConnectionProtocolOptions
         {
@@ -2563,7 +2572,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _PV_GridConnectionProtocolOptions = value;
-                this.RaiseProperChanged(nameof(PV_GridConnectionProtocolOptions));
+                RaiseProperChanged(nameof(PV_GridConnectionProtocolOptions));
             }
         }
 
@@ -2639,8 +2648,8 @@ namespace WpfApp1.GB3024C_Comand
                     _PV_FeedPriority = "LBU";
                 }
                 else
-                _PV_FeedPriority = value;
-                this.RaiseProperChanged(nameof(PV_FeedPriority));
+                    _PV_FeedPriority = value;
+                RaiseProperChanged(nameof(PV_FeedPriority));
             }
         }
 
@@ -2657,7 +2666,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _PV_FeedPriority_Inputs = value;
-                this.RaiseProperChanged(nameof(PV_FeedPriority_Inputs));
+                RaiseProperChanged(nameof(PV_FeedPriority_Inputs));
                 Command_SetPV_FeedPriority.RaiseCanExecuteChanged();
             }
         }
@@ -2671,7 +2680,7 @@ namespace WpfApp1.GB3024C_Comand
             set
             {
                 _PV_FeedPriorityOptions = value;
-                this.RaiseProperChanged(nameof(PV_FeedPriorityOptions));
+                RaiseProperChanged(nameof(PV_FeedPriorityOptions));
             }
         }
 
@@ -2703,7 +2712,7 @@ namespace WpfApp1.GB3024C_Comand
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("PVENGUSE",getSelectedToCommad(nameof(PV_FeedPriority_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("PVENGUSE", getSelectedToCommad(nameof(PV_FeedPriority_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2742,7 +2751,7 @@ namespace WpfApp1.GB3024C_Comand
                 case "BatteryTypeSelectedOption":
                     return !string.IsNullOrWhiteSpace(BatteryTypeSelectedOption);
                 case "TotalChargeCurrent_Inputs":
-                    return !string.IsNullOrWhiteSpace(TotalChargeCurrent_Inputs);    
+                    return !string.IsNullOrWhiteSpace(TotalChargeCurrent_Inputs);
                 case "AC_ChargingCurrent_Inputs":
                     return !string.IsNullOrWhiteSpace(AC_ChargingCurrent_Inputs);
                 case "StrongChargeVoltage_Inputs":
@@ -2816,15 +2825,15 @@ namespace WpfApp1.GB3024C_Comand
                 //PV馈能优先级
                 PV_FeedPriority = Values[3].Substring(3, 1);
                 //PV并网协议
-                PV_GridConnectionProtocol = Values[3].Substring(1,1);
+                PV_GridConnectionProtocol = Values[3].Substring(1, 1);
                 //过载重启
-                OverloadRestart = Values[3].Substring(4,1);
+                OverloadRestart = Values[3].Substring(4, 1);
                 //过温重启
-                OverTemperatureRestart = Values[3].Substring(6,1);
+                OverTemperatureRestart = Values[3].Substring(6, 1);
                 //电池类型
-                BatteryType = Values[3].Substring(2,1);
+                BatteryType = Values[3].Substring(2, 1);
                 //系统频率
-                OutputSettingFrequency = Values[5].Substring(0,1);
+                OutputSettingFrequency = Values[5].Substring(0, 1);
                 //充电优先顺序(充电模式)
                 ChargingPriority = Values[5].Substring(2, 1);
                 //蜂鸣器状态
@@ -2859,9 +2868,9 @@ namespace WpfApp1.GB3024C_Comand
             catch (Exception ex)
             {
                 //异常
-                return ;
+                return;
             }
-            
+
         }
 
         /// <summary>
@@ -2875,7 +2884,7 @@ namespace WpfApp1.GB3024C_Comand
             {
                 //设置工作模式
                 case "WorkingModeSelectedOption":
-                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                    if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
                     {
                         if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
                         {
@@ -2888,9 +2897,11 @@ namespace WpfApp1.GB3024C_Comand
                         else if (WorkingModeSelectedOption == "SUB")
                         {
                             return "01";
-                        }else if (WorkingModeSelectedOption == "SBU") { return "02"; }
-                        
-                    }else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                        }
+                        else if (WorkingModeSelectedOption == "SBU") { return "02"; }
+
+                    }
+                    else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
                     {
                         if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
                         {
@@ -2916,14 +2927,14 @@ namespace WpfApp1.GB3024C_Comand
                     else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
                     else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
                     else
-                    return "00";
-                 //设置蜂鸣器状态
+                        return "00";
+                //设置蜂鸣器状态
                 case "BuzzerStatus_Inputs":
-                    if (string.IsNullOrWhiteSpace(BuzzerStatus_Inputs)) {  return string.Empty; }
+                    if (string.IsNullOrWhiteSpace(BuzzerStatus_Inputs)) { return string.Empty; }
                     else if (BuzzerStatus_Inputs == "开启/On") { return "PEa"; }
-                    else if(BuzzerStatus_Inputs == "关闭/Off") { return "PDa"; }
+                    else if (BuzzerStatus_Inputs == "关闭/Off") { return "PDa"; }
                     else
-                    return "";
+                        return "";
                 //过载重启
                 case "OverloadRestart_Inputs":
                     if (string.IsNullOrWhiteSpace(OverloadRestart_Inputs)) { return string.Empty; }
@@ -2970,14 +2981,14 @@ namespace WpfApp1.GB3024C_Comand
                     else return AC_InputRange_Inputs;
                 //充电模式
                 case "ChargingPriority_Inputs":
-                    if(SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                    if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
                     {
                         if (ChargingPriority_Inputs == "CUT") { return "00"; }
                         else if (ChargingPriority_Inputs == "CSO") { return "01"; }
                         else if (ChargingPriority_Inputs == "SNU") { return "02"; }
                         else if (ChargingPriority_Inputs == "OSO") { return "03"; }
                     }
-                    else if(SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                    else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
                     {
                         if (ChargingPriority_Inputs == "CUT") { return ""; }
                         else if (ChargingPriority_Inputs == "CSO") { return "00"; }
@@ -3024,7 +3035,7 @@ namespace WpfApp1.GB3024C_Comand
                         return OutputSettingFrequency_Inputs;
                 default:
                     return "";
-               
+
 
             }
         }

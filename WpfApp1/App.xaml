@@ -14,7 +14,7 @@
                 <ResourceDictionary Source="Dictionary\Lan-en-us.xaml"/>
                 <ResourceDictionary Source="Dictionary\Lan-zh-cn.xaml"/>
                 <ResourceDictionary Source="Dictionary\WatermarkTextBoxSty.xaml"/>
-               
+                <ResourceDictionary Source="Dictionary\ComBoxSty.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         
