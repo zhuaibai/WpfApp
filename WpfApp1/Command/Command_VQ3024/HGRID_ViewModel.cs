@@ -316,16 +316,7 @@ namespace WpfApp1.Command.Command_VQ3024
                 MainsVoltage = Values[0].Substring(1, 5);
                 //市电频率
                 MainsFrequency = Values[1];
-                ////无功功率
-                //ReactivePower = Values[2];
-                ////有功功率
-                //ActivePower = Values[3];
-                ////负载百分比
-                //PercentageOfLoad = Values[4];
-                ////逆变电流
-                //InverterCurrent = Values[7];
-                ////Mos管电流
-                //MOS_TubeCurrent = Values[8];
+                
 
             }
             catch (Exception ex)

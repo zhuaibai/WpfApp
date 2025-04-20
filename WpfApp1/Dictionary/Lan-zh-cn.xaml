@@ -86,7 +86,7 @@
     <s:String x:Key="市电电压">市电电压</s:String>
     <s:String x:Key="市电频率">市电频率</s:String>
     <s:String x:Key="市电功率">市电功率</s:String>
-    <s:String x:Key="温度限制">市电功率</s:String>
+    <s:String x:Key="温度限制">温度限制</s:String>
     <s:String x:Key="当前允许最大逆变功率">当前允许最大逆变功率(W)</s:String>
     <s:String x:Key="版本号">版本号</s:String>
     <s:String x:Key="发布日期">发布日期</s:String>

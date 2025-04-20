@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace WpfApp1.UserControls
 {
     /// <summary>
-    /// AC_Monitor.xaml 的交互逻辑
+    /// VQ_Monitor.xaml 的交互逻辑
     /// </summary>
-    public partial class AC_Monitor : UserControl
+    public partial class VQ_Monitor : UserControl
     {
-        public AC_Monitor()
+        public VQ_Monitor()
         {
             InitializeComponent();
         }

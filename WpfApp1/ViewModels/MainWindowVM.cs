@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Xml.Serialization;
 using WpfApp1.Command;
 using WpfApp1.Command.Comand_GB3024;
+using WpfApp1.Command.Command_PDF3024;
 using WpfApp1.Command.Command_VQ3024;
 using WpfApp1.Models;
 using WpfApp1.Services;
@@ -26,30 +27,6 @@ namespace WpfApp1.ViewModels
     {
 		public MainWindowVM() 
 		{
-
-            
-
-            #region 初始化电量信息
-            //初始化电量信息
-            PV_Info_List = new List<PV_InfoModel>();
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="PV日电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="PV总电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="日充电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="总充电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="日放电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="总放电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="电网日取电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="电网总取电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="电网日馈电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="电网总馈电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="负载日用电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="负载总用电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="系统产出日发电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="系统产出总发电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="自发自用日发电量:",PV_Info_Value="0"});
-			PV_Info_List.Add(new PV_InfoModel() {PV_Info_Name="自发自用总发电量:",PV_Info_Value="0"});
-            #endregion
-
             #region 日志界面
             // 初始化命令
             ClearLogCommand = new DelegateCommand(ClearLog);
@@ -64,9 +41,6 @@ namespace WpfApp1.ViewModels
             StartCommand = new RelayCommand(StartBackgroundThread);
             StopCommand = new RelayCommand(StopBackgroundThread);
             
-
-            
-
 
             //初始化串口信息
             IniCom();
@@ -86,10 +60,16 @@ namespace WpfApp1.ViewModels
             //初始化  VQ   VIew
             HOP_VQ = new HOP_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HGRID_VQ = new HGRID_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            //初始化  PTF ViewModel
+            HGRID_PDF = new HGRID_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HOP_PDF = new HOP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HBAT_PDF = new HBAT_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             //初始化实时时间ViewModel
             Clock = new ClockViewModel();
+            #endregion
         }
-        #endregion
+
+
 
         #region 下拉框选择机器类型
 
@@ -103,8 +83,6 @@ namespace WpfApp1.ViewModels
                 OnPropertyChanged();
             }
         }
-
-     
 
         public ObservableCollection<string> MachineItems { get; } = new(){
         "GB3024",
@@ -143,11 +121,11 @@ namespace WpfApp1.ViewModels
 
             if (view == "VQ3024")
             {
-                ContentUC = new AC_Monitor();
+                ContentUC = new VQ_Monitor();
             }
             else if(view =="GB3024")
             {
-                ContentUC = new MonitorUC();
+                ContentUC = new GB_MonitorUC();
             }
             else
             {
@@ -264,6 +242,48 @@ namespace WpfApp1.ViewModels
 
         #endregion
 
+        #region PTF指令ViewModel
+
+        //HGRID
+        private HGRID_PDF_ViewModel _HGRID_PDF;
+        public HGRID_PDF_ViewModel HGRID_PDF {
+            get
+            {
+                return _HGRID_PDF;
+            }
+            set
+            {
+                _HGRID_PDF = value;
+                OnPropertyChanged();
+            }
+        }
+        //HOP
+        private HOP_PDF_ViewModel _HOP_PDF;
+
+        public HOP_PDF_ViewModel HOP_PDF
+        {
+            get { return _HOP_PDF; }
+            set
+            {
+                _HOP_PDF = value;
+                this.RaiseProperChanged(nameof(HOP_PDF));
+            }
+        }
+
+        //HBAT
+        private HBAT_PDF_ViewModel _HBAT_PDF;
+
+        public HBAT_PDF_ViewModel HBAT_PDF
+        {
+            get { return _HBAT_PDF; }
+            set
+            {
+                _HBAT_PDF = value;
+                this.RaiseProperChanged(nameof(HBAT_PDF));
+            }
+        }
+
+        #endregion
 
         #region 串口工具
 
@@ -427,7 +447,7 @@ namespace WpfApp1.ViewModels
 			{ 
 				if(contentUC ==null)
 				{
-					 return contentUC = new MonitorUC(); 
+					 return contentUC = new GB_MonitorUC(); 
 				}
 				return contentUC; }
 			set { contentUC = value; RaiseProperChanged(nameof(ContentUC)); }
@@ -436,23 +456,6 @@ namespace WpfApp1.ViewModels
         
 
         
-        #endregion
-
-        #region 电量信息
-        /// <summary>
-        /// 电量信息
-        /// </summary>
-        private List<PV_InfoModel> _PV_InfoList;
-
-		public List<PV_InfoModel> PV_Info_List
-		{
-			get { return _PV_InfoList; }
-			set
-			{
-				_PV_InfoList = value;
-				this.RaiseProperChanged(nameof(PV_Info_List));
-			}
-		}
         #endregion
 
         #region 日志界面
@@ -748,6 +751,10 @@ namespace WpfApp1.ViewModels
                         //VQ3024通讯
                         CommunicationWithVQ3024(token);
                     }
+                    if (SelectedMachineItem == "PTF")
+                    {
+                        CommunicationWithPTF3024(token);
+                    }
                     // 模拟常规通信
                     await Task.Delay(1000, token);
                     //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
@@ -766,6 +773,29 @@ namespace WpfApp1.ViewModels
                 
             }
         }
+
+        /// <summary>
+        /// PTF3024通讯
+        /// </summary>
+        /// <param name="token"></param>
+        private void CommunicationWithPTF3024(CancellationToken token)
+        { 
+
+            string receive = "";
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HOP指令
+             receive= SerialCommunicationService.SendCommand(HGRID_PDF.Command, 50);
+            //解析返回命令
+            HGRID_PDF.AnalyseStringToElement(receive);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HOP指令
+            receive = SerialCommunicationService.SendCommand(HOP_PDF.Command, 50);
+            //解析返回命令
+            HOP_PDF.AnalysisStringToElement(receive);
+        }
+
         /// <summary>
         /// GB3024通讯
         /// </summary>
@@ -779,32 +809,30 @@ namespace WpfApp1.ViewModels
             //解析指令
             SerialCommunicationService.MachineType = receive_MachineType;
 
-            _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HOP指令
-            string receive = SerialCommunicationService.SendCommand(HOP.Command, 40);
-            //解析返回命令
-            HOP.AnalysisStringToElement(receive);
 
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HEEP1指令
+            //发送HEEP1指令
             string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
             //解析返回指令
             HEEP1.AnalyseStringToElement(receiveHEEP1);
 
+
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HEEP2指令
+            //发送HEEP2指令
             string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
             //解析返回指令
             HEEP2.AnalyseStringToElement(receive_HEEP2);
 
+
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HEEP2指令
+            //发送HOP指令
             string receive_HOP = SerialCommunicationService.SendCommand(HOP.Command, 50);
             //解析返回指令
             HOP.AnalysisStringToElement(receive_HOP);
 
+
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HEEP2指令
+            //发送Hgen指令
             string receive_HGEN = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             //解析返回指令
             HGEN.AnalyseStringToElement(receive_HGEN);
@@ -819,13 +847,13 @@ namespace WpfApp1.ViewModels
             //发送VQ2024
             string Receive = "";
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HOP指令
+            //发送HOP指令
             Receive = SerialCommunicationService.SendCommand(HOP_VQ.Command, 60);
             //解析返回指令
             HGEN.AnalyseStringToElement(Receive);
 
             _pauseEvent.Wait(token); // 等待暂停或取消信号
-                                     //发送HEEP2指令
+            //发送HGRID指令
             Receive = SerialCommunicationService.SendCommand(HGRID_VQ.Command, 60);
             //解析返回指令
             HGEN.AnalyseStringToElement(Receive);

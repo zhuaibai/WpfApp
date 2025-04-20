@@ -42,7 +42,23 @@ namespace WpfApp1.Command.Command_PDF3024
                 execute: () => MainsFrequencyOperation(),
                 canExecute: () => Validate(nameof(MainsFrequency_Inputs)) && !MainsFrequency_IsWorking // 增加处理状态检查
             );
-            
+            //市电功率
+            Command_SetACPower = new RelayCommand(
+                execute: () => ACPowerOperation(),
+                canExecute: () => Validate(nameof(ACPower_Inputs)) && !ACPower_IsWorking // 增加处理状态检查
+            );
+            //温度限制
+            Command_SetTempLimit = new RelayCommand(
+                execute: () => TempLimitOperation(),
+                canExecute: () => Validate(nameof(TempLimit_Inputs)) && !TempLimit_IsWorking // 增加处理状态检查
+            );
+            //当前允许最大功率
+            Command_SetMaxInvPower = new RelayCommand(
+               execute: () => MaxInvPowerOperation(),
+               canExecute: () => Validate(nameof(MaxInvPower_Inputs)) && !MaxInvPower_IsWorking // 增加处理状态检查
+           );
+
+
             #endregion
         }
 
@@ -226,6 +242,285 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #endregion
 
+        #region 市电功率
+
+        //市电功率
+        private string _ACPower;
+
+        public string ACPower
+        {
+            get { return _ACPower; }
+            set
+            {
+                _ACPower = value;
+                this.RaiseProperChanged(nameof(ACPower));
+            }
+        }
+
+
+        private bool ACPower_IsWorking;
+
+
+        //设置值
+        private string _ACPower_Inputs;
+
+        public string ACPower_Inputs
+        {
+            get { return _ACPower_Inputs; }
+            set
+            {
+                _ACPower_Inputs = value;
+                this.RaiseProperChanged(nameof(ACPower_Inputs));
+                Command_SetACPower.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetACPower { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void ACPowerOperation()
+        {
+            try
+            {
+                ACPower_IsWorking = true;
+                // 禁用按钮
+                Command_SetACPower.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ACPower_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                ACPower_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetACPower.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 温度限制
+
+        //温度限制
+        private string _TempLimit;
+
+        public string TempLimit
+        {
+            get { return _TempLimit; }
+            set
+            {
+                if (value == "0") { _TempLimit = App.GetText("关闭"); }
+                else if (value == "1") { _TempLimit = App.GetText("开启"); }
+                else
+                _TempLimit = value;
+                this.RaiseProperChanged(nameof(TempLimit));
+            }
+        }
+
+
+        private bool TempLimit_IsWorking;
+
+
+        //设置值
+        private string _TempLimit_Inputs;
+
+        public string TempLimit_Inputs
+        {
+            get { return _TempLimit_Inputs; }
+            set
+            {
+                _TempLimit_Inputs = value;
+                this.RaiseProperChanged(nameof(TempLimit_Inputs));
+                Command_SetTempLimit.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _TempLimitOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> TempLimitOptions
+        {
+            get { return _TempLimitOptions; }
+            set
+            {
+                _TempLimitOptions = value;
+                this.RaiseProperChanged(nameof(TempLimitOptions));
+            }
+        }
+
+        public RelayCommand Command_SetTempLimit { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void TempLimitOperation()
+        {
+            try
+            {
+                TempLimit_IsWorking = true;
+                // 禁用按钮
+                Command_SetTempLimit.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand(GetSelectedToCommand("TempLimit_Inputs"), TempLimit_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                TempLimit_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetTempLimit.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 当前允许最大功率
+
+        //当前允许最大功率
+        private string _MaxInvPower;
+
+        public string MaxInvPower
+        {
+            get { return _MaxInvPower; }
+            set
+            {
+                _MaxInvPower = value;
+                this.RaiseProperChanged(nameof(MaxInvPower));
+            }
+        }
+
+
+        private bool MaxInvPower_IsWorking;
+
+
+        //设置值
+        private string _MaxInvPower_Inputs;
+
+        public string MaxInvPower_Inputs
+        {
+            get { return _MaxInvPower_Inputs; }
+            set
+            {
+                _MaxInvPower_Inputs = value;
+                this.RaiseProperChanged(nameof(MaxInvPower_Inputs));
+                Command_SetMaxInvPower.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetMaxInvPower { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void MaxInvPowerOperation()
+        {
+            try
+            {
+                MaxInvPower_IsWorking = true;
+                // 禁用按钮
+                Command_SetMaxInvPower.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(2000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", MaxInvPower_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                MaxInvPower_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetMaxInvPower.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 判断输入是否正确
@@ -242,7 +537,16 @@ namespace WpfApp1.Command.Command_PDF3024
                     return !string.IsNullOrWhiteSpace(MainsVoltage_Inputs);
                 //市电频率   
                 case "MainsFrequency_Inputs":
-                    return !string.IsNullOrWhiteSpace(MainsFrequency_Inputs);
+                    return !string.IsNullOrWhiteSpace(MainsFrequency_Inputs); 
+                //市电功率   
+                case "ACPower_Inputs":
+                    return !string.IsNullOrWhiteSpace(ACPower_Inputs);
+                //温度限制 
+                case "TempLimit_Inputs":
+                    return !string.IsNullOrWhiteSpace(TempLimit_Inputs);
+                //温度限制 
+                case "MaxInvPower_Inputs":
+                    return !string.IsNullOrWhiteSpace(MaxInvPower_Inputs);
                
 
                 default:
@@ -268,12 +572,12 @@ namespace WpfApp1.Command.Command_PDF3024
                 MainsVoltage = Values[0].Substring(1, 5);
                 //市电频率
                 MainsFrequency = Values[1];
-                ////无功功率
-                //ReactivePower = Values[2];
-                ////有功功率
-                //ActivePower = Values[3];
-                ////负载百分比
-                //PercentageOfLoad = Values[4];
+                //市电功率
+                ACPower = Values[2];
+                //温度限制
+                TempLimit = Values[3];
+                //当前允许最大逆变功率
+                MaxInvPower = Values[4];
                 ////逆变电流
                 //InverterCurrent = Values[7];
                 ////Mos管电流
@@ -285,6 +589,36 @@ namespace WpfApp1.Command.Command_PDF3024
 
             }
         }
+        
+        /// <summary>
+        /// 把选项转化为指令格式
+        /// </summary>
+        /// <param name="selected"></param>
+        /// <returns></returns>
+        private string GetSelectedToCommand(string selected)
+        {
+            switch (selected)
+            {
+                //输出电压
+                case "TempLimit_Inputs":
+                    if (string.IsNullOrWhiteSpace(TempLimit_Inputs))
+                    {
+                        return string.Empty;
+                    }
+                    else if (TempLimit_Inputs == "关闭")
+                    {
+                        return "00";
+                    }
+                    else if (TempLimit_Inputs == "开启")
+                    {
+                        return "01";
+                    }
+                    return "";
+                default:
+                    return string.Empty;
 
+            }
+
+        }
     }
 }

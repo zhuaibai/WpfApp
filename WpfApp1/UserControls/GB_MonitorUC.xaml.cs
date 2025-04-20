@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace WpfApp1.UserControls
 {
     /// <summary>
-    /// MonitorUC.xaml 的交互逻辑
+    /// GB_MonitorUC.xaml 的交互逻辑
     /// </summary>
-    public partial class MonitorUC : UserControl
+    public partial class GB_MonitorUC : UserControl
     {
-        public MonitorUC()
+        public GB_MonitorUC()
         {
             InitializeComponent();
             //this.DataContext = this;
