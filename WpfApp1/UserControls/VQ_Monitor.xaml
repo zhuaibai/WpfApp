@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WpfApp1.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="700"
+    d:DesignHeight="1000"
     d:DesignWidth="1200"
     Background="White"
     mc:Ignorable="d">
@@ -512,11 +512,11 @@
         Background="White"
         Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                <Grid>
+                <Grid >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <!--  第一列  -->
                     <Border
@@ -524,7 +524,7 @@
                     Padding="20"
                     Background="#FFF0F0F0"
                     CornerRadius="5">
-                        <Grid>
+                        <Grid >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -776,7 +776,7 @@
                             Command="{Binding DataContext.HEEP2.Command_SetReturnBatteryModeVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
                             Content="{DynamicResource 设置}"
                             Style="{StaticResource ActionButton}" />
-                            <!--  返回电池模式电压  -->
+                            <!--  蜂鸣器状态  -->
                             <TextBlock
                             Grid.Row="10"
                             Style="{StaticResource ContentText}"
@@ -1054,7 +1054,7 @@
                     Padding="20"
                     Background="#FFF0F0F0"
                     CornerRadius="5">
-                        <Grid>
+                        <Grid >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*" />
                                 <ColumnDefinition Width="2*" />

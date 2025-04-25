@@ -26,8 +26,9 @@
         </Setter>
     </Style>
     <Style x:Key="SelectBox" TargetType="ComboBox">
-        <Setter Property="Margin" Value="10,5"/>
+        <Setter Property="Margin" Value="10,7"/>
         <Setter Property="Padding" Value="5 3"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -57,6 +58,8 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#FF9479FA" />
+                <Setter Property="Foreground" Value="Black" />
+                
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="Gray"></Setter>

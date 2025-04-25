@@ -138,7 +138,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutVolt_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("V", OutVolt_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -225,7 +225,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", OutFreq_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("F", OutFreq_Inputs);
 
                 })
                 , timeoutCts.Token);

@@ -63,4 +63,68 @@
         </Setter>
 
     </Style>
+    <Style x:Key="SwitchButton2" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                     Width="60"
+                     Height="30"
+                     Background="#E0E0E0"
+                     CornerRadius="15">
+                        <Grid>
+                            <TextBlock Text="关闭" Foreground="#FF1677FF" x:Name="text" FontWeight="Bold" Margin="4,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                            <Ellipse
+                             x:Name="Thumb"
+                             Width="26"
+                             Height="26"
+                             Margin="2"
+                             HorizontalAlignment="Left"
+                             Fill="Red"
+                             RenderTransformOrigin="0.5,0.5">
+                                <Ellipse.RenderTransform>
+                                    <TranslateTransform X="0" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Grid>
+
+
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Thumb"
+                                         Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.X)"
+                                         To="30"
+                                         Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                         Storyboard.TargetName="Thumb"
+                                         Storyboard.TargetProperty="(RenderTransform).(TranslateTransform.X)"
+                                         To="0"
+                                         Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="text" Property="Text" Value="开启"/>
+                            <Setter TargetName="text" Property="Margin" Value="0,0,4,0"/>
+                            <Setter TargetName="text" Property="HorizontalAlignment" Value="Right"/>
+                            <Setter TargetName="Thumb" Property="Fill" Value="Green"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
 </ResourceDictionary>

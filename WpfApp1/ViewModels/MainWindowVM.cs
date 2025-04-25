@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Xml.Serialization;
 using WpfApp1.Command;
 using WpfApp1.Command.Comand_GB3024;
+using WpfApp1.Command.Command_PDF302;
 using WpfApp1.Command.Command_PDF3024;
 using WpfApp1.Command.Command_VQ3024;
 using WpfApp1.Models;
@@ -46,7 +47,7 @@ namespace WpfApp1.ViewModels
             IniCom();
             //发送帧，接收帧
             SerialCountVM = new SerialCountVM();
-            //绑定委托
+            //绑定发送接收帧计数委托
             SerialCommunicationService.AddReceiveFrame=SerialCountVM.AddReceiveFrame;
             SerialCommunicationService.AddSendFrame=SerialCountVM.AddSendFrame;
             
@@ -61,14 +62,32 @@ namespace WpfApp1.ViewModels
             HOP_VQ = new HOP_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HGRID_VQ = new HGRID_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             //初始化  PTF ViewModel
-            HGRID_PDF = new HGRID_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
-            HOP_PDF = new HOP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HBAT_PDF = new HBAT_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HCTMSG1_PDF = new HCTMSG1_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HGRID_PDF = new HGRID_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HEEP1_PDF = new HEEP1_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HEEP3_PDF = new HEEP3_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HIMSG1 = new HIMSG1_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HOP_PDF = new HOP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HPV_PDF = new HPV_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HTEMP_PDF = new HTEMP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+
             //初始化实时时间ViewModel
             Clock = new ClockViewModel();
             #endregion
         }
 
+        private int _PercentValue = 30;
+
+        public int pValue
+        {
+            get { return _PercentValue ; }
+            set
+            {
+                _PercentValue = value;
+                this.RaiseProperChanged(nameof(pValue));
+            }
+        }
 
 
         #region 下拉框选择机器类型
@@ -280,6 +299,84 @@ namespace WpfApp1.ViewModels
             {
                 _HBAT_PDF = value;
                 this.RaiseProperChanged(nameof(HBAT_PDF));
+            }
+        }
+
+        //HIMSG1
+        private HIMSG1_PDF_ViewModel _HIMSG1;
+
+        public HIMSG1_PDF_ViewModel HIMSG1
+        {
+            get { return _HIMSG1; }
+            set
+            {
+                _HIMSG1 = value;
+                this.RaiseProperChanged(nameof(HIMSG1));
+            }
+        }
+
+        //HPV
+        private HPV_PDF_ViewModel _HPV_PDF;
+
+        public HPV_PDF_ViewModel HPV_PDF
+        {
+            get { return _HPV_PDF; }
+            set
+            {
+                _HPV_PDF = value;
+                this.RaiseProperChanged(nameof(HPV_PDF));
+            }
+        }
+
+        //HTEMP
+        private HTEMP_PDF_ViewModel _HTEMP_PDF;
+
+        public HTEMP_PDF_ViewModel HTEMP_PDF
+        {
+            get { return _HTEMP_PDF; }
+            set
+            {
+                _HTEMP_PDF = value;
+                this.RaiseProperChanged(nameof(HTEMP_PDF));
+            }
+        }
+
+        //HCTMSG1
+        private HCTMSG1_PDF_ViewModel  _HCTMSG1_PDF;
+
+        public HCTMSG1_PDF_ViewModel HCTMSG1_PDF
+        {
+            get { return _HCTMSG1_PDF; }
+            set
+            {
+                _HCTMSG1_PDF = value;
+                this.RaiseProperChanged(nameof(HCTMSG1_PDF));
+            }
+        }
+
+        //HEEP3
+        private HEEP3_PDF_ViewModel _HEEP3_PDF;
+
+        public HEEP3_PDF_ViewModel HEEP3_PDF
+        {
+            get { return _HEEP3_PDF; }
+            set
+            {
+                _HEEP3_PDF = value;
+                this.RaiseProperChanged(nameof(HEEP3_PDF));
+            }
+        }
+
+        //HEEP1
+        private HEEP1_PDF_ViewModel _HEEP1_PDF;
+
+        public HEEP1_PDF_ViewModel HEEP1_PDF
+        {
+            get { return _HEEP1_PDF; }
+            set
+            {
+                _HEEP1_PDF = value;
+                this.RaiseProperChanged(nameof(HEEP1_PDF));
             }
         }
 
@@ -614,9 +711,6 @@ namespace WpfApp1.ViewModels
             }
         }
 
-
-
-
         // 后台线程是否正在运行
         private bool _isRunning;
         public bool IsRunning
@@ -783,17 +877,82 @@ namespace WpfApp1.ViewModels
 
             string receive = "";
 
-            _pauseEvent.Wait(token); // 等待暂停或取消信号
-            //发送HOP指令
+            //获取机器型号
+            _pauseEvent.Wait(token);
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            SerialCommunicationService.MachineType = receive_MachineType;
+
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token); 
+            //发送HGRID指令
              receive= SerialCommunicationService.SendCommand(HGRID_PDF.Command, 50);
             //解析返回命令
             HGRID_PDF.AnalyseStringToElement(receive);
 
-            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token); 
             //发送HOP指令
             receive = SerialCommunicationService.SendCommand(HOP_PDF.Command, 50);
             //解析返回命令
             HOP_PDF.AnalysisStringToElement(receive);
+
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token);
+            //发送HBAT指令
+            receive = SerialCommunicationService.SendCommand(HBAT_PDF.Command, 50);
+            //解析返回命令
+            HBAT_PDF.AnalysisStringToElement(receive);
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HEEP1指令
+            receive = SerialCommunicationService.SendCommand(HEEP1_PDF.Command, 80);
+            //解析返回指令
+            HEEP1_PDF.AnalyseStringToElement(receive);
+
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HEEP2指令
+            receive = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+            //解析返回指令
+            HEEP2.AnalyseStringToElement(receive);
+
+            //发送HEEP3指令
+            _pauseEvent.Wait(token); 
+            receive = SerialCommunicationService.SendCommand(HEEP3_PDF.Command, 80);
+            HEEP3_PDF.AnalysisStringToElement(receive);
+
+            //发送HIMSG1指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
+            HIMSG1.AnalysisStringToElement(receive);
+
+
+            //发送HPV指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HPV_PDF.Command, 50);
+            HPV_PDF.AnalysisStringToElement(receive);
+
+            //发送HTEMP指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HTEMP_PDF.Command, 50);
+            HTEMP_PDF.AnalysisStringToElement(receive);
+
+            //发送HCTMSG1指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HCTMSG1_PDF.Command, 80);
+            HCTMSG1_PDF.AnalysisStringToElement(receive);
+
+            //发送HGEN指令
+            _pauseEvent.Wait(token); 
+            receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
+            HGEN.AnalyseStringToElement(receive);
+
+            pValue += 10;
+            if ((int)pValue == 110)
+            {
+                pValue = 0;
+            }
+
         }
 
         /// <summary>

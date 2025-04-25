@@ -1,12 +1,14 @@
-﻿<UserControl x:Class="WpfApp1.UserControls.PTF_Monitor"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControls"
-             mc:Ignorable="d" 
-             Background="White"
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="WpfApp1.UserControls.PTF_Monitor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WpfApp1.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    Background="White"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="GroupBox">
             <Setter Property="Template">
@@ -16,13 +18,16 @@
                             <StackPanel>
                                 <Border Height="22" Background="#FFD9E8FF">
                                     <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Text="{TemplateBinding Header}" />
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="{TemplateBinding Header}" />
                                 </Border>
+
                                 <ContentPresenter />
+
+
                             </StackPanel>
 
                         </Grid>
@@ -40,10 +45,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
                         <Border
-                        x:Name="bor"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="#ddd"
-                        BorderThickness="0,0,0,3">
+                            x:Name="bor"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#ddd"
+                            BorderThickness="0,0,0,3">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -66,8 +71,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="auto" />
 
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -78,423 +83,647 @@
         <!--  第一行  -->
         <StackPanel Orientation="Horizontal">
             <RadioButton
-            Click="ElementView_Click"
-            Content="{DynamicResource 概览图}"
-            IsChecked="True" />
+                Click="ElementView_Click"
+                Content="{DynamicResource 概览图}"
+                IsChecked="True" />
             <RadioButton Click="ElementSetting_Click" Content="{DynamicResource 参数设置}" />
             <RadioButton Content="{DynamicResource 软件升级}" />
         </StackPanel>
         <!--  第二行 第一列  -->
         <Grid Grid.Row="1" Margin="10,10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="150" />
-                <RowDefinition Height="100" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <GroupBox Header="PTF界面">
+            <!--  并网功能配置  -->
+            <GroupBox Header="并网功能配置">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <UniformGrid Columns="4">
-                        <TextBlock FontSize="16" Text="" />
-                        <TextBlock FontSize="16" Text="PV1" />
-                        <TextBlock FontSize="16" Text="PV2" />
-                        <TextBlock FontSize="16" Text="合计" />
-                    </UniformGrid>
-                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PVList}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <UniformGrid Columns="4">
-                                    <TextBlock FontSize="16" Text="{Binding PV_Name}" />
-                                    <TextBlock
-                                    FontSize="16"
-                                    Foreground="#FF0000FF"
-                                    Text="{Binding PV1}" />
-                                    <TextBlock
-                                    FontSize="16"
-                                    Foreground="#FF0000FF"
-                                    Text="{Binding PV2}" />
-                                    <TextBlock
-                                    FontSize="16"
-                                    Foreground="#FF0000FF"
-                                    Text="{Binding PV_Count}" />
-                                </UniformGrid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Grid>
-            </GroupBox>
-            <GroupBox
-            Grid.Row="1"
-            FontSize="16"
-            Header="状态信息">
-                <Grid Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="7*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-
+                    <!--  第一行  -->
+                    <TextBlock Style="{StaticResource ContentText}" Text="{DynamicResource 并网功能}" />
                     <TextBlock
-                    HorizontalAlignment="Right"
-                    FontSize="16"
-                    Text="总运行:" />
-
-
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HEEP1_PDF.GridConnectedFunction}" />
                     <TextBlock
-                    Grid.Row="1"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    FontSize="16"
-                    Text="PV源类型:" />
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource CT功能开关}" />
                     <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    FontSize="16"
-                    Foreground="#FF0000FF"
-                    Text="0.独立MPPT" />
-
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HEEP1_PDF.CT_Enable}" />
+                    <!--  第二行  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 并网协议}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HEEP1_PDF.PV_GridConnectionProtocol}" />
+                    
                 </Grid>
             </GroupBox>
-            <GroupBox
-            Grid.Row="2"
-            FontSize="16"
-            Header="电量信息">
-                <ItemsControl ItemsSource="{Binding PV_Info_List}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,5,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="8*" />
-                                    <ColumnDefinition Width="2*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                HorizontalAlignment="Right"
-                                FontSize="16"
-                                Text="{Binding PV_Info_Name}" />
-                                <TextBlock
-                                Grid.Column="1"
-                                HorizontalAlignment="Left"
-                                FontSize="16"
-                                Foreground="#FF0000FF"
-                                Text="{Binding PV_Info_Value}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </GroupBox>
+            <!--  市电  -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <GroupBox Grid.Row="2" Header="市电">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <!--  标题  -->
+                        <TextBlock
+                            Grid.Row="0"
+                            Style="{StaticResource HeaderText}"
+                            Text="属性" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Style="{StaticResource HeaderText}"
+                            Text="当前值" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Style="{StaticResource HeaderText}"
+                            Text="单位" />
+                        <!--  第一行  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 市电电压}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.MainsVoltage}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 市电功率}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.ACPower}" />
+                        <!--  市电频率  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 市电频率}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.MainsFrequency}" />
+                        
+                        <!--  当前允许最大逆变功率  -->
+                        <TextBlock
+                            Grid.Row="5"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 当前允许最大逆变功率}" />
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.MaxInvPower}" />
+                        <!--  并网电流  -->
+                        <TextBlock
+                            Grid.Row="6"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 并网电流}" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP1_PDF.GridCurrent}" />
+                        <!--  调零功率  -->
+                        <TextBlock
+                            Grid.Row="7"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 调零功率}" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HEEP3_PDF.ZeroAdjPwr}" />
+                    </Grid>
+                </GroupBox>
+            </ScrollViewer>
+
+            <!--  系统信息与状态  -->
+            <ScrollViewer
+                Grid.Row="2"
+                VerticalAlignment="Bottom"
+                VerticalScrollBarVisibility="Auto">
+                <GroupBox FontSize="16" Header="系统信息与状态">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <!--  第一行  -->
+                        <TextBlock Style="{StaticResource ContentText}" Text="{DynamicResource 系统时间}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGEN.SystemTime}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 版本号}" />
+                        <TextBlock
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HIMSG1.Version}" />
+                        <!--  第二行  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 发布日期}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HIMSG1.ReleaseDate}" />
+                       
+                    </Grid>
+                </GroupBox>
+            </ScrollViewer>
+
         </Grid>
         <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*" MaxHeight="330" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
             <!--  第一行 图标显示  -->
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
+            <Grid >
+                <Grid.RowDefinitions >
+                    <RowDefinition  Height="1*"/>
+                    <RowDefinition  Height="1*"/>
+                    <RowDefinition  Height="1*"/>
                 </Grid.RowDefinitions>
-                <!--  上边 (光伏发电)  -->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="../Resource/Fonts/#iconfont"
-                        FontSize="60"
-                        Foreground="#FF3596D4"
-                        Text="&#xe809;" />
-                        <!--  向下箭头（垂直翻转）  -->
-                        <Path
-                        Margin="0,0,0,5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
-                        Fill="#9918aabd" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <!--太阳能发电-->
+                <local:RingUC icon="&#xe809;"  FontSize="12" PercentValue="{Binding pValue}"  Grid.Column="1"></local:RingUC>
+                <!--左一-->
+                <local:RingUC icon="&#xe61c;"  FontSize="12" PercentValue="50" Grid.Row="1"></local:RingUC>
+                <!--中间-->
+                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                    <TextBlock HorizontalAlignment="Center" Foreground="#FF1BD0E4" Text="&#xe62f;" FontSize="15" FontFamily="../Resource/Fonts/#iconfont"></TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                        <TextBlock  Text="&#xec63;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec63;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec63;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec63;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Margin="10,0" Text="&#xe6af;" FontSize="30" FontFamily="../Resource/Fonts/#iconfont"></TextBlock>
+                        <TextBlock  Text="&#xec62;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec62;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec62;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
+                        <TextBlock  Text="&#xec62;" FontSize="15" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Foreground="#FF1BD0E4"></TextBlock>
                     </StackPanel>
-
-
-                    <TextBlock
-                    Grid.Column="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center">
-                    <Run Text="光伏功率:" />
-                    <Run
-                        FontSize="16"
-                        Foreground="#FF0000FF"
-                        Text="{Binding hopViewModel.Name}" />
-                    </TextBlock>
-                </Grid>
-                <!--  中间 (电池 总控 负载)  -->
-                <Grid Grid.Row="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="70" />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="150" />
-                        </Grid.ColumnDefinitions>
-                        <!--  向下箭头（垂直翻转）  -->
-                        <Path
-                        Grid.Column="4"
-                        Margin="0,0,0,5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
-                        Fill="#9918aabd" />
-                        <Path
-                        Grid.Column="4"
-                        Margin="0,0,0,5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Bottom"
-                        Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
-                        Fill="#9918aabd" />
-                        <TextBlock
-                        Grid.Column="4"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="../Resource/Fonts/#iconfont"
-                        FontSize="50"
-                        Foreground="#FF3596D4"
-                        Text="&#xe6af;" />
-                        <!--  电池发电  -->
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="../Resource/Fonts/#iconfont"
-                            FontSize="50"
-                            Foreground="#FF3596D4"
-                            Text="&#xe603;" />
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock>
-                                <Run FontSize="13" Text="SOC(%):" />
-                                <Run
-                                    FontSize="15"
-                                    Foreground="#FF0000FF"
-                                    Text="0" />
-                                </TextBlock>
-                                <TextBlock>
-                                <Run FontSize="13" Text="充电功率(W):" />
-                                <Run
-                                    FontSize="15"
-                                    Foreground="#FF0000FF"
-                                    Text="0" />
-                                </TextBlock>
-                                <TextBlock>
-                                <Run FontSize="13" Text="放电功率(W):" />
-                                <Run
-                                    FontSize="15"
-                                    Foreground="#FF0000FF"
-                                    Text="0" />
-                                </TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <Grid Grid.Column="5">
-                            <!--  向右箭头（原始）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="6">
-                            <!--  向右箭头（原始）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="7">
-                            <!--  向右箭头（原始）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M0,0 L3,0 L5,4 L3,8 L0,8 L3,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="1">
-                            <!--  向左箭头（水平镜像）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="2">
-                            <!--  向左箭头（水平镜像）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="3">
-                            <!--  向左箭头（水平镜像）  -->
-                            <Path
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Data="M5,0 L2,0 L0,4 L2,8 L5,8 L2,4 Z"
-                            Fill="#9918aabd" />
-                        </Grid>
-                        <Grid Grid.Column="8">
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontFamily="../Resource/Fonts/#iconfont"
-                                FontSize="50"
-                                Foreground="#FF3596D4"
-                                Text="&#xe611;" />
-                                <TextBlock>
-                                <Run FontSize="13" Text="总负载:" />
-                                <Run
-                                    FontSize="15"
-                                    Foreground="#FF0000FF"
-                                    Text="{Binding hopViewModel.Kame}" />
-                                </TextBlock>
-                            </StackPanel>
-
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <!--  下边 (电网)  -->
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="100" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="1">
-                        <Path
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Data="M0,0 L0,3 L4,5 L8,3 L8,0 L4,3 Z"
-                        Fill="#9918aabd" />
-                        <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="../Resource/Fonts/#iconfont"
-                        FontSize="60"
-                        Foreground="#FF3596D4"
-                        Text="&#xe809;" />
-                        <!--  向下箭头（垂直翻转）  -->
-                    </StackPanel>
-
-                    <StackPanel
-                    Grid.Column="2"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center">
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Run Text="电网取电:" />
-                        <Run
-                            FontSize="16"
-                            Foreground="#FF0000FF"
-                            Text="0" />
-                        </TextBlock>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <Run Text="馈入电网:" />
-                        <Run
-                            FontSize="16"
-                            Foreground="#FF0000FF"
-                            Text="0" />
-                        </TextBlock>
-                    </StackPanel>
-
-                </Grid>
-
+                    <TextBlock HorizontalAlignment="Center" Foreground="#FF1BD0E4" Text="&#xe62f;" FontSize="15" FontFamily="../Resource/Fonts/#iconfont"></TextBlock>
+                </StackPanel>
+                <!--右一-->
+                <local:RingUC icon="&#xe603;"  FontSize="12" PercentValue="78"  Grid.Column="2" Grid.Row="1"></local:RingUC>
+                <!--中下-->
+                <local:RingUC icon="&#xe973;"  FontSize="12" PercentValue="100" Grid.Column="1" Grid.Row="2"></local:RingUC>
+                
             </Grid>
             <!--  第二行  -->
-            <GroupBox Grid.Row="1" Header="逆变信息" />
+            <GroupBox Grid.Row="1" Header="PV">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--  标题  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Style="{StaticResource HeaderText}"
+                        Text="属性" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Style="{StaticResource HeaderText}"
+                        Text="当前值" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Style="{StaticResource HeaderText}"
+                        Text="单位" />
+                    <!--  PV电流  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV电流}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVCurr}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="A" />
+                    <!--  PV电压  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV电压}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVVolt}" />
+                    <!--  PV功率  -->
+                    <TextBlock
+                        Grid.Row="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV功率}" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVPwr}" />
+                </Grid>
+            </GroupBox>
             <!--  第三行  -->
-            <GroupBox Grid.Row="2" Header="电池信息" />
+
+            <GroupBox Grid.Row="2" Header="CT">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--  标题  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Style="{StaticResource HeaderText}"
+                        Text="属性" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Style="{StaticResource HeaderText}"
+                        Text="当前值" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Style="{StaticResource HeaderText}"
+                        Text="单位" />
+                    <!--  CT电流  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource CT电流}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HCTMSG1_PDF.CTCurr}" />
+                    <!--  CT功率  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource CT功率}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1 "
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HCTMSG1_PDF.CTPwr}" />
+                </Grid>
+
+            </GroupBox>
         </Grid>
+
         <!--  第二行 第三列  -->
-        <Grid Grid.Row="1" Grid.Column="2">
+        <Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <GroupBox Header="电网信息" />
-            <GroupBox Grid.Row="1" Header="柴油发电机信息" />
-            <GroupBox Grid.Row="2" Header="EPS信息" />
+            <GroupBox Header="输出">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--  标题  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Style="{StaticResource HeaderText}"
+                        Text="属性" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Style="{StaticResource HeaderText}"
+                        Text="当前值" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Style="{StaticResource HeaderText}"
+                        Text="单位" />
+                    <!--  输出频率  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 输出频率}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.OutFreq}" />
+                    <!--  视在功率  -->
+                    <TextBlock
+                        Grid.Row="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 视在功率}" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.ApparentPwr}" />
+                    <!--  有功功率  -->
+                    <TextBlock
+                        Grid.Row="4"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 有功功率}" />
+                    <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.ActivePwr}" />
+
+                    <!--  负载百分比  -->
+                    <TextBlock
+                        Grid.Row="5"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 负载百分比}" />
+                    <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.LoadPercent}" />
+                    <!--  直流分量  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 直流分量}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.DCOffset}" />
+                    <!--  电感电流  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 电感电流}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.InductorCurr}" />
+                    <!--  电感功率  -->
+                    <TextBlock
+                        Grid.Row="8"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 电感功率}" />
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.InductorPwr}" />
+                    <!--  输出电压  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 输出电压}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.OutVolt}" />
+                    
+                </Grid>
+            </GroupBox>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalAlignment="Bottom">
+                <GroupBox FontSize="16" Header="机器状态">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        
+
+                        <!--  母线电压  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 母线电压}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HBAT_PDF.BusVolt}" />
+                        <!--  PFC工作状态  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource PFC工作状态}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HBAT_PDF.PFCStatus}" />
+                        <!--  逆变温度  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 逆变温度}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.InvTemp}" />
+                        <!--  当前最高温度  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 当前最高温度}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.MaxTemp}" />
+                        <!--  风扇转速  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 风扇转速}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.FanSpeed}" />
+                        <!--  风扇使能  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 风扇使能}" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.FanEnable}" />
+
+
+                    </Grid>
+                </GroupBox>
+            </ScrollViewer>
+
+
+
         </Grid>
-        <!--  第二行 第四列  -->
-        <Grid Grid.Row="1" Grid.Column="3">
-            <Border
-            Margin="3,0,0,5"
-            BorderBrush="Gray"
-            BorderThickness="1" />
-        </Grid>
+
         <!--  第三行  -->
         <Grid Grid.Row="2" Grid.ColumnSpan="4">
             <Border BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Margin="5,0" Orientation="Horizontal">
                     <Button
-                    x:Name="StopBtn"
-                    Width="80"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    Background="Red"
-                    Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 停止}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe691;" />
+                        x:Name="StopBtn"
+                        Width="80"
+                        Height="30"
+                        Margin="0,0,5,0"
+                        Background="Red"
+                        Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Content="{DynamicResource 停止}"
+                        Style="{StaticResource BtnStyle}"
+                        Tag="&#xe691;" />
                     <Button
-                    x:Name="BeginBtn"
-                    Width="80"
-                    Height="30"
-                    Background="#FF1AFA29"
-                    Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 开始}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe622;" />
+                        x:Name="BeginBtn"
+                        Width="80"
+                        Height="30"
+                        Background="#FF1AFA29"
+                        Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Content="{DynamicResource 开始}"
+                        Style="{StaticResource BtnStyle}"
+                        Tag="&#xe622;" />
                     <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
+                        Width="2"
+                        Margin="5,0,0,0"
+                        Background="Black" />
                     <CheckBox Margin="10,0,0,0" VerticalAlignment="Center">
                         <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="15"
-                        Text="导出运行数据" />
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Text="导出运行数据" />
                     </CheckBox>
                     <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-                    <Hyperlink>日志目录</Hyperlink>
+                        <Hyperlink>日志目录</Hyperlink>
                     </TextBlock>
                     <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
+                        Width="2"
+                        Margin="5,0,0,0"
+                        Background="Black" />
                 </StackPanel>
             </Border>
         </Grid>
@@ -503,27 +732,39 @@
 
         <!--  参数设置 界面  -->
         <Grid
-        x:Name="SettingView"
-        Grid.Row="1"
-        Grid.RowSpan="2"
-        Grid.ColumnSpan="4"
-        Background="White"
-        Visibility="Collapsed">
+            x:Name="SettingView"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="4"
+            Background="White"
+            Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="2*" />
                     </Grid.ColumnDefinitions>
                     <!--  第一列  -->
                     <Border
-                    Margin="3"
-                    Padding="20"
-                    Background="#FFF0F0F0"
-                    CornerRadius="5">
+                        Margin="3"
+                        Padding="20"
+                        Background="#FFF0F0F0"
+                        CornerRadius="5">
                         <Grid>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -557,495 +798,524 @@
 
                             <!--  标题行  -->
                             <TextBlock
-                            Grid.Column="0"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 设置项}" />
+                                Grid.Column="0"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 设置项}" />
                             <TextBlock
-                            Grid.Column="1"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 当前值}" />
+                                Grid.Column="1"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 当前值}" />
                             <TextBlock
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 设置值}" />
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 设置值}" />
                             <TextBlock
-                            Grid.Column="3"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 操作}" />
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 操作}" />
 
                             <!--  温度限制  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 温度限制}" />
+                                Grid.Row="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 温度限制}" />
                             <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.TempLimit}" />
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Foreground="#FF9479FA"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGRID_PDF.TempLimit}" />
                             <ComboBox
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HGRID_PDF.TempLimitOptions}"
-                            SelectedItem="{Binding HGRID_PDF.TempLimit_Inputs}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HGRID_PDF.TempLimitOptions}"
+                                SelectedItem="{Binding HGRID_PDF.TempLimit_Inputs}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGRID_PDF.Command_SetTempLimit, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGRID_PDF.Command_SetTempLimit, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
 
+                            -->
                             <!--  市电电压  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电电压}" />
+                                Grid.Row="2"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 市电电压}" />
                             <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MainsVoltage}" />
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Foreground="Red"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGRID_PDF.MainsVoltage}" />
                             <TextBox
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HGRID_PDF.MainsVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HGRID_PDF.MainsVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="2"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGRID_PDF.Command_SetMainsVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="2"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGRID_PDF.Command_SetMainsVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
 
-                            <!--  市电频率  -->
+                            -->
+                            <!--  PFC工作状态  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电频率}" />
+                                Grid.Row="3"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource PFC工作状态}" />
                             <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MainsFrequency}" />
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Foreground="#FF310CDE"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HBAT_PDF.PFCStatus}" />
                             <ComboBox
-                            Grid.Row="3"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.MainsFrequencyOptions}"
-                            SelectedItem="{Binding HEEP1.WorkingModeSelectedOption}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HBAT_PDF.PFCStatusOptions}"
+                                SelectedItem="{Binding HBAT_PDF.PFCStatus_Inputs}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="3"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetWorkingMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="3"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HBAT_PDF.Command_SetPFCStatus, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  市电频率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="4"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电频率}" />
+                                Grid.Row="4"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 市电频率}" />
                             <TextBlock
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MainsFrequency}" />
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGRID_PDF.MainsFrequency}" />
                             <Button
-                            Grid.Row="4"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGRID_PDF.Command_SetMainsFrequency, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="4"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGRID_PDF.Command_SetMainsFrequency, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
                             <TextBox
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HGRID_PDF.MainsFrequency_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                             />
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HGRID_PDF.MainsFrequency_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            -->
                             <!--  市电功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="5"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电功率}" />
+                                Grid.Row="5"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 市电功率}" />
                             <TextBlock
-                            Grid.Row="5"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.ACPower}" />
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGRID_PDF.ACPower}" />
                             <Button
-                            Grid.Row="5"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGRID_PDF.Command_SetACPower, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="5"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGRID_PDF.Command_SetACPower, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
                             <TextBox
-                            Grid.Row="5"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HGRID_PDF.ACPower_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                             />
+                                Grid.Row="5"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HGRID_PDF.ACPower_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            -->
                             <!--  当前允许最大功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="6"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 当前允许最大逆变功率}" />
+                                Grid.Row="6"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 当前允许最大逆变功率}" />
                             <TextBlock
-                            Grid.Row="6"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MaxInvPower}" />
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HGRID_PDF.MaxInvPower}" />
                             <TextBox
-                            Grid.Row="6"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HGRID_PDF.MaxInvPower_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                             />
+                                Grid.Row="6"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HGRID_PDF.MaxInvPower_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="6"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGRID_PDF.Command_SetMaxInvPower, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="6"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HGRID_PDF.Command_SetMaxInvPower, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  输出电压  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="7"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 输出电压}" />
+                                Grid.Row="7"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 输出电压}" />
                             <TextBlock
-                            Grid.Row="7"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.OutVolt}" />
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.OutVolt}" />
                             <TextBox
-                            Grid.Row="7"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HOP_PDF.OutVolt_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                             />
+                                Grid.Row="7"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.OutVolt_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="7"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetOutVolt, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="7"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetOutVolt, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  输出频率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="8"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 输出频率}" />
+                                Grid.Row="8"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 输出频率}" />
                             <TextBlock
-                            Grid.Row="8"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.OutFreq}" />
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.OutFreq}" />
                             <TextBox
-                            Grid.Row="8"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HOP_PDF.OutFreq_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            />
+                                Grid.Row="8"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.OutFreq_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="8"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetOutFreq, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="8"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetOutFreq, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  视在功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="9"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 视在功率}" />
+                                Grid.Row="9"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 视在功率}" />
                             <TextBlock
-                            Grid.Row="9"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.ApparentPwr}" />
+                                Grid.Row="9"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.ApparentPwr}" />
                             <TextBox
-                            Grid.Row="9"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HOP_PDF.ApparentPwr_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                             />
+                                Grid.Row="9"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.ApparentPwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="9"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetApparentPwr, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="9"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetApparentPwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  有功功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="10"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 有功功率}" />
+                                Grid.Row="10"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 有功功率}" />
                             <TextBlock
-                            Grid.Row="10"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.ActivePwr}" />
+                                Grid.Row="10"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.ActivePwr}" />
                             <TextBox
-                            Grid.Row="10"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.ActivePwr_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="10"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.ActivePwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="10"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetActivePwr, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="10"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetActivePwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  负载百分比  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="11"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 负载百分比}" />
+                                Grid.Row="11"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 负载百分比}" />
                             <TextBlock
-                            Grid.Row="11"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.LoadPercent}" />
+                                Grid.Row="11"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.LoadPercent}" />
                             <TextBox
-                            Grid.Row="11"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.LoadPercent_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="11"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.LoadPercent_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="11"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetLoadPercent, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="11"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetLoadPercent, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  直流分量  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="12"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 直流分量}" />
+                                Grid.Row="12"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 直流分量}" />
                             <TextBlock
-                            Grid.Row="12"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.DCOffset}" />
+                                Grid.Row="12"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.DCOffset}" />
                             <TextBox
-                            Grid.Row="12"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.DCOffset_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="12"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.DCOffset_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="12"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetDCOffset, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="12"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetDCOffset, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  额定功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="13"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 额定功率}" />
+                                Grid.Row="13"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 额定功率}" />
                             <TextBlock
-                            Grid.Row="13"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.RatedPwr}" />
+                                Grid.Row="13"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.RatedPwr}" />
                             <TextBox
-                            Grid.Row="13"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.RatedPwr_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="13"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.RatedPwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="13"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetRatedPwr, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="13"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetRatedPwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  电感功率  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="14"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电感功率}" />
+                                Grid.Row="14"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 电感功率}" />
                             <TextBlock
-                            Grid.Row="14"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.InductorPwr}" />
+                                Grid.Row="14"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.InductorPwr}" />
                             <TextBox
-                            Grid.Row="14"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.InductorPwr_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="14"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.InductorPwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="14"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetInductorPwr, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="14"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetInductorPwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
                             <!--  电感电流  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="15"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电感电流}" />
+                                Grid.Row="15"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 电感电流}" />
                             <TextBlock
-                            Grid.Row="15"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HOP_PDF.InductorCurr}" />
+                                Grid.Row="15"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HOP_PDF.InductorCurr}" />
                             <TextBox
-                            Grid.Row="15"
-                            Grid.Column="2"
-                            Text="{Binding HOP_PDF.InductorCurr_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource InputBox}" />
+                                Grid.Row="15"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HOP_PDF.InductorCurr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="15"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HOP_PDF.Command_SetInductorCurr, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池均衡间隔时间  -->
+                                Grid.Row="15"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HOP_PDF.Command_SetInductorCurr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  母线电压  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="16"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池均衡间隔时间}" />
+                                Grid.Row="16"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 母线电压}" />
                             <TextBlock
-                            Grid.Row="16"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.BatteryBalancingInterval}" />
+                                Grid.Row="16"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HBAT_PDF.BusVolt}" />
                             <TextBox
-                            Grid.Row="16"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.BatteryBalancingInterval_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="16"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HBAT_PDF.BusVolt_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="16"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingInterval, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  输出模式  -->
+                                Grid.Row="16"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HBAT_PDF.Command_SetBusVolt, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />-->
+                            <!--  市电输入范围  -->
                             <TextBlock
-                            Grid.Row="17"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 输出模式}" />
+                                Grid.Row="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 市电输入范围}" />
                             <TextBlock
-                            Grid.Row="17"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.OutputMode}" />
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.AC_InputRange}" />
                             <ComboBox
-                            Grid.Row="17"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.OutputModeOptions}"
-                            SelectedItem="{Binding HEEP1.OutputMode_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.AC_InputRangeOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.AC_InputRange_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="17"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetOutputMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  第二输出放电时间  -->
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetAC_InputRange, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  输出设定频率  -->
                             <TextBlock
-                            Grid.Row="18"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出的放电时间}" />
+                                Grid.Row="8"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 系统频率}" />
                             <TextBlock
-                            Grid.Row="18"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.SecondOutputDischargeTime}" />
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.OutputSettingFrequency}" />
+                            <ComboBox
+                                Grid.Row="8"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.OutputSettingFrequencyOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.OutputSettingFrequency_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="8"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetOutputSettingFrequency, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            
+                            
+                            <!--  示例第三设置行  -->
+                            <TextBlock
+                                Grid.Row="24"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 输出模式}" />
+                            <TextBlock
+                                Grid.Row="24"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.WorkingMode}" />
+                            <ComboBox
+                                Grid.Row="24"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.WorkingModeOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.WorkingModeSelectedOption}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="24"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetWorkingMode, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            
+                            <!--  CT功能开关  -->
+                            <TextBlock
+                                Grid.Row="31"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource CT功能开关}" />
+                            <TextBlock
+                                Grid.Row="31"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.CT_Enable}" />
+                            <ComboBox
+                                Grid.Row="31"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.CT_EnableOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.CT_Enable_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <Button
+                                Grid.Row="31"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetCT_Enable, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  CT电流  --><!--
+                            <TextBlock
+                                Grid.Row="32"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource CT电流}" />
+                            <TextBlock
+                                Grid.Row="32"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HCTMSG1_PDF.CTCurr}" />
                             <TextBox
-                            Grid.Row="18"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.SecondOutputDischargeTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="32"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HCTMSG1_PDF.CTCurr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="18"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetSecondOutputDischargeTime, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  恢复第二输出的延时时间  -->
-                            <TextBlock
-                            Grid.Row="19"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出的延时时间}" />
-                            <TextBlock
-                            Grid.Row="19"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.DelayTimeToRestoreTheSecondOutput}" />
-                            <TextBox
-                            Grid.Row="19"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.DelayTimeToRestoreTheSecondOutput_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="19"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetDelayTimeToRestoreTheSecondOutput, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  恢复第二输出的电池容量  -->
-                            <TextBlock
-                            Grid.Row="20"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出的电池容量}" />
-                            <TextBlock
-                            Grid.Row="20"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.RestoreBatteryCapacityOfSecondOutput}" />
-                            <TextBox
-                            Grid.Row="20"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.RestoreBatteryCapacityOfSecondOutput_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="20"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetRestoreBatteryCapacityOfSecondOutput, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  恢复第二输出的电池电压  -->
-                            <TextBlock
-                            Grid.Row="21"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出的电池电压}" />
-                            <TextBlock
-                            Grid.Row="21"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.RestoreBatteryVoltageOfSecondOutput}" />
-                            <TextBox
-                            Grid.Row="21"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.RestoreBatteryVoltageOfSecondOutput_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="21"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetRestoreBatteryVoltageOfSecondOutput, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="32"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HCTMSG1_PDF.Command_SetCTCurr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />-->
 
                         </Grid>
                     </Border>
                     <!--  第二列  -->
                     <Border
-                    Grid.Column="1"
-                    Margin="3"
-                    Padding="20"
-                    Background="#FFF0F0F0"
-                    CornerRadius="5">
+                        Grid.Column="1"
+                        Margin="3"
+                        Padding="20"
+                        Background="#FFF0F0F0"
+                        CornerRadius="5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*" />
@@ -1076,513 +1346,541 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
 
                             </Grid.RowDefinitions>
 
                             <!--  标题行  -->
                             <TextBlock
-                            Grid.Column="0"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 设置项}" />
+                                Grid.Column="0"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 设置项}" />
                             <TextBlock
-                            Grid.Column="1"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 当前值}" />
+                                Grid.Column="1"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 当前值}" />
                             <TextBlock
-                            Grid.Column="2"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 设置值}" />
+                                Grid.Column="2"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 设置值}" />
                             <TextBlock
-                            Grid.Column="3"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource HeaderText}"
-                            Text="{DynamicResource 操作}" />
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource HeaderText}"
+                                Text="{DynamicResource 操作}" />
 
-                            <!--  市电输入范围  -->
+                            <!--  市电输入范围  --><!--
                             <TextBlock
-                            Grid.Row="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电输入范围}" />
+                                Grid.Row="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 市电输入范围}" />
                             <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.AC_InputRange}" />
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.AC_InputRange}" />
                             <ComboBox
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.AC_InputRangeOptions}"
-                            SelectedItem="{Binding HEEP1.AC_InputRange_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.AC_InputRangeOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.AC_InputRange_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetAC_InputRange, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  充电优先顺序  -->
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetAC_InputRange, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />-->
+                            
+                            
+                            
+                            
+                            
+                            <!--  版本号  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 充电模式}" />
+                                Grid.Row="2"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 版本号}" />
                             <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.ChargingPriority}" />
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HIMSG1.Version}" />
+                            <TextBox
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HIMSG1.Version_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="2"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HIMSG1.Command_SetVersion, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  发布日期  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="3"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 发布日期}" />
+                            <TextBlock
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HIMSG1.ReleaseDate}" />
+                            <TextBox
+                                Grid.Row="3"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HIMSG1.ReleaseDate_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="3"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HIMSG1.Command_SetReleaseDate, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  程序完整性  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="4"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 程序完整性}" />
+                            <TextBlock
+                                Grid.Row="4"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HIMSG1.SWIntegrity}" />
+                            <TextBox
+                                Grid.Row="4"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HIMSG1.SWIntegrity_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="4"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HIMSG1.Command_SetSWIntegrity, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  PV电压  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="5"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource PV电压}" />
+                            <TextBlock
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HPV_PDF.PVVolt}" />
+                            <TextBox
+                                Grid.Row="5"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HPV_PDF.PVVolt_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="5"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HPV_PDF.Command_SetPVVolt, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  PV电流  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="6"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource PV电流}" />
+                            <TextBlock
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HPV_PDF.PVCurr}" />
+                            <TextBox
+                                Grid.Row="6"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HPV_PDF.PVCurr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="6"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HPV_PDF.Command_SetPVCurr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  PV功率  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="7"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource PV功率}" />
+                            <TextBlock
+                                Grid.Row="7"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HPV_PDF.PVPwr}" />
+                            <TextBox
+                                Grid.Row="7"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HPV_PDF.PVPwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="7"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HPV_PDF.Command_SetPVPwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />-->
+                            
+                            
+                            
+                            <!--  输出设定频率  --><!--
+                            <TextBlock
+                                Grid.Row="8"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 系统频率}" />
+                            <TextBlock
+                                Grid.Row="8"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.OutputSettingFrequency}" />
                             <ComboBox
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.ChargingPriorityOptions}"
-                            SelectedItem="{Binding HEEP1.ChargingPriority_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="8"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.OutputSettingFrequencyOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.OutputSettingFrequency_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="2"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetChargingPriority, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  BMS锁机电池容量  -->
-                            <TextBlock
-                            Grid.Row="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource BMS锁机电池容量}" />
-                            <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.BMS_LowPower_SOC}" />
-                            <TextBox
-                            Grid.Row="3"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP1.BMS_LowPower_SOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="3"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetBMS_LowPower_SOC, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  AC充电电池容量  -->
-                            <TextBlock
-                            Grid.Row="4"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource AC充电电池容量}" />
-                            <TextBlock
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.BMSreturns_to_AC_mode_SOC}" />
-                            <TextBox
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP1.BMSreturns_to_AC_mode_SOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="4"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetBMSreturns_to_AC_mode_SOC, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池放电电池容量  -->
-                            <TextBlock
-                            Grid.Row="5"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池放电电池容量}" />
-                            <TextBlock
-                            Grid.Row="5"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.BMS_returns_to_battery_mode_SOC}" />
-                            <TextBox
-                            Grid.Row="5"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP1.BMS_returns_to_battery_mode_SOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="5"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetBMS_returns_to_battery_mode_SOC, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  逆变开机电池容量  -->
-                            <TextBlock
-                            Grid.Row="6"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 逆变开机电池容量}" />
-                            <TextBlock
-                            Grid.Row="6"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.BMS_automatically_turns_on_after_low_power_SOC}" />
-                            <TextBox
-                            Grid.Row="6"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP1.BMS_automatically_turns_on_after_low_power_SOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="6"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetBMS_automatically_turns_on_after_low_power_SOC, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  市电过载转旁路  -->
-                            <TextBlock
-                            Grid.Row="7"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 市电过载转旁路}" />
-                            <TextBlock
-                            Grid.Row="7"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.OverloadByPassFunction}" />
-                            <ComboBox
-                            Grid.Row="7"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.OverloadByPassFunctionOptions}"
-                            SelectedItem="{Binding HEEP1.OverloadByPassFunction_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
-                            <Button
-                            Grid.Row="7"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetOverloadByPassFunction, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  输出设定频率  -->
-                            <TextBlock
-                            Grid.Row="8"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 系统频率}" />
-                            <TextBlock
-                            Grid.Row="8"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.OutputSettingFrequency}" />
-                            <ComboBox
-                            Grid.Row="8"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.OutputSettingFrequencyOptions}"
-                            SelectedItem="{Binding HEEP1.OutputSettingFrequency_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
-                            <Button
-                            Grid.Row="8"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetOutputSettingFrequency, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="8"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetOutputSettingFrequency, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />-->
                             <!--  并网电流  -->
                             <TextBlock
-                            Grid.Row="9"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 并网电流}" />
+                                Grid.Row="9"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 并网电流}" />
                             <TextBlock
-                            Grid.Row="9"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.GridCurrent}" />
+                                Grid.Row="9"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.GridCurrent}" />
                             <TextBox
-                            Grid.Row="9"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP1.GridCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="9"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HEEP1_PDF.GridCurrent_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="9"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetGridCurrent, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="9"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetGridCurrent, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
                             <!--  并网功能  -->
                             <TextBlock
-                            Grid.Row="10"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 并网功能}" />
+                                Grid.Row="10"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 并网功能}" />
                             <TextBlock
-                            Grid.Row="10"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.GridConnectedFunction}" />
+                                Grid.Row="10"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.GridConnectedFunction}" />
                             <ComboBox
-                            Grid.Row="10"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.GridConnectedFunctionOptions}"
-                            SelectedItem="{Binding HEEP1.GridConnectedFunction_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="10"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.GridConnectedFunctionOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.GridConnectedFunction_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="10"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetGridConnectedFunction, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="10"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetGridConnectedFunction, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
                             <!--  并网协议  -->
                             <TextBlock
-                            Grid.Row="11"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 并网协议}" />
+                                Grid.Row="11"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 并网协议}" />
                             <TextBlock
-                            Grid.Row="11"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.PV_GridConnectionProtocol}" />
+                                Grid.Row="11"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.PV_GridConnectionProtocol}" />
                             <ComboBox
-                            Grid.Row="11"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.PV_GridConnectionProtocolOptions}"
-                            SelectedItem="{Binding HEEP1.PV_GridConnectionProtocol_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="11"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.PV_GridConnectionProtocolOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.PV_GridConnectionProtocol_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="11"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetPV_GridConnectionProtocol, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  PV馈能优先级  -->
+                                Grid.Row="11"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetPV_GridConnectionProtocol, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            
+                           
+                            <!--  蜂鸣器状态  -->
                             <TextBlock
-                            Grid.Row="12"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource PV馈能优先级}" />
+                                Grid.Row="22"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 蜂鸣器状态}" />
                             <TextBlock
-                            Grid.Row="12"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP1.PV_FeedPriority}" />
+                                Grid.Row="22"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.BuzzerStatus}" />
                             <ComboBox
-                            Grid.Row="12"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP1.PV_FeedPriorityOptions}"
-                            SelectedItem="{Binding HEEP1.PV_FeedPriority_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="22"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.BuzzerStatusOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.BuzzerStatus_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="12"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP1.Command_SetPV_FeedPriority, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  AC充电时间  -->
+                                Grid.Row="22"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetBuzzerStatus, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  过载重启  -->
                             <TextBlock
-                            Grid.Row="13"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource AC充电时间}" />
+                                Grid.Row="23"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 过载重启}" />
                             <TextBlock
-                            Grid.Row="13"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding SpecialCommand.AC_Charging_Time}" />
-                            <TextBox
-                            Grid.Row="13"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding SpecialCommand.AC_Charging_Time_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="13"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.SpecialCommand.Command_SetAC_Charging_Time, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  双输出模式  -->
-                            <TextBlock
-                            Grid.Row="14"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 双输出模式}" />
-                            <TextBlock
-                            Grid.Row="14"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.DualOutputMode}" />
+                                Grid.Row="23"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.OverloadRestart}" />
                             <ComboBox
-                            Grid.Row="14"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP2.DualOutputModeOptions}"
-                            SelectedItem="{Binding HEEP2.DualOutputMode_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="23"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.OverloadRestartOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.OverloadRestart_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="14"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetDualOutputMode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  第二输出关闭电压值(并机模式关闭电压值)  -->
+                                Grid.Row="23"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetOverloadRestart, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  过温重启  -->
                             <TextBlock
-                            Grid.Row="15"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出关闭电压值}" />
+                                Grid.Row="24"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 过温重启}" />
                             <TextBlock
-                            Grid.Row="15"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.ParallelModeShutdownVoltage}" />
-                            <TextBox
-                            Grid.Row="15"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.ParallelModeShutdownVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="15"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetParallelModeShutdownVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  第二输出关闭电池SOC(并机模式关闭SOC)  -->
-                            <TextBlock
-                            Grid.Row="16"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 第二输出关闭电池SOC}" />
-                            <TextBlock
-                            Grid.Row="16"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.ParallelModeShutdownSOC}" />
-                            <TextBox
-                            Grid.Row="16"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.ParallelModeShutdownSOC_Inputs, UpdateSourceTrigger=PropertyChanged}" />
-                            <Button
-                            Grid.Row="16"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetParallelModeShutdownSOC, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池均衡模式  -->
-                            <TextBlock
-                            Grid.Row="17"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池均衡模式}" />
-                            <TextBlock
-                            Grid.Row="17"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.BatteryBalancingMmode}" />
+                                Grid.Row="24"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HEEP1_PDF.OverTemperatureRestart}" />
                             <ComboBox
-                            Grid.Row="17"
-                            Grid.Column="2"
-                            ItemsSource="{Binding HEEP2.BatteryBalancingMmodeOptions}"
-                            SelectedItem="{Binding HEEP2.BatteryBalancingMmode_Inputs, UpdateSourceTrigger=PropertyChanged}"
-                            Style="{StaticResource SelectBox}" />
+                                Grid.Row="24"
+                                Grid.Column="2"
+                                ItemsSource="{Binding HEEP1_PDF.OverTemperatureRestartOptions}"
+                                SelectedItem="{Binding HEEP1_PDF.OverTemperatureRestart_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
                             <Button
-                            Grid.Row="17"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingMmode, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池均衡电压  -->
+                                Grid.Row="24"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetOverTemperatureRestart, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />
+                            
+                            
+                            <!--  逆变温度  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="18"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池均衡电压}" />
+                                Grid.Row="28"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 逆变温度}" />
                             <TextBlock
-                            Grid.Row="18"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.BatteryBalancingVoltage}" />
+                                Grid.Row="28"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HTEMP_PDF.InvTemp}" />
                             <TextBox
-                            Grid.Row="18"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.BatteryBalancingVoltage_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="28"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HTEMP_PDF.InvTemp_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="18"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingVoltage, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池均衡时间值  -->
+                                Grid.Row="28"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HTEMP_PDF.Command_SetInvTemp, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  当前最高温度  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="19"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池均衡时间值}" />
+                                Grid.Row="29"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 当前最高温度}" />
                             <TextBlock
-                            Grid.Row="19"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.BatteryBalancingTime}" />
+                                Grid.Row="29"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HTEMP_PDF.MaxTemp}" />
                             <TextBox
-                            Grid.Row="19"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.BatteryBalancingTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="29"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HTEMP_PDF.MaxTemp_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="19"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingTime, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  电池均衡超时值  -->
+                                Grid.Row="29"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HTEMP_PDF.Command_SetMaxTemp, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  风扇转速  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="20"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 电池均衡超时值}" />
+                                Grid.Row="30"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 风扇转速}" />
                             <TextBlock
-                            Grid.Row="20"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HEEP2.BatteryBalancingTimeoutValue}" />
+                                Grid.Row="30"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HTEMP_PDF.FanSpeed}" />
                             <TextBox
-                            Grid.Row="20"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HEEP2.BatteryBalancingTimeoutValue_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="30"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HTEMP_PDF.FanSpeed_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="20"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HEEP2.Command_SetBatteryBalancingTimeoutValue, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="设置"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
-                            <!--  系统时间  -->
+                                Grid.Row="30"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HTEMP_PDF.Command_SetFanSpeed, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  风扇开启  -->
+                            <!--
                             <TextBlock
-                            Grid.Row="21"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 系统时间}" />
+                                Grid.Row="31"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource 风扇使能}" />
                             <TextBlock
-                            Grid.Row="21"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGEN.SystemTime}" />
+                                Grid.Row="31"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HTEMP_PDF.FanEnable}" />
                             <TextBox
-                            Grid.Row="21"
-                            Grid.Column="2"
-                            Style="{StaticResource InputBox}"
-                            Text="{Binding HGEN.SystemTime_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Grid.Row="31"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HTEMP_PDF.FanEnable_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
-                            Grid.Row="21"
-                            Grid.Column="3"
-                            Command="{Binding DataContext.HGEN.Command_SetSystemTime, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 设置}"
-                            Cursor="Hand"
-                            Style="{StaticResource ActionButton}" />
+                                Grid.Row="31"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HTEMP_PDF.Command_SetFanEnable, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Cursor="Hand"
+                                Style="{StaticResource ActionButton}" />
+                            -->
+                            <!--  CT功率  -->
+                            <!--
+                            <TextBlock
+                                Grid.Row="32"
+                                Style="{StaticResource ContentText}"
+                                Text="{DynamicResource CT功率}" />
+                            <TextBlock
+                                Grid.Row="32"
+                                Grid.Column="1"
+                                Style="{StaticResource ContentText}"
+                                Text="{Binding HCTMSG1_PDF.CTPwr}" />
+                            <TextBox
+                                Grid.Row="32"
+                                Grid.Column="2"
+                                Style="{StaticResource InputBox}"
+                                Text="{Binding HCTMSG1_PDF.CTPwr_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button
+                                Grid.Row="32"
+                                Grid.Column="3"
+                                Command="{Binding DataContext.HCTMSG1_PDF.Command_SetCTPwr, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 设置}"
+                                Style="{StaticResource ActionButton}" />-->
+
                         </Grid>
                     </Border>
                     <Border
-                    Grid.Column="2"
-                    Margin="3"
-                    Padding="20"
-                    Background="#FFF0F0F0"
-                    CornerRadius="5">
+                        Grid.Column="2"
+                        Margin="3"
+                        Padding="20"
+                        Background="#FFF0F0F0"
+                        CornerRadius="5">
                         <UniformGrid VerticalAlignment="Top" Columns="2">
                             <Button
-                            Height="30"
-                            Command="{Binding DataContext.SpecialCommand.Command_SetSystemReset, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 复位系统状态}"
-                            Style="{StaticResource ActionButton}" />
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetSystemReset, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 复位系统状态}"
+                                Style="{StaticResource ActionButton}" />
                             <Button
-                            Height="30"
-                            Command="{Binding DataContext.SpecialCommand.Command_SetClearPowerGeneration, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 清除发电量}"
-                            Style="{StaticResource ActionButton}" />
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetClearPowerGeneration, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 清除发电量}"
+                                Style="{StaticResource ActionButton}" />
                             <Button
-                            Height="30"
-                            Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputOn, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 副输出开}"
-                            Style="{StaticResource ActionButton}" />
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputOn, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 副输出开}"
+                                Style="{StaticResource ActionButton}" />
                             <Button
-                            Height="30"
-                            Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputShutdown, RelativeSource={RelativeSource AncestorType=Window}}"
-                            Content="{DynamicResource 副输出关}"
-                            Style="{StaticResource ActionButton}" />
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetAuxiliaryOutputShutdown, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 副输出关}"
+                                Style="{StaticResource ActionButton}" />
+                            <!--  逆变电压降低  -->
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetInvVoltDetectAdjDec, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 逆变器逆变电压检测值降低n个单位}"
+                                Style="{StaticResource ActionButton}" />
+                            <ComboBox
+                                ItemsSource="{Binding SpecialCommand.InvVoltDetectAdjDecOptions}"
+                                SelectedItem="{Binding SpecialCommand.InvVoltDetectAdjDec_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <!--  逆变电压提高  -->
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetInvVoltDetectAdjInc, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 逆变器逆变电压检测值提高n个单位}"
+                                Style="{StaticResource ActionButton}" />
+                            <ComboBox
+                                ItemsSource="{Binding SpecialCommand.InvVoltDetectAdjIncOptions}"
+                                SelectedItem="{Binding SpecialCommand.InvVoltDetectAdjInc_Inputs, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource SelectBox}" />
+                            <!--  保存设置参数  -->
+                            <Button
+                                Height="30"
+                                Command="{Binding DataContext.SpecialCommand.Command_SetSaveConfig, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Content="{DynamicResource 保存设置参数}"
+                                Style="{StaticResource ActionButton}" />
                         </UniformGrid>
                     </Border>
                 </Grid>

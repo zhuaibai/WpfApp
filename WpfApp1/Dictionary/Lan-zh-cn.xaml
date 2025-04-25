@@ -87,7 +87,7 @@
     <s:String x:Key="市电频率">市电频率</s:String>
     <s:String x:Key="市电功率">市电功率</s:String>
     <s:String x:Key="温度限制">温度限制</s:String>
-    <s:String x:Key="当前允许最大逆变功率">当前允许最大逆变功率(W)</s:String>
+    <s:String x:Key="当前允许最大逆变功率">当前最大逆变功率(W)</s:String>
     <s:String x:Key="版本号">版本号</s:String>
     <s:String x:Key="发布日期">发布日期</s:String>
     <s:String x:Key="程序完整性">程序完整性</s:String>
@@ -110,5 +110,10 @@
     <s:String x:Key="CT电流">CT电流</s:String>
     <s:String x:Key="CT功率">CT功率</s:String>
     <s:String x:Key="调零功率">调零功率</s:String>
+    <s:String x:Key="PV功率">PV功率</s:String>
+    <s:String x:Key="CT功能开关">CT功能开关</s:String>
+    <s:String x:Key="逆变器逆变电压检测值降低n个单位">逆变电压检测值降低n个单位</s:String>
+    <s:String x:Key="逆变器逆变电压检测值提高n个单位">逆变电压检测值提高n个单位</s:String>
+    <s:String x:Key="保存设置参数">保存设置参数</s:String>
     
 </ResourceDictionary>

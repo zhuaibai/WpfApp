@@ -71,6 +71,22 @@ namespace WpfApp1.Command.Comand_GB3024
                 execute: () => AuxiliaryOutputOnOperation(),
                 canExecute: () => !AuxiliaryOutputOn_IsWorking // 增加处理状态检查
              );
+            //逆变器逆变电压检测值提高n个单位
+            Command_SetInvVoltDetectAdjDec = new RelayCommand(
+                execute: () => InvVoltDetectAdjDecOperation(),
+                canExecute: () => Validate(nameof(InvVoltDetectAdjDec_Inputs)) && !InvVoltDetectAdjDec_IsWorking // 增加处理状态检查
+             );
+            //逆变器逆变电压检测值降低n个单位
+            Command_SetInvVoltDetectAdjInc = new RelayCommand(
+                execute: () => InvVoltDetectAdjIncOperation(),
+                canExecute: () => Validate(nameof(InvVoltDetectAdjInc_Inputs)) && !InvVoltDetectAdjInc_IsWorking // 增加处理状态检查
+             );
+            //保存参数设置
+            Command_SetSaveConfig = new RelayCommand(
+                execute: () => SaveConfigOperation(),
+                canExecute: () =>
+                !SaveConfig_IsWorking // 增加处理状态检查
+             );
         }
 
         #region 获取机器类型
@@ -911,6 +927,292 @@ namespace WpfApp1.Command.Comand_GB3024
 
         #endregion
 
+        #region 逆变器逆变电压检测值降低n个单位
+
+        private string _InvVoltDetectAdjDec;
+
+        public string InvVoltDetectAdjDec
+        {
+            get { return _InvVoltDetectAdjDec; }
+            set
+            {
+                _InvVoltDetectAdjDec = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjDec));
+            }
+        }
+
+
+        private bool InvVoltDetectAdjDec_IsWorking;
+
+
+        //设置值
+        private string _InvVoltDetectAdjDec_Inputs = "01";
+
+        public string InvVoltDetectAdjDec_Inputs
+        {
+            get { return _InvVoltDetectAdjDec_Inputs; }
+            set
+            {
+                _InvVoltDetectAdjDec_Inputs = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjDec_Inputs));
+                Command_SetInvVoltDetectAdjDec.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _InvVoltDetectAdjDecOptions = new List<string> { "01", "02", "03", "04", "05", "06", "07", "08", "09" };
+
+        public List<string> InvVoltDetectAdjDecOptions
+        {
+            get { return _InvVoltDetectAdjDecOptions; }
+            set
+            {
+                _InvVoltDetectAdjDecOptions = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjDecOptions));
+            }
+        }
+
+        public RelayCommand Command_SetInvVoltDetectAdjDec { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void InvVoltDetectAdjDecOperation()
+        {
+            try
+            {
+                InvVoltDetectAdjDec_IsWorking = true;
+                // 禁用按钮
+                Command_SetInvVoltDetectAdjDec.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("IVA-", InvVoltDetectAdjDec_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                InvVoltDetectAdjDec_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetInvVoltDetectAdjDec.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 逆变器逆变电压检测值提高n个单位
+
+        private string _InvVoltDetectAdjInc;
+
+        public string InvVoltDetectAdjInc
+        {
+            get { return _InvVoltDetectAdjInc; }
+            set
+            {
+                _InvVoltDetectAdjInc = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjInc));
+            }
+        }
+
+
+        private bool InvVoltDetectAdjInc_IsWorking;
+
+
+        //设置值
+        private string _InvVoltDetectAdjInc_Inputs ="01";
+
+        public string InvVoltDetectAdjInc_Inputs
+        {
+            get { return _InvVoltDetectAdjInc_Inputs; }
+            set
+            {
+                _InvVoltDetectAdjInc_Inputs = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjInc_Inputs));
+                Command_SetInvVoltDetectAdjInc.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _InvVoltDetectAdjIncOptions = new List<string> { "01", "02", "03", "04", "05", "06", "07", "08", "09" };
+
+        public List<string> InvVoltDetectAdjIncOptions
+        {
+            get { return _InvVoltDetectAdjIncOptions; }
+            set
+            {
+                _InvVoltDetectAdjIncOptions = value;
+                this.RaiseProperChanged(nameof(InvVoltDetectAdjIncOptions));
+            }
+        }
+
+        public RelayCommand Command_SetInvVoltDetectAdjInc { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void InvVoltDetectAdjIncOperation()
+        {
+            try
+            {
+                InvVoltDetectAdjInc_IsWorking = true;
+                // 禁用按钮
+                Command_SetInvVoltDetectAdjInc.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("IVA+", InvVoltDetectAdjInc_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                InvVoltDetectAdjInc_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetInvVoltDetectAdjInc.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
+        #region 保存参数设置
+
+        private string _SaveConfig;
+
+        public string SaveConfig
+        {
+            get { return _SaveConfig; }
+            set
+            {
+                _SaveConfig = value;
+                this.RaiseProperChanged(nameof(SaveConfig));
+            }
+        }
+
+
+        private bool SaveConfig_IsWorking;
+
+
+        //设置值
+        private string _SaveConfig_Inputs;
+
+        public string SaveConfig_Inputs
+        {
+            get { return _SaveConfig_Inputs; }
+            set
+            {
+                _SaveConfig_Inputs = value;
+                this.RaiseProperChanged(nameof(SaveConfig_Inputs));
+                Command_SetSaveConfig.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetSaveConfig { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void SaveConfigOperation()
+        {
+            try
+            {
+                SaveConfig_IsWorking = true;
+                // 禁用按钮
+                Command_SetSaveConfig.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PSAVE", "");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                SaveConfig_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetSaveConfig.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+        #endregion
+
         #region 通用方法
         // 输入验证&选择验证
         private bool Validate(string value)
@@ -932,6 +1234,10 @@ namespace WpfApp1.Command.Comand_GB3024
                     return !string.IsNullOrWhiteSpace(BatteryDischargeVoltage_Inputs);
                 case "AC_Charging_Time_Inputs":
                     return !string.IsNullOrWhiteSpace(AC_Charging_Time_Inputs);
+                case "InvVoltDetectAdjDec_Inputs":
+                    return !string.IsNullOrWhiteSpace(InvVoltDetectAdjDec_Inputs);
+                case "InvVoltDetectAdjInc_Inputs":
+                    return !string.IsNullOrWhiteSpace(InvVoltDetectAdjInc_Inputs);
 
                 default:
                     return false;

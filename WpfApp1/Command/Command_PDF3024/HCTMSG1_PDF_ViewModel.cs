@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.Command.Command_PDF3024
+namespace WpfApp1.Command.Command_PDF302
 {
-    public class HBAT_PDF_ViewModel : BaseViewModel
+    public class HCTMSG1_PDF_ViewModel:BaseViewModel
     {
         //指令
-        private string command = "HBAT\r";
+        private string command = "HCTMSG1\r";
         public string Command { get { return command; } }
 
         ManualResetEventSlim _pauseEvent;//线程的开启、暂停
@@ -19,7 +19,7 @@ namespace WpfApp1.Command.Command_PDF3024
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
 
-        public HBAT_PDF_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
+        public HCTMSG1_PDF_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
@@ -29,65 +29,66 @@ namespace WpfApp1.Command.Command_PDF3024
             #region 初始化指令
 
 
-            //母线电压
-            Command_SetBusVolt = new RelayCommand(
-                execute: () => BusVoltOperation(),
-                canExecute: () => Validate(nameof(BusVolt_Inputs)) && !BusVolt_IsWorking // 增加处理状态检查
+            //CT电流
+            Command_SetCTCurr = new RelayCommand(
+                execute: () => CTCurrOperation(),
+                canExecute: () => Validate(nameof(CTCurr_Inputs)) && !CTCurr_IsWorking // 增加处理状态检查
             );
-            //PFC工作状态
-            Command_SetPFCStatus = new RelayCommand(
-               execute: () => PFCStatusOperation(),
-               canExecute: () => Validate(nameof(PFCStatus_Inputs)) && !PFCStatus_IsWorking // 增加处理状态检查
+            //CT功率
+            Command_SetCTPwr = new RelayCommand(
+               execute: () => CTPwrOperation(),
+               canExecute: () => Validate(nameof(CTPwr_Inputs)) && !CTPwr_IsWorking // 增加处理状态检查
             );
             #endregion
         }
 
-        
 
-        #region 母线电压
-        private string _BusVolt;
 
-        public string BusVolt
+        #region CT电流
+
+        private string _CTCurr;
+
+        public string CTCurr
         {
-            get { return _BusVolt; }
+            get { return _CTCurr; }
             set
             {
-                _BusVolt = value;
-                this.RaiseProperChanged(nameof(BusVolt));
+                _CTCurr = value;
+                this.RaiseProperChanged(nameof(CTCurr));
             }
         }
 
 
-        private bool BusVolt_IsWorking;
+        private bool CTCurr_IsWorking;
 
 
         //设置值
-        private string _BusVolt_Inputs;
+        private string _CTCurr_Inputs;
 
-        public string BusVolt_Inputs
+        public string CTCurr_Inputs
         {
-            get { return _BusVolt_Inputs; }
+            get { return _CTCurr_Inputs; }
             set
             {
-                _BusVolt_Inputs = value;
-                this.RaiseProperChanged(nameof(BusVolt_Inputs));
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                _CTCurr_Inputs = value;
+                this.RaiseProperChanged(nameof(CTCurr_Inputs));
+                Command_SetCTCurr.RaiseCanExecuteChanged();
             }
         }
 
 
-        public RelayCommand Command_SetBusVolt { get; }
+        public RelayCommand Command_SetCTCurr { get; }
 
         /// <summary>
         /// 点击设置
         /// </summary>
-        private async void BusVoltOperation()
+        private async void CTCurrOperation()
         {
             try
             {
-                BusVolt_IsWorking = true;
+                CTCurr_IsWorking = true;
                 // 禁用按钮
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                Command_SetCTCurr.RaiseCanExecuteChanged();
 
                 // 异步等待锁
                 await _semaphore.WaitAsync();
@@ -104,7 +105,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BusVolt_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", CTCurr_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -118,82 +119,66 @@ namespace WpfApp1.Command.Command_PDF3024
                 // 恢复后台线程
                 _pauseEvent.Set();
                 AddLog("恢复后台通信");
-                BusVolt_IsWorking = false;
+                CTCurr_IsWorking = false;
                 //Status = "就绪";
                 // 重新启用按钮
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                Command_SetCTCurr.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
             }
         }
+
+
 
         #endregion
 
-        #region PFC工作状态
+        #region CT功率
 
-        //PFC工作状态
-        private string _PFCStatus;
+        //CT功率
+        private string _CTPwr;
 
-        public string PFCStatus
+        public string CTPwr
         {
-            get { return _PFCStatus; }
+            get { return _CTPwr; }
             set
             {
-                if (value == "0")
-                {
-                    _PFCStatus = App.GetText("关闭");
-                }
-                else if (value == "1") { _PFCStatus = App.GetText("开启"); }
-                else
-                _PFCStatus = value;
-                this.RaiseProperChanged(nameof(PFCStatus));
+                _CTPwr = value;
+                this.RaiseProperChanged(nameof(CTPwr));
             }
         }
 
 
-        private bool PFCStatus_IsWorking;
+        private bool CTPwr_IsWorking;
 
 
         //设置值
-        private string _PFCStatus_Inputs;
+        private string _CTPwr_Inputs;
 
-        public string PFCStatus_Inputs
+        public string CTPwr_Inputs
         {
-            get { return _PFCStatus_Inputs; }
+            get { return _CTPwr_Inputs; }
             set
             {
-                _PFCStatus_Inputs = value;
-                this.RaiseProperChanged(nameof(PFCStatus_Inputs));
-                Command_SetPFCStatus.RaiseCanExecuteChanged();
+                _CTPwr_Inputs = value;
+                this.RaiseProperChanged(nameof(CTPwr_Inputs));
+                Command_SetCTPwr.RaiseCanExecuteChanged();
             }
         }
 
-        //下拉选项
-        private List<string> _PFCStatusOptions = new List<string> { "开启", "关闭" };
 
-        public List<string> PFCStatusOptions
-        {
-            get { return _PFCStatusOptions; }
-            set
-            {
-                _PFCStatusOptions = value;
-                this.RaiseProperChanged(nameof(PFCStatusOptions));
-            }
-        }
-
-        public RelayCommand Command_SetPFCStatus { get; }
+        public RelayCommand Command_SetCTPwr { get; }
 
         /// <summary>
         /// 点击设置
         /// </summary>
-        private async void PFCStatusOperation()
+        private async void CTPwrOperation()
         {
             try
             {
-                PFCStatus_IsWorking = true;
+                CTPwr_IsWorking = true;
                 // 禁用按钮
-                Command_SetPFCStatus.RaiseCanExecuteChanged();
+                Command_SetCTPwr.RaiseCanExecuteChanged();
 
                 // 异步等待锁
                 await _semaphore.WaitAsync();
@@ -210,7 +195,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", PFCStatus_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", CTPwr_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -224,15 +209,16 @@ namespace WpfApp1.Command.Command_PDF3024
                 // 恢复后台线程
                 _pauseEvent.Set();
                 AddLog("恢复后台通信");
-                PFCStatus_IsWorking = false;
+                CTPwr_IsWorking = false;
                 //Status = "就绪";
                 // 重新启用按钮
-                Command_SetPFCStatus.RaiseCanExecuteChanged();
+                Command_SetCTPwr.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
             }
         }
+
 
 
         #endregion
@@ -243,12 +229,12 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             switch (value)
             {
-                //市电电压       
-                case "BusVolt_Inputs":
-                    return !string.IsNullOrWhiteSpace(BusVolt_Inputs);
+                //CT电流   
+                case "CTCurr_Inputs":
+                    return !string.IsNullOrWhiteSpace(CTCurr_Inputs);
                 //PFC工作状态   
-                case "PFCStatus_Inputs":
-                    return !string.IsNullOrWhiteSpace(PFCStatus_Inputs);
+                case "CTPwr_Inputs":
+                    return !string.IsNullOrWhiteSpace(CTPwr_Inputs);
                 ////市电功率   
                 //case "ACPower_Inputs":
                 //    return !string.IsNullOrWhiteSpace(ACPower_Inputs);
@@ -281,10 +267,10 @@ namespace WpfApp1.Command.Command_PDF3024
 
             try
             {
-                //母线电压
-                BusVolt = Values[5];
-                //PFC工作状态
-                PFCStatus = Values[6].Substring(0,1);
+                //CT电流
+                CTCurr = Values[0].Substring(1,4);
+                //CT功率
+                CTPwr = Values[3];
 
             }
             catch (Exception ex)

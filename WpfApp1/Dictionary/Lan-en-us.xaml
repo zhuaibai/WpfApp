@@ -110,4 +110,9 @@
     <s:String x:Key="CT电流">CTCurr</s:String>
     <s:String x:Key="CT功率">CTPwr</s:String>
     <s:String x:Key="调零功率">ZeroAdjPwr</s:String>
+    <s:String x:Key="PV功率">PVPwr</s:String>
+    <s:String x:Key="CT功能开关">CT_Enable</s:String>
+    <s:String x:Key="逆变器逆变电压检测值降低n个单位">InvVoltDetectAdjDec</s:String>
+    <s:String x:Key="逆变器逆变电压检测值提高n个单位">InvVoltDetectAdjInc</s:String>
+    <s:String x:Key="保存设置参数">SaveConfig</s:String>
 </ResourceDictionary>

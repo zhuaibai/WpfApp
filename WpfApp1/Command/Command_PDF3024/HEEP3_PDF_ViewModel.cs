@@ -8,10 +8,10 @@ using WpfApp1.ViewModels;
 
 namespace WpfApp1.Command.Command_PDF3024
 {
-    public class HBAT_PDF_ViewModel : BaseViewModel
+    public class HEEP3_PDF_ViewModel:BaseViewModel
     {
         //指令
-        private string command = "HBAT\r";
+        private string command = "HEEP3\r";
         public string Command { get { return command; } }
 
         ManualResetEventSlim _pauseEvent;//线程的开启、暂停
@@ -19,7 +19,7 @@ namespace WpfApp1.Command.Command_PDF3024
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
 
-        public HBAT_PDF_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
+        public HEEP3_PDF_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
@@ -30,9 +30,9 @@ namespace WpfApp1.Command.Command_PDF3024
 
 
             //母线电压
-            Command_SetBusVolt = new RelayCommand(
-                execute: () => BusVoltOperation(),
-                canExecute: () => Validate(nameof(BusVolt_Inputs)) && !BusVolt_IsWorking // 增加处理状态检查
+            Command_SetZeroAdjPwr = new RelayCommand(
+                execute: () => ZeroAdjPwrOperation(),
+                canExecute: () => Validate(nameof(ZeroAdjPwr_Inputs)) && !ZeroAdjPwr_IsWorking // 增加处理状态检查
             );
             //PFC工作状态
             Command_SetPFCStatus = new RelayCommand(
@@ -42,52 +42,53 @@ namespace WpfApp1.Command.Command_PDF3024
             #endregion
         }
 
-        
 
-        #region 母线电压
-        private string _BusVolt;
 
-        public string BusVolt
+        #region 调零功率
+
+        private string _ZeroAdjPwr;
+
+        public string ZeroAdjPwr
         {
-            get { return _BusVolt; }
+            get { return _ZeroAdjPwr; }
             set
             {
-                _BusVolt = value;
-                this.RaiseProperChanged(nameof(BusVolt));
+                _ZeroAdjPwr = value;
+                this.RaiseProperChanged(nameof(ZeroAdjPwr));
             }
         }
 
 
-        private bool BusVolt_IsWorking;
+        private bool ZeroAdjPwr_IsWorking;
 
 
         //设置值
-        private string _BusVolt_Inputs;
+        private string _ZeroAdjPwr_Inputs;
 
-        public string BusVolt_Inputs
+        public string ZeroAdjPwr_Inputs
         {
-            get { return _BusVolt_Inputs; }
+            get { return _ZeroAdjPwr_Inputs; }
             set
             {
-                _BusVolt_Inputs = value;
-                this.RaiseProperChanged(nameof(BusVolt_Inputs));
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                _ZeroAdjPwr_Inputs = value;
+                this.RaiseProperChanged(nameof(ZeroAdjPwr_Inputs));
+                Command_SetZeroAdjPwr.RaiseCanExecuteChanged();
             }
         }
 
 
-        public RelayCommand Command_SetBusVolt { get; }
+        public RelayCommand Command_SetZeroAdjPwr { get; }
 
         /// <summary>
         /// 点击设置
         /// </summary>
-        private async void BusVoltOperation()
+        private async void ZeroAdjPwrOperation()
         {
             try
             {
-                BusVolt_IsWorking = true;
+                ZeroAdjPwr_IsWorking = true;
                 // 禁用按钮
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                Command_SetZeroAdjPwr.RaiseCanExecuteChanged();
 
                 // 异步等待锁
                 await _semaphore.WaitAsync();
@@ -104,7 +105,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BusVolt_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ZeroAdjPwr_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -118,15 +119,16 @@ namespace WpfApp1.Command.Command_PDF3024
                 // 恢复后台线程
                 _pauseEvent.Set();
                 AddLog("恢复后台通信");
-                BusVolt_IsWorking = false;
+                ZeroAdjPwr_IsWorking = false;
                 //Status = "就绪";
                 // 重新启用按钮
-                Command_SetBusVolt.RaiseCanExecuteChanged();
+                Command_SetZeroAdjPwr.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
             }
         }
+
 
         #endregion
 
@@ -146,7 +148,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 }
                 else if (value == "1") { _PFCStatus = App.GetText("开启"); }
                 else
-                _PFCStatus = value;
+                    _PFCStatus = value;
                 this.RaiseProperChanged(nameof(PFCStatus));
             }
         }
@@ -243,9 +245,9 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             switch (value)
             {
-                //市电电压       
-                case "BusVolt_Inputs":
-                    return !string.IsNullOrWhiteSpace(BusVolt_Inputs);
+                //调零功率    
+                case "ZeroAdjPwr_Inputs":
+                    return !string.IsNullOrWhiteSpace(ZeroAdjPwr_Inputs);
                 //PFC工作状态   
                 case "PFCStatus_Inputs":
                     return !string.IsNullOrWhiteSpace(PFCStatus_Inputs);
@@ -281,10 +283,10 @@ namespace WpfApp1.Command.Command_PDF3024
 
             try
             {
-                //母线电压
-                BusVolt = Values[5];
+                //调零功率
+                ZeroAdjPwr = Values[3];
                 //PFC工作状态
-                PFCStatus = Values[6].Substring(0,1);
+                //PFCStatus = Values[6].Substring(0, 1);
 
             }
             catch (Exception ex)

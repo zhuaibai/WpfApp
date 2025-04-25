@@ -20,7 +20,9 @@ namespace WpfApp1.Services
         //串口发送帧数
         public static Action<int> AddSendFrame; 
         //串口接收帧数
-        public static Action<int> AddReceiveFrame; 
+        public static Action<int> AddReceiveFrame;
+        //CRC校验
+        private static bool Receive_CRC_Check;
 
         //机器类型
         public static string _MachineType = "";
@@ -29,7 +31,7 @@ namespace WpfApp1.Services
             get { return _MachineType; }
             set {
                 if (value == "(HPVINV01\r") _MachineType = "A";
-                else if(value =="(HPVINV02\r") _MachineType = "B";
+                else if(value =="(HPVINV02\r"||value== "(HPVINV05\r") _MachineType = "B";
                 else if(value == "(HPVINV03\r") _MachineType = "C";
                 else if(value == "(HPVINV04\r") _MachineType = "D";
                 else
@@ -129,6 +131,29 @@ namespace WpfApp1.Services
             }
         }
 
+        /// <summary>
+        /// 开启接收校验
+        /// </summary>
+        public static void OpenReceiveCRC()
+        {
+            if (!Receive_CRC_Check)
+            {
+                Receive_CRC_Check = true;
+            }
+        }
+
+        /// <summary>
+        /// 关闭接收校验
+        /// </summary>
+        public static void CloseReceiveCRC()
+        {
+            if (Receive_CRC_Check)
+            {
+                Receive_CRC_Check = false;
+            }
+        }
+
+
 
         /// <summary>
         /// 发送指令
@@ -145,6 +170,12 @@ namespace WpfApp1.Services
             byte[] Command = Encoding.ASCII.GetBytes(command);
             //接收帧数
             int totalBytesRead =0;
+            //判断是否需要接收校验CRC
+            if(Receive_CRC_Check)
+            {
+                //添加两个校验字节
+                returnCount += 2;
+            }
             //收报文
             try
             {
@@ -166,6 +197,17 @@ namespace WpfApp1.Services
                 }
                 //增加接收返回帧数
                 AddReceiveFrame(totalBytesRead);
+                //对返回字节进行CRC校验
+                if (Receive_CRC_Check)
+                {
+                   bool CRC_Pass = CheckReceive_CRC(buffer);
+                    if (!CRC_Pass)
+                    {
+                        //CRC校验不通过
+                        return string.Empty;
+                    }
+                }
+
                 //获取返回转字符串
                 string DataBuffer = Encoding.ASCII.GetString(buffer);
                 return DataBuffer;
@@ -189,6 +231,7 @@ namespace WpfApp1.Services
         public static string SendCommand(byte[] command, int returnCount)
         {
             int totalBytesRead = 0;
+            
             //收报文
             try
             {
@@ -260,7 +303,26 @@ namespace WpfApp1.Services
             return receive;
         }
 
-        
+        /// <summary>
+        /// CRC校验
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        private static bool CheckReceive_CRC(byte[] bytes)
+        {
+            if (bytes == null) return false;
+            int CRC_length = bytes.Length - 3;
+            //创建新的字节数组进行CRC校验
+            byte[] buffer = new byte[CRC_length];
+            byte[] CRC_Receuve = new byte[2];
+            Array.Copy(bytes, buffer,CRC_length);
+            Array.Copy(CRC_Receuve, CRC_length, buffer,0,2);
+            //获取CRC校验码
+            byte[] CRC_Build = getCRC(buffer);
+            //判断两个校验码是否一致
+            bool isEuqal = CRC_Build.SequenceEqual(CRC_Receuve);
+            return isEuqal;
+        }
 
 
         #region CRC校验
