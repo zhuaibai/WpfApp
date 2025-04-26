@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using WpfApp1.Command;
@@ -22,7 +23,7 @@ namespace WpfApp1.Services
         //串口接收帧数
         public static Action<int> AddReceiveFrame;
         //CRC校验
-        private static bool Receive_CRC_Check;
+        private static bool Receive_CRC_Check = false;
 
         //机器类型
         public static string _MachineType = "";
@@ -132,26 +133,28 @@ namespace WpfApp1.Services
         }
 
         /// <summary>
-        /// 开启接收校验
+        /// 打开或者关闭接收校验
         /// </summary>
-        public static void OpenReceiveCRC()
+        public static void OpenReceiveCRC(Object parameter)
         {
-            if (!Receive_CRC_Check)
+            if (parameter is bool isChecked)
             {
-                Receive_CRC_Check = true;
+                // 根据 ToggleButton 的选中状态执行相应逻辑
+                if (isChecked)
+                {
+                    // 处理选中状态
+                    Receive_CRC_Check = true;
+                }
+                else
+                {
+                    // 处理未选中状态
+                    Receive_CRC_Check = false;
+                }
             }
+            
         }
 
-        /// <summary>
-        /// 关闭接收校验
-        /// </summary>
-        public static void CloseReceiveCRC()
-        {
-            if (Receive_CRC_Check)
-            {
-                Receive_CRC_Check = false;
-            }
-        }
+        
 
 
 
@@ -195,8 +198,10 @@ namespace WpfApp1.Services
                     int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
                     totalBytesRead += bytesRead;
                 }
+
                 //增加接收返回帧数
                 AddReceiveFrame(totalBytesRead);
+
                 //对返回字节进行CRC校验
                 if (Receive_CRC_Check)
                 {
@@ -223,7 +228,7 @@ namespace WpfApp1.Services
         }
 
         /// <summary>
-        /// 发送指令
+        /// 发送指令(发送设置指令时用到)
         /// </summary>
         /// <param name="command">字节指令</param>
         /// <param name="returnCount">返回字节数</param>

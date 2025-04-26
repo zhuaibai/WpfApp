@@ -115,5 +115,12 @@
     <s:String x:Key="逆变器逆变电压检测值降低n个单位">逆变电压检测值降低n个单位</s:String>
     <s:String x:Key="逆变器逆变电压检测值提高n个单位">逆变电压检测值提高n个单位</s:String>
     <s:String x:Key="保存设置参数">保存设置参数</s:String>
+    <s:String x:Key="输入源提示">输入源提示</s:String>
+    <s:String x:Key="自动返回首页">自动返回首页</s:String>
+    <s:String x:Key="历史故障保存打开">历史故障保存打开</s:String>
+    <s:String x:Key="历史故障保存关闭">历史故障保存关闭</s:String>
+    <s:String x:Key="逆变总功率">逆变总功率</s:String>
+    <s:String x:Key="MPPT总功率">总功率</s:String>
+    <s:String x:Key="市电总功率">市电总功率</s:String>
     
 </ResourceDictionary>

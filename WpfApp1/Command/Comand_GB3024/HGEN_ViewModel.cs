@@ -28,7 +28,7 @@ namespace WpfApp1.Command.Comand_GB3024
             //设置系统时间
             Command_SetSystemTime = new RelayCommand(
                 execute: () => SystemTimeOperation(),
-                canExecute: () => Validate(nameof(SystemTime_Inputs)) && !SystemTime_IsWorking // 增加处理状态检查
+                canExecute: () => !SystemTime_IsWorking // 增加处理状态检查
             );
         }
 
@@ -95,7 +95,7 @@ namespace WpfApp1.Command.Comand_GB3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("^S???DAT", SystemTime_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("^S???DAT", GetTimeNow());
 
                 })
                 , timeoutCts.Token);
@@ -119,6 +119,19 @@ namespace WpfApp1.Command.Comand_GB3024
             }
         }
 
+        /// <summary>
+        /// 获取当前时间，并以特定格式返回
+        /// </summary>
+        /// <returns></returns>
+        private string GetTimeNow()
+        {
+            string timeNow = DateTime.Now.ToString("yy/MM/dd/hh/mm/ss");
+            if (string.IsNullOrEmpty(timeNow))
+            {
+                return "010719121212";
+            }else
+            return timeNow.Split("/").ToString();
+        }
 
         #endregion
 

@@ -169,6 +169,18 @@ namespace WpfApp1.Command.Command_PDF3024
               execute: () => CT_EnableOperation(),
               canExecute: () => Validate(nameof(CT_Enable_Inputs)) && !CT_Enable_IsWorking
              );
+            //自动返回首页
+            Command_SetAutoReturnHome = new RelayCommand(
+              execute: () => AutoReturnHomeOperation(),
+              canExecute: () => Validate(nameof(AutoReturnHome_Inputs)) && !AutoReturnHome_IsWorking
+             );
+            //输入源提示
+            Command_SetInputPrompt = new RelayCommand(
+              execute: () => InputPromptOperation(),
+              canExecute: () => Validate(nameof(InputPrompt_Inputs)) && !InputPrompt_IsWorking
+             );
+            
+
             #endregion
         }
 
@@ -1067,6 +1079,115 @@ namespace WpfApp1.Command.Command_PDF3024
             }
         }
 
+
+
+        #endregion
+
+        #region 输入源提示
+
+        private string _InputPrompt;
+
+        public string InputPrompt
+        {
+            get { return _InputPrompt; }
+            set
+            {
+                if (value == "0")
+                {
+                    _InputPrompt = App.GetText("关闭");
+                }
+                else if (value == "1")
+                {
+                    _InputPrompt = App.GetText("开启");
+                }
+                else
+                    _InputPrompt = value;
+                this.RaiseProperChanged(nameof(InputPrompt));
+            }
+        }
+
+
+        private bool InputPrompt_IsWorking;
+
+
+        //设置值
+        private string _InputPrompt_Inputs;
+
+        public string InputPrompt_Inputs
+        {
+            get { return _InputPrompt_Inputs; }
+            set
+            {
+                _InputPrompt_Inputs = value;
+                this.RaiseProperChanged(nameof(InputPrompt_Inputs));
+                Command_SetInputPrompt.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _InputPromptOptions = new List<string> { "开启/On", "关闭/Off" };
+
+        public List<string> InputPromptOptions
+        {
+            get { return _InputPromptOptions; }
+            set
+            {
+                _InputPromptOptions = value;
+                this.RaiseProperChanged(nameof(InputPromptOptions));
+            }
+        }
+
+        public RelayCommand Command_SetInputPrompt { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void InputPromptOperation()
+        {
+            try
+            {
+                InputPrompt_IsWorking = true;
+                // 禁用按钮
+                Command_SetInputPrompt.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(InputPrompt_Inputs)));
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                InputPrompt_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetInputPrompt.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
 
 
         #endregion
@@ -2328,6 +2449,115 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #endregion
 
+        #region 自动返回首页
+
+        private string _AutoReturnHome;
+
+        public string AutoReturnHome
+        {
+            get { return _AutoReturnHome; }
+            set
+            {
+                if (value == "0")
+                {
+                    _AutoReturnHome = App.GetText("关闭");
+                }
+                else if (value == "1")
+                {
+                    _AutoReturnHome = App.GetText("开启");
+                }
+                else
+                    _AutoReturnHome = value;
+                this.RaiseProperChanged(nameof(AutoReturnHome));
+            }
+        }
+
+
+        private bool AutoReturnHome_IsWorking;
+
+
+        //设置值
+        private string _AutoReturnHome_Inputs;
+
+        public string AutoReturnHome_Inputs
+        {
+            get { return _AutoReturnHome_Inputs; }
+            set
+            {
+                _AutoReturnHome_Inputs = value;
+                this.RaiseProperChanged(nameof(AutoReturnHome_Inputs));
+                Command_SetAutoReturnHome.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _AutoReturnHomeOptions = new List<string> { "开启/On", "关闭/Off" };
+
+        public List<string> AutoReturnHomeOptions
+        {
+            get { return _AutoReturnHomeOptions; }
+            set
+            {
+                _AutoReturnHomeOptions = value;
+                this.RaiseProperChanged(nameof(AutoReturnHomeOptions));
+            }
+        }
+
+        public RelayCommand Command_SetAutoReturnHome { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AutoReturnHomeOperation()
+        {
+            try
+            {
+                AutoReturnHome_IsWorking = true;
+                // 禁用按钮
+                Command_SetAutoReturnHome.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(AutoReturnHome_Inputs)));
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                AutoReturnHome_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetAutoReturnHome.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
         #region 并网电流
 
         //并网电流
@@ -2780,7 +3010,7 @@ namespace WpfApp1.Command.Command_PDF3024
         }
 
         //下拉选项
-        private List<string> _CT_EnableOptions = new List<string> { "开启", "关闭" };
+        private List<string> _CT_EnableOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> CT_EnableOptions
         {
@@ -2819,7 +3049,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
+                    Thread.Sleep(1000);//没有这个延时会报错
                     string receive = SerialCommunicationService.SendSettingCommand("设置指令", CT_Enable_Inputs);
 
                 })
@@ -2843,6 +3073,12 @@ namespace WpfApp1.Command.Command_PDF3024
                 UpdateState("设置指令已经执行完");
             }
         }
+        #endregion
+
+        #region 自动返回首页
+
+
+
         #endregion
 
         #region 通用方法
@@ -2903,6 +3139,10 @@ namespace WpfApp1.Command.Command_PDF3024
                     return !string.IsNullOrWhiteSpace(PV_FeedPriority_Inputs);
                 case "CT_Enable_Inputs":
                     return !string.IsNullOrWhiteSpace(CT_Enable_Inputs);
+                case "AutoReturnHome_Inputs":
+                    return !string.IsNullOrWhiteSpace(AutoReturnHome_Inputs);
+                case "InputPrompt_Inputs":
+                    return !string.IsNullOrWhiteSpace(InputPrompt_Inputs);
                 default:
                     return false;
             }
@@ -2939,12 +3179,16 @@ namespace WpfApp1.Command.Command_PDF3024
                 PV_FeedPriority = Values[3].Substring(3, 1);
                 //过载重启
                 OverloadRestart = Values[3].Substring(4, 1);
+                //输入源提示
+                InputPrompt = Values[3].Substring(5, 1);
                 //过温重启
                 OverTemperatureRestart = Values[3].Substring(6, 1);
                 //CT功能开关
                 CT_Enable = Values[3].Substring(7, 1);
                 //系统频率
                 OutputSettingFrequency = Values[4].Substring(0, 1);
+                //自动返回首页
+                AutoReturnHome = Values[4].Substring(1, 1);
                 //充电优先顺序(充电模式)
                 ChargingPriority = Values[4].Substring(2, 1);
                 //蜂鸣器状态
@@ -3144,6 +3388,26 @@ namespace WpfApp1.Command.Command_PDF3024
                     else if (PV_FeedPriority_Inputs == "LBU") { return "01"; }
                     else
                         return OutputSettingFrequency_Inputs;
+                //自动返回首页
+                case "AutoReturnHome_Inputs":
+                    if(AutoReturnHome_Inputs == "开启/On")
+                    {
+                        return "PEk";
+                    }else if(AutoReturnHome_Inputs == "关闭/Off")
+                    {
+                        return "PDk";
+                    }else
+                        return AutoReturnHome_Inputs;
+                //输入源提示
+                case "InputPrompt_Inputs":
+                    if(AutoReturnHome_Inputs == "开启/On")
+                    {
+                        return "PEy";
+                    }else if(AutoReturnHome_Inputs == "关闭/Off")
+                    {
+                        return "PDy";
+                    }else
+                        return AutoReturnHome_Inputs;
                 default:
                     return "";
 

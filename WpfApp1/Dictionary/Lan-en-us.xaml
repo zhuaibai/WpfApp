@@ -115,4 +115,11 @@
     <s:String x:Key="逆变器逆变电压检测值降低n个单位">InvVoltDetectAdjDec</s:String>
     <s:String x:Key="逆变器逆变电压检测值提高n个单位">InvVoltDetectAdjInc</s:String>
     <s:String x:Key="保存设置参数">SaveConfig</s:String>
+    <s:String x:Key="输入源提示">InputPrompt</s:String>
+    <s:String x:Key="自动返回首页">AutoReturnHome</s:String>
+    <s:String x:Key="历史故障保存打开">FaultHistorySave_En</s:String>
+    <s:String x:Key="历史故障保存关闭">FaultHistorySave_Dis</s:String>
+    <s:String x:Key="逆变总功率">InvTotalPwr</s:String>
+    <s:String x:Key="MPPT总功率">MPPTTotalPwr</s:String>
+    <s:String x:Key="市电总功率">ACTotalPwr</s:String>
 </ResourceDictionary>

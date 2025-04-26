@@ -71,24 +71,62 @@ namespace WpfApp1.ViewModels
             HOP_PDF = new HOP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HPV_PDF = new HPV_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HTEMP_PDF = new HTEMP_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
-
+            HIGSG2_PDF = new HIMSG2_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             //初始化实时时间ViewModel
             Clock = new ClockViewModel();
             #endregion
         }
 
+        #region 图标百分比
+
+
+       //逆变总功率百分比
         private int _PercentValue = 30;
 
-        public int pValue
+        public int InvTotalPwr
         {
             get { return _PercentValue ; }
             set
             {
                 _PercentValue = value;
-                this.RaiseProperChanged(nameof(pValue));
+                this.RaiseProperChanged(nameof(InvTotalPwr));
             }
         }
 
+        /// <summary>
+        /// MPPT总功率百分比
+        /// </summary>
+        private int _MPPTTotalPwr;
+
+        public int MPPTTotalPwr
+        {
+            get { return _MPPTTotalPwr; }
+            set { _MPPTTotalPwr = value; }
+        }
+
+        /// <summary>
+        /// 市电总功率百分比
+        /// </summary>
+        private int _ACTotalPwr;
+
+        public int ACTotalPwr
+        {
+            get { return _ACTotalPwr; }
+            set { _ACTotalPwr = value; }
+        }
+
+
+        /// <summary>
+        /// 抗干扰按钮开关切换
+        /// </summary>
+        public ICommand SwitchOpenReceiveCRC
+        {
+            get
+            {
+                return new DelegateCommand(SerialCommunicationService.OpenReceiveCRC);
+            }
+        }
+        #endregion
 
         #region 下拉框选择机器类型
 
@@ -262,6 +300,17 @@ namespace WpfApp1.ViewModels
         #endregion
 
         #region PTF指令ViewModel
+
+
+        //HIMSG2
+        private HIMSG2_PDF_ViewModel _HIGSG2_PDF;
+
+        public HIMSG2_PDF_ViewModel HIGSG2_PDF
+        {
+            get { return _HIGSG2_PDF; }
+            set { _HIGSG2_PDF = value; }
+        }
+
 
         //HGRID
         private HGRID_PDF_ViewModel _HGRID_PDF;
@@ -947,11 +996,20 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             HGEN.AnalyseStringToElement(receive);
 
-            pValue += 10;
-            if ((int)pValue == 110)
-            {
-                pValue = 0;
-            }
+            //发送HIMSG2N指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
+            HIGSG2_PDF.AnalysisStringToElement(receive);
+            //计算百分比
+            //逆变百分比
+            InvTotalPwr = int.Parse(HOP_PDF.LoadPercent);
+            //MPPT百分比
+            MPPTTotalPwr = int.Parse(HPV_PDF.PVPwr) / int.Parse(HIGSG2_PDF.MPPTTotalPwr);
+            //市电百分比
+            
+
+
+
 
         }
 
@@ -998,7 +1056,7 @@ namespace WpfApp1.ViewModels
         }
 
         /// <summary>
-        /// GB3024通讯
+        /// VQ3024通讯
         /// </summary>
         /// <param name="token"></param>
         private void CommunicationWithVQ3024(CancellationToken token)

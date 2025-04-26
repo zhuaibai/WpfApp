@@ -1,24 +1,46 @@
-﻿<UserControl x:Class="WpfApp1.UserControls.RingUC"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="WpfApp1.UserControls.RingUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WpfApp1.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
     <Grid x:Name="LayOutGrid">
-        <!--三步-->
-        <!--画一个光秃秃的圆圈-->
+        <!--  三步  -->
+        <!--  画一个光秃秃的圆圈  -->
         <!--<Ellipse Width="{Binding ElementName=LayOutGrid,Path=ActualWidth}"  Height="{Binding ElementName=LayOutGrid,Path=ActualHeight}" Stroke="#22ffffff" StrokeThickness="8"></Ellipse>-->
-        <Path x:Name="pathBack" Stroke="#aaa" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" ></Path>
-        <!--根据百分比的值涂颜色-->
-        <Path x:Name="path" Stroke="Orange" StrokeThickness="7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" ></Path>
-        <!--中间显示图标-->
-        <TextBlock HorizontalAlignment="Center" FontSize="30" Foreground="#FF1BD0E4" VerticalAlignment="Center" FontFamily="../Resource/Fonts/#iconfont" Text="{Binding icon,RelativeSource={RelativeSource AncestorType=UserControl}}"/>
-        <!--底部显示具体百分比-->
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black">
-    <Run  Text="{Binding PercentValue,RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="12" ></Run>
-    <Run Text="%"/>
+        <Path
+            x:Name="pathBack"
+            Stroke="#aaa"
+            StrokeEndLineCap="Round"
+            StrokeStartLineCap="Round"
+            StrokeThickness="7" />
+        <!--  根据百分比的值涂颜色  -->
+        <Path
+            x:Name="path"
+            Stroke="Orange"
+            StrokeEndLineCap="Round"
+            StrokeStartLineCap="Round"
+            StrokeThickness="7" />
+        <!--  中间显示图标  -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontFamily="../Resource/Fonts/#iconfont"
+            FontSize="50"
+            Foreground="#FF1BD0E4"
+            Text="{Binding icon, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <!--  底部显示具体百分比  -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Foreground="Black">
+            
         </TextBlock>
+        <!--<Run FontSize="12" Text="{Binding PercentValue, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        <Run Text="%" />-->
     </Grid>
 </UserControl>

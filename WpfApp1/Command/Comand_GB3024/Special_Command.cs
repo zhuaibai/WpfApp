@@ -87,6 +87,19 @@ namespace WpfApp1.Command.Comand_GB3024
                 canExecute: () =>
                 !SaveConfig_IsWorking // 增加处理状态检查
              );
+            //历史故障保存打开
+            Command_SetFaultHistorySave = new RelayCommand(
+                execute: () => FaultHistorySaveOperation(),
+                canExecute: () =>
+                !FaultHistorySave_IsWorking // 增加处理状态检查
+             );
+            //历史故障保存关闭
+            Command_SetFaultHistorySaveOff = new RelayCommand(
+                execute: () => FaultHistorySaveOffOperation(),
+                canExecute: () =>
+                !FaultHistorySaveOff_IsWorking // 增加处理状态检查
+             );
+
         }
 
         #region 获取机器类型
@@ -1210,6 +1223,181 @@ namespace WpfApp1.Command.Comand_GB3024
                 UpdateState("设置指令已经执行完");
             }
         }
+
+        #endregion
+
+        #region 历史故障保存打开
+
+        private string _FaultHistorySave;
+
+        public string FaultHistorySave
+        {
+            get { return _FaultHistorySave; }
+            set
+            {
+                _FaultHistorySave = value;
+                this.RaiseProperChanged(nameof(FaultHistorySave));
+            }
+        }
+
+
+        private bool FaultHistorySave_IsWorking;
+
+
+        //设置值
+        private string _FaultHistorySave_Inputs;
+
+        public string FaultHistorySave_Inputs
+        {
+            get { return _FaultHistorySave_Inputs; }
+            set
+            {
+                _FaultHistorySave_Inputs = value;
+                this.RaiseProperChanged(nameof(FaultHistorySave_Inputs));
+                Command_SetFaultHistorySave.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetFaultHistorySave { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void FaultHistorySaveOperation()
+        {
+            try
+            {
+                FaultHistorySave_IsWorking = true;
+                // 禁用按钮
+                Command_SetFaultHistorySave.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PEz", "");
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                FaultHistorySave_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetFaultHistorySave.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 历史故障保存关闭
+        private string _FaultHistorySaveOff;
+
+        public string FaultHistorySaveOff
+        {
+            get { return _FaultHistorySaveOff; }
+            set
+            {
+                _FaultHistorySaveOff = value;
+                this.RaiseProperChanged(nameof(FaultHistorySaveOff));
+            }
+        }
+
+
+        private bool FaultHistorySaveOff_IsWorking;
+
+
+        //设置值
+        private string _FaultHistorySaveOff_Inputs;
+
+        public string FaultHistorySaveOff_Inputs
+        {
+            get { return _FaultHistorySaveOff_Inputs; }
+            set
+            {
+                _FaultHistorySaveOff_Inputs = value;
+                this.RaiseProperChanged(nameof(FaultHistorySaveOff_Inputs));
+                Command_SetFaultHistorySaveOff.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetFaultHistorySaveOff { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void FaultHistorySaveOffOperation()
+        {
+            try
+            {
+                FaultHistorySaveOff_IsWorking = true;
+                // 禁用按钮
+                Command_SetFaultHistorySaveOff.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("PDz", FaultHistorySaveOff_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                FaultHistorySaveOff_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetFaultHistorySaveOff.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
 
         #endregion
 

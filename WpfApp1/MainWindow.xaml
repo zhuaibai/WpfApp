@@ -21,7 +21,7 @@
             Opacity="0.6"
             ShadowDepth="3"
             Color="#40000000" />
-        
+
 
         <!--  开关按钮样式  -->
         <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
@@ -89,6 +89,7 @@
             <RowDefinition Height="35" />
         </Grid.RowDefinitions>
         <!--  第一行 菜单  -->
+
         <StackPanel Background="#FFD9E8FF" Orientation="Horizontal">
             <Button
                 x:Name="btnMenu"
@@ -126,40 +127,39 @@
                 BorderBrush="White"
                 BorderThickness="2,0,0,0" />
             <!--<Button
-                Background="#FF1677FF"
-                Command="{Binding SwitchViewToVQ}"
-                Content="{DynamicResource 命令测试}"
-                Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe602;" />
-            <Button
-                Background="#FF1677FF"
-                Content="{DynamicResource 更新下载}"
-                Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe616;" />
-            <Button
-                Background="#FF1677FF"
-                Click="OpenSettingsButton_Click"
-                Content="{DynamicResource 指令设置}"
-                Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe765;" />
-            <Button
-                Background="#FF81ED7B"
-                Content="{DynamicResource 开机}"
-                Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe601;" />
-            <Button
-                Background="#FFF75231"
-                Content="{DynamicResource 关机}"
-                Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe601;" />-->
+        Background="#FF1677FF"
+        Command="{Binding SwitchViewToVQ}"
+        Content="{DynamicResource 命令测试}"
+        Style="{StaticResource MenuStyleBtn}"
+        Tag="&#xe602;" />
+    <Button
+        Background="#FF1677FF"
+        Content="{DynamicResource 更新下载}"
+        Style="{StaticResource MenuStyleBtn}"
+        Tag="&#xe616;" />
+    <Button
+        Background="#FF1677FF"
+        Click="OpenSettingsButton_Click"
+        Content="{DynamicResource 指令设置}"
+        Style="{StaticResource MenuStyleBtn}"
+        Tag="&#xe765;" />
+    <Button
+        Background="#FF81ED7B"
+        Content="{DynamicResource 开机}"
+        Style="{StaticResource MenuStyleBtn}"
+        Tag="&#xe601;" />
+    <Button
+        Background="#FFF75231"
+        Content="{DynamicResource 关机}"
+        Style="{StaticResource MenuStyleBtn}"
+        Tag="&#xe601;" />-->
             <Button
                 Background="#FF1677FF"
                 Click="Log_Click"
+                Command="{Binding ChangeCommand}"
                 Content="{DynamicResource 日志}"
                 Style="{StaticResource MenuStyleBtn}"
-                Tag="&#xe8ac;" 
-                
-                Command="{Binding ChangeCommand}"/>
+                Tag="&#xe8ac;" />
             <Button
                 x:Name="EnglishBtn"
                 Background="#FF1677FF"
@@ -174,9 +174,21 @@
                 Content="中文"
                 Style="{StaticResource MenuStyleBtn}"
                 Tag="&#xe653;" />
+
+
+            <StackPanel Margin="10,0" VerticalAlignment="Center" Cursor="Hand">
+                <ToggleButton
+                    Command="{Binding SwitchOpenReceiveCRC}"
+                    CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                    Style="{StaticResource SwitchButton2}" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="10"
+                    Text="抗干扰模式" />
+            </StackPanel>
             <ComboBox
                 MaxHeight="30"
-                Margin="10"
+                Margin="30,0"
                 ItemsSource="{Binding MachineItems}"
                 SelectedItem="{Binding SelectedMachineItem}"
                 Style="{StaticResource cmbstyle}">
@@ -187,14 +199,8 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
-            <StackPanel VerticalAlignment="Center" >
-                <ToggleButton Style="{StaticResource SwitchButton2}">
-
-                </ToggleButton>
-                <TextBlock Text="抗干扰模式" FontSize="10" HorizontalAlignment="Center"/>
-            </StackPanel>
-            
         </StackPanel>
+
         <!--  下拉菜单弹出层  -->
         <Popup
             x:Name="myPopup"
@@ -252,7 +258,6 @@
                     </StackPanel>
                 </Border>
             </Border>
-
         </Popup>
         <!--  第二行 内容  -->
         <ContentControl
