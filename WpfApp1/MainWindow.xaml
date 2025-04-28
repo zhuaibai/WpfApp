@@ -178,8 +178,8 @@
 
             <StackPanel Margin="10,0" VerticalAlignment="Center" Cursor="Hand">
                 <ToggleButton
-                    Command="{Binding SwitchOpenReceiveCRC}"
-                    CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}}"
+                    Command="{Binding  SwitchOpenReceiveCRC}"
+                    IsChecked="{Binding IsChecked}"
                     Style="{StaticResource SwitchButton2}" />
                 <TextBlock
                     HorizontalAlignment="Center"

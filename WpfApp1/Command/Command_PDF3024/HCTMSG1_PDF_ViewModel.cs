@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -53,7 +54,7 @@ namespace WpfApp1.Command.Command_PDF302
             get { return _CTCurr; }
             set
             {
-                _CTCurr = value;
+                _CTCurr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(CTCurr));
             }
         }
@@ -143,7 +144,7 @@ namespace WpfApp1.Command.Command_PDF302
             get { return _CTPwr; }
             set
             {
-                _CTPwr = value;
+                _CTPwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(CTPwr));
             }
         }

@@ -99,6 +99,12 @@ namespace WpfApp1.Command.Comand_GB3024
                 canExecute: () =>
                 !FaultHistorySaveOff_IsWorking // 增加处理状态检查
              );
+            //抗干扰开关
+            Command_SetAntiJamMode = new RelayCommand(
+                execute: () => AntiJamModeOperation(),
+                canExecute: () =>
+                !FaultHistorySaveOff_IsWorking // 增加处理状态检查
+             );
 
         }
 
@@ -1400,6 +1406,148 @@ namespace WpfApp1.Command.Comand_GB3024
 
 
         #endregion
+
+        #region 抗干扰模式
+
+        private bool _AntiJamMode = false;
+
+        public bool AntiJamMode
+        {
+            get { return _AntiJamMode; }
+            set
+            {
+                _AntiJamMode = value;
+                this.RaiseProperChanged(nameof(AntiJamMode));
+            }
+        }
+
+
+        private bool AntiJamMode_IsWorking;
+
+
+        //设置值
+        private string _AntiJamMode_Inputs;
+
+        public string AntiJamMode_Inputs
+        {
+            get { return _AntiJamMode_Inputs; }
+            set
+            {
+                _AntiJamMode_Inputs = value;
+                this.RaiseProperChanged(nameof(AntiJamMode_Inputs));
+                Command_SetAntiJamMode.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetAntiJamMode { get; }
+
+
+        
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void AntiJamModeOperation()
+        {
+            if (AntiJamMode)
+            {
+                try
+                {
+                    AntiJamMode_IsWorking = true;
+                    // 禁用按钮
+                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+
+                    // 异步等待锁
+                    await _semaphore.WaitAsync();
+                    UpdateState("正在执行设置命令");
+                    //Status = "正在执行特殊操作...";
+
+                    // 暂停后台线程
+                    _pauseEvent.Reset();
+                    AddLog("已暂停后台通信");
+
+                    // 执行特殊操作（带超时保护）
+                    using var timeoutCts = new CancellationTokenSource(5000);
+                    await Task.Run(new Action(() =>
+                    {
+                        //执行设置指令
+                        Thread.Sleep(1000);//没有这个延时会报错
+                        string receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "EN");
+
+                    })
+                    , timeoutCts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    AddLog("特殊操作执行超时");
+                }
+                finally
+                {
+                    // 恢复后台线程
+                    _pauseEvent.Set();
+                    AddLog("恢复后台通信");
+                    AntiJamMode_IsWorking = false;
+                    //Status = "就绪";
+                    // 重新启用按钮
+                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    // 确保释放锁
+                    _semaphore.Release();
+                    UpdateState("设置指令已经执行完");
+                }
+            }
+            else
+            {
+                try
+                {
+                    AntiJamMode_IsWorking = true;
+                    // 禁用按钮
+                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+
+                    // 异步等待锁
+                    await _semaphore.WaitAsync();
+                    UpdateState("正在执行设置命令");
+                    //Status = "正在执行特殊操作...";
+
+                    // 暂停后台线程
+                    _pauseEvent.Reset();
+                    AddLog("已暂停后台通信");
+
+                    // 执行特殊操作（带超时保护）
+                    using var timeoutCts = new CancellationTokenSource(5000);
+                    await Task.Run(new Action(() =>
+                    {
+                        //执行设置指令
+                        Thread.Sleep(1000);//没有这个延时会报错
+                        string receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "DN");
+
+                    })
+                    , timeoutCts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    AddLog("特殊操作执行超时");
+                }
+                finally
+                {
+                    // 恢复后台线程
+                    _pauseEvent.Set();
+                    AddLog("恢复后台通信");
+                    AntiJamMode_IsWorking = false;
+                    //Status = "就绪";
+                    // 重新启用按钮
+                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    // 确保释放锁
+                    _semaphore.Release();
+                    UpdateState("设置指令已经执行完");
+                }
+            }
+           
+        }
+
+
+        #endregion
+
 
         #region 通用方法
         // 输入验证&选择验证

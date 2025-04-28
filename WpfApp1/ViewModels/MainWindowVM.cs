@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.IO.Ports;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -50,6 +43,7 @@ namespace WpfApp1.ViewModels
             //绑定发送接收帧计数委托
             SerialCommunicationService.AddReceiveFrame=SerialCountVM.AddReceiveFrame;
             SerialCommunicationService.AddSendFrame=SerialCountVM.AddSendFrame;
+            
             
             //初始化  GB   ViewModel
             HOP = new HOPViewModel(_pauseEvent,_semaphore,AddLog,UpdateState);
@@ -115,6 +109,89 @@ namespace WpfApp1.ViewModels
             set { _ACTotalPwr = value; }
         }
 
+        /// <summary>
+        /// 市电功率
+        /// </summary>
+        private int _ACPower;
+
+        public int ACPowerVM
+        {
+            get { return _ACPower; }
+            set
+            {
+                _ACPower = value;
+                this.RaiseProperChanged(nameof(ACPowerVM));
+            }
+        }
+
+
+
+        /// <summary>
+        /// 把数字字符串转换成整数
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private int StringToIntConversion(string str)
+        {
+            //这是专门应对市电功率的情况
+            string tag = str.Substring(0, 1);
+            if(tag == "-")
+            {
+                return 0;
+            }else if(tag == "+")
+            {
+                str = str.Substring(1);
+            }
+
+            if (int.TryParse(str, out int number))
+            {
+                Console.WriteLine($"转换后的整数: {number}");
+                return number;
+            }
+            else
+            {
+                Console.WriteLine("输入的字符串不是有效的整数格式。");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// 两数相除，返回百分比
+        /// </summary>
+        /// <param name="front"></param>
+        /// <param name="after"></param>
+        /// <returns></returns>
+        private int CountPercent(int front,int after)
+        {
+            if (after == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return (front *100) /after;
+            }
+        }
+
+        /// <summary>
+        /// 两数相除，返回百分比
+        /// </summary>
+        /// <param name="front"></param>
+        /// <param name="after"></param>
+        /// <returns></returns>
+        private int CountPercent(string front, string after)
+        {
+            int newFront = StringToIntConversion(front);
+            int newAfter = StringToIntConversion(after);
+            if (newAfter == 0)
+            {
+                return 0;
+            }
+            else
+            {
+                return (newFront * 100) / newAfter;
+            }
+        }
 
         /// <summary>
         /// 抗干扰按钮开关切换
@@ -122,10 +199,46 @@ namespace WpfApp1.ViewModels
         public ICommand SwitchOpenReceiveCRC
         {
             get
+            { 
+               return new RelayCommand(SwitchCRCReceive);
+            }
+
+        }
+        //按钮是否打开
+        private bool _isChecked;
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
             {
-                return new DelegateCommand(SerialCommunicationService.OpenReceiveCRC);
+                _isChecked = value;
+                this.RaiseProperChanged(nameof(IsChecked));
             }
         }
+
+       bool OnceOpenCRC = false;
+        /// <summary>
+        /// 打开或关闭抗干扰功能
+        /// </summary>
+        /// <param name="parameter"></param>
+        private  void SwitchCRCReceive()
+        {
+            // 根据 ToggleButton 的选中状态执行相应逻辑
+            if (IsChecked)
+            {
+                //处理选中状态
+                OnceOpenCRC = true;
+                SerialCommunicationService.OpenReceiveCRC(true);
+
+            }
+            else
+            {
+                // 处理未选中状态
+                SerialCommunicationService.OpenReceiveCRC(false);
+            }
+        }
+
         #endregion
 
         #region 下拉框选择机器类型
@@ -931,12 +1044,21 @@ namespace WpfApp1.ViewModels
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
             SerialCommunicationService.MachineType = receive_MachineType;
 
+            //发送HIMSG2N指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
+            HIGSG2_PDF.AnalysisStringToElement(receive);
+
             // 等待暂停或取消信号
             _pauseEvent.Wait(token); 
             //发送HGRID指令
              receive= SerialCommunicationService.SendCommand(HGRID_PDF.Command, 50);
             //解析返回命令
             HGRID_PDF.AnalyseStringToElement(receive);
+            //显示
+            ACPowerVM = StringToIntConversion(HGRID_PDF.ACPower);
+            //市电百分比
+            ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
 
             // 等待暂停或取消信号
             _pauseEvent.Wait(token); 
@@ -944,6 +1066,8 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HOP_PDF.Command, 50);
             //解析返回命令
             HOP_PDF.AnalysisStringToElement(receive);
+            //逆变百分比
+            InvTotalPwr = StringToIntConversion(HOP_PDF.LoadPercent);
 
             // 等待暂停或取消信号
             _pauseEvent.Wait(token);
@@ -975,11 +1099,12 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
             HIMSG1.AnalysisStringToElement(receive);
 
-
             //发送HPV指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HPV_PDF.Command, 50);
             HPV_PDF.AnalysisStringToElement(receive);
+            //MPPT百分比
+            MPPTTotalPwr = CountPercent(HPV_PDF.PVPwr, HIGSG2_PDF.MPPTTotalPwr);
 
             //发送HTEMP指令
             _pauseEvent.Wait(token);
@@ -991,25 +1116,29 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HCTMSG1_PDF.Command, 80);
             HCTMSG1_PDF.AnalysisStringToElement(receive);
 
+            //判断是否开启CRC接收校验（抗干扰
+            if (IsChecked)
+            {
+                //发送HOSTCRCEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "EN");
+
+            }
+            else if (OnceOpenCRC)
+            {
+                //发送HOSTCRDEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "DN");
+                OnceOpenCRC = false;
+            }
+
             //发送HGEN指令
             _pauseEvent.Wait(token); 
             receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             HGEN.AnalyseStringToElement(receive);
 
-            //发送HIMSG2N指令
-            _pauseEvent.Wait(token);
-            receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
-            HIGSG2_PDF.AnalysisStringToElement(receive);
-            //计算百分比
-            //逆变百分比
-            InvTotalPwr = int.Parse(HOP_PDF.LoadPercent);
-            //MPPT百分比
-            MPPTTotalPwr = int.Parse(HPV_PDF.PVPwr) / int.Parse(HIGSG2_PDF.MPPTTotalPwr);
-            //市电百分比
             
-
-
-
+            
 
         }
 
@@ -1075,6 +1204,9 @@ namespace WpfApp1.ViewModels
             //解析返回指令
             HGEN.AnalyseStringToElement(Receive);
         }
+
+        
+
         /// <summary>
         /// 停止后台通信
         /// </summary>

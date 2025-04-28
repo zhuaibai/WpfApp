@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -86,7 +87,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _OutVolt; }
             set
             {
-                _OutVolt = value;
+                _OutVolt = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(OutVolt));
             }
         }
@@ -261,7 +262,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _ApparentPwr; }
             set
             {
-                _ApparentPwr = value;
+                _ApparentPwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(ApparentPwr));
             }
         }
@@ -349,7 +350,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _ActivePwr; }
             set
             {
-                _ActivePwr = value;
+                _ActivePwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(ActivePwr));
             }
         }
@@ -438,7 +439,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _LoadPercent; }
             set
             {
-                _LoadPercent = value;
+                _LoadPercent = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(LoadPercent));
             }
         }
@@ -526,7 +527,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _DCOffset; }
             set
             {
-                _DCOffset = value;
+                _DCOffset = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(DCOffset));
             }
         }
@@ -614,7 +615,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _RatedPwr; }
             set
             {
-                _RatedPwr = value;
+                _RatedPwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(RatedPwr));
             }
         }
@@ -702,7 +703,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _InductorPwr; }
             set
             {
-                _InductorPwr = value;
+                _InductorPwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(InductorPwr));
             }
         }
@@ -790,7 +791,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _InductorCurr; }
             set
             {
-                _InductorCurr = value;
+                _InductorCurr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(InductorCurr));
             }
         }

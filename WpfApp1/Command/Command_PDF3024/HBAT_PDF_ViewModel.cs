@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -52,7 +53,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _BusVolt; }
             set
             {
-                _BusVolt = value;
+                _BusVolt = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BusVolt));
             }
         }
@@ -290,6 +291,38 @@ namespace WpfApp1.Command.Command_PDF3024
             catch (Exception ex)
             {
 
+            }
+        }
+
+        /// <summary>
+        /// 移除
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string RemoveLeadingZeros(string input)
+        {
+            // 先检查是否为纯数字或者包含小数点
+            if (input.Contains('.'))
+            {
+                // 分割整数部分和小数部分
+                string[] parts = input.Split('.');
+                string integerPart = parts[0].TrimStart('0');
+                string decimalPart = parts[1];
+
+                // 如果整数部分为空，说明整数部分全是 0，置为 "0"
+                if (string.IsNullOrEmpty(integerPart))
+                {
+                    integerPart = "0";
+                }
+
+                // 重新组合整数部分和小数部分
+                return $"{integerPart}.{decimalPart}";
+            }
+            else
+            {
+                // 不包含小数点，使用原逻辑
+                string result = input.TrimStart('0');
+                return string.IsNullOrEmpty(result) ? "0" : result;
             }
         }
         #endregion

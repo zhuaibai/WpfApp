@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -72,7 +73,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _MainsVoltage; }
             set
             {
-                _MainsVoltage = value;
+                _MainsVoltage = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(MainsVoltage));
             }
         }
@@ -252,7 +253,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _ACPower; }
             set
             {
-                _ACPower = value;
+                _ACPower = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(ACPower));
             }
         }
@@ -444,7 +445,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _MaxInvPower; }
             set
             {
-                _MaxInvPower = value;
+                _MaxInvPower = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(MaxInvPower));
             }
         }

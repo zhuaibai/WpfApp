@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Command;
 using WpfApp1.Models;
@@ -22,9 +23,16 @@ namespace WpfApp1.Services
         public static Action<int> AddSendFrame; 
         //串口接收帧数
         public static Action<int> AddReceiveFrame;
+        //设置CRC抗干扰开关
+        public static Action<bool> ReciveCRCSwitch;
         //CRC校验
         private static bool Receive_CRC_Check = false;
-
+        //校验抗干扰校验开启
+        private static int IsReceiveCRC_OPen = 0;
+        //校验抗干扰校验关闭
+        private static int IsReceiveCRC_CLose = 0;
+        // 异步竞争
+        private static SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); 
         //机器类型
         public static string _MachineType = "";
         public static string MachineType
@@ -55,7 +63,7 @@ namespace WpfApp1.Services
         }
 
         /// <summary>
-        /// 判断是否返回
+        /// 判断串口是否打开
         /// </summary>
         /// <returns></returns>
         public static bool IsOpen()
@@ -97,7 +105,6 @@ namespace WpfApp1.Services
             }
         }
 
-       
         /// <summary>
         /// 打开串口
         /// </summary>
@@ -154,7 +161,45 @@ namespace WpfApp1.Services
             
         }
 
-        
+        /// <summary>
+        /// 根据实际接收字节情况自动判断是否处于抗干扰模式
+        /// </summary>
+        /// <param name="DestinationReceive"></param>
+        /// <param name="ActualReceive"></param>
+        private static void ChangeCRCR_Receive(int DestinationReceive,int ActualReceive)
+        {
+            //第一种情况(已开启抗干扰但上位机不知道
+            if (DestinationReceive < ActualReceive)
+            {
+                int num = ActualReceive - DestinationReceive;
+                if (num == 2)
+                {
+                    IsReceiveCRC_OPen++;
+                    if (IsReceiveCRC_OPen == 10)
+                    {
+                        ReciveCRCSwitch(true);
+                        OpenReceiveCRC(true);
+                        IsReceiveCRC_OPen = 0;
+                    }
+                }
+            }//
+            //第二种情况（已关闭抗干扰但上位机不知道
+            else if (DestinationReceive > ActualReceive)
+            {
+                int num = DestinationReceive - ActualReceive;
+                if (num == 2)
+                {
+                    IsReceiveCRC_CLose++;
+                    if (IsReceiveCRC_CLose == 10)
+                    {
+                        ReciveCRCSwitch(false);
+                        OpenReceiveCRC(false);
+                        IsReceiveCRC_CLose = 0;
+                    }
+                }
+            }
+
+        }
 
 
 
@@ -166,6 +211,7 @@ namespace WpfApp1.Services
         /// <returns></returns>
         public static string SendCommand(string command ,int returnCount)
         {
+            _semaphore.Wait();
             //在写命令之前先清空一下接受缓存
             SerialPort.DiscardInBuffer();
             SerialPort.WriteTimeout = 1000;
@@ -186,7 +232,7 @@ namespace WpfApp1.Services
                 //添加发送帧数
                 AddSendFrame(Command.Length);
                 // 设置读取超时时间【1s】
-                SerialPort.ReadTimeout = 2000;
+                SerialPort.ReadTimeout = 1000;
                 // 需要读取的字节数
                 int bytesToRead =  returnCount;
                 //读取输入缓冲区
@@ -217,13 +263,17 @@ namespace WpfApp1.Services
                 string DataBuffer = Encoding.ASCII.GetString(buffer);
                 return DataBuffer;
             }
-            catch (TimeoutException ex)
+            catch (Exception ex)
             {
                 // 超时未
                 //MessageBox.Show("超时未收到ACK");
                 //增加接收返回帧数
                 AddReceiveFrame(totalBytesRead);
                 return string.Empty;
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
 
@@ -235,6 +285,7 @@ namespace WpfApp1.Services
         /// <returns></returns>
         public static string SendCommand(byte[] command, int returnCount)
         {
+            _semaphore.Wait();
             int totalBytesRead = 0;
             
             //收报文
@@ -279,6 +330,10 @@ namespace WpfApp1.Services
             {
                 return string.Empty;
             }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
 
@@ -315,18 +370,37 @@ namespace WpfApp1.Services
         /// <returns></returns>
         private static bool CheckReceive_CRC(byte[] bytes)
         {
+            //if (bytes == null) return false;
+            //int CRC_length = bytes.Length - 3;
+            ////创建新的字节数组进行CRC校验
+            //byte[] buffer = new byte[CRC_length];
+            //byte[] CRC_Receuve = new byte[2];
+            //Array.Copy(bytes, buffer,CRC_length);
+            //Array.Copy(CRC_Receuve, CRC_length, bytes,0,2);
+            ////获取CRC校验码
+            //byte[] CRC_Build = getCRC(buffer);
+            ////判断两个校验码是否一致
+            //bool isEuqal = CRC_Build.SequenceEqual(CRC_Receuve);
+            //return isEuqal;
+
             if (bytes == null) return false;
             int CRC_length = bytes.Length - 3;
-            //创建新的字节数组进行CRC校验
+            // 创建新的字节数组进行 CRC 校验
             byte[] buffer = new byte[CRC_length];
             byte[] CRC_Receuve = new byte[2];
-            Array.Copy(bytes, buffer,CRC_length);
-            Array.Copy(CRC_Receuve, CRC_length, buffer,0,2);
-            //获取CRC校验码
+
+            // 复制除 CRC 校验码外的数据到 buffer 数组
+            Array.Copy(bytes, 0, buffer, 0, CRC_length);
+
+            // 从 bytes 数组中提取接收到的 CRC 校验码到 CRC_Receuve 数组
+            Array.Copy(bytes, CRC_length, CRC_Receuve, 0, 2);
+
+            // 获取 CRC 校验码
             byte[] CRC_Build = getCRC(buffer);
-            //判断两个校验码是否一致
-            bool isEuqal = CRC_Build.SequenceEqual(CRC_Receuve);
-            return isEuqal;
+
+            // 判断两个校验码是否一致
+            bool isEqual = CRC_Build.SequenceEqual(CRC_Receuve);
+            return isEqual;
         }
 
 

@@ -7,10 +7,12 @@ using WpfApp1.Command;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
+
 namespace WpfApp1.Command.Comand_GB3024
 {
     public class HEEP2_ViewModel : BaseViewModel
     {
+        
         //指令
         private string command = "HEEP2\r";
         public string Command { get { return command; } }

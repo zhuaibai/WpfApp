@@ -122,5 +122,6 @@
     <s:String x:Key="逆变总功率">逆变总功率</s:String>
     <s:String x:Key="MPPT总功率">总功率</s:String>
     <s:String x:Key="市电总功率">市电总功率</s:String>
-    
+    <s:String x:Key="抗干扰模式">抗干扰模式</s:String>
+
 </ResourceDictionary>

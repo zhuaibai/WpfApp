@@ -122,4 +122,5 @@
     <s:String x:Key="逆变总功率">InvTotalPwr</s:String>
     <s:String x:Key="MPPT总功率">MPPTTotalPwr</s:String>
     <s:String x:Key="市电总功率">ACTotalPwr</s:String>
+    <s:String x:Key="抗干扰模式">AntiJamMode</s:String>
 </ResourceDictionary>

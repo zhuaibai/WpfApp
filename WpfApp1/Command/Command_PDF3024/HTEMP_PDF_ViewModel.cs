@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -63,7 +64,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _InvTemp; }
             set
             {
-                _InvTemp = value;
+                _InvTemp = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(InvTemp));
             }
         }
@@ -154,7 +155,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _MaxTemp; }
             set
             {
-                _MaxTemp = value;
+                _MaxTemp = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(MaxTemp));
             }
         }
@@ -242,9 +243,9 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _FanSpeed; }
             set
             {
-                if(FanEnable=="开启"||FanEnable == "On") { _FanEnable = value; }
+                if(FanEnable=="开启"||FanEnable == "On") { _FanEnable = Tools.RemoveLeadingZeros(value); }
                 else 
-                _FanSpeed = "000";
+                _FanSpeed = "0";
                 this.RaiseProperChanged(nameof(FanSpeed));
             }
         }

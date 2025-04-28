@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -29,7 +30,7 @@ namespace WpfApp1.Command.Command_PDF3024
             #region 初始化指令
 
 
-            //母线电压
+            //调零功率
             Command_SetZeroAdjPwr = new RelayCommand(
                 execute: () => ZeroAdjPwrOperation(),
                 canExecute: () => Validate(nameof(ZeroAdjPwr_Inputs)) && !ZeroAdjPwr_IsWorking // 增加处理状态检查
@@ -53,7 +54,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _ZeroAdjPwr; }
             set
             {
-                _ZeroAdjPwr = value;
+                _ZeroAdjPwr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(ZeroAdjPwr));
             }
         }

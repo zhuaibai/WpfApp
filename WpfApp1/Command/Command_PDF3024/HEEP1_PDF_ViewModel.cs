@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -2568,7 +2569,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _GridCurrent; }
             set
             {
-                _GridCurrent = value;
+                _GridCurrent = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(GridCurrent));
             }
         }
