@@ -327,7 +327,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 //版本号    
                 case "Version_Inputs":
                     return !string.IsNullOrWhiteSpace(Version_Inputs);
-                //PFC工作状态   
+                //发布日期   
                 case "ReleaseDate_Inputs":
                     return !string.IsNullOrWhiteSpace(ReleaseDate_Inputs);
                 //程序完整性   
@@ -356,15 +356,16 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
 
             try
             {
-                //母线电压
+                //版本号
                 Version = Values[0].Substring(1,7);
-                //PFC工作状态
+                //发布日期
                 ReleaseDate = Values[1];
                 //程序完整性
                 SWIntegrity=Values[2].Substring(0,1);
@@ -372,8 +373,23 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HIMSG1异常");
             }
+        }
+
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //版本号
+            Version = exceptionDescription;
+            //发布日期
+            ReleaseDate = exceptionDescription;
+            //程序完整性
+            SWIntegrity = exceptionDescription;
         }
         #endregion
     }

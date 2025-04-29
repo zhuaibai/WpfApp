@@ -2342,6 +2342,19 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #region 系统频率
 
+        private string _OutputSettingFrequency2;
+
+        public string OutputSettingFrequency2
+        {
+            get { return _OutputSettingFrequency2; }
+            set
+            {
+                _OutputSettingFrequency2 = value+"Hz";
+                this.RaiseProperChanged(nameof(OutputSettingFrequency2));
+            }
+        }
+
+
         //系统频率
         private string _OutputSettingFrequency;
 
@@ -2353,13 +2366,19 @@ namespace WpfApp1.Command.Command_PDF3024
                 if (value == "0")
                 {
                     _OutputSettingFrequency = "50";
+                    OutputSettingFrequency2 = _OutputSettingFrequency;
                 }
                 else if (value == "1")
                 {
                     _OutputSettingFrequency = "60";
+                    OutputSettingFrequency2 = _OutputSettingFrequency;
                 }
                 else
+                {
                     _OutputSettingFrequency = value;
+                    OutputSettingFrequency2 = _OutputSettingFrequency;
+                }
+
                 RaiseProperChanged(nameof(OutputSettingFrequency));
             }
         }
@@ -2561,6 +2580,21 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #region 并网电流
 
+        //在设置界面绑定显示
+        private string _GridCurrent2;
+
+        public string GridCurrent2
+        {
+            get { return _GridCurrent2; }
+            set
+            {
+
+                _GridCurrent2 = value+"A";
+                this.RaiseProperChanged(nameof(GridCurrent2));
+            }
+        }
+
+
         //并网电流
         private string _GridCurrent;
 
@@ -2570,6 +2604,7 @@ namespace WpfApp1.Command.Command_PDF3024
             set
             {
                 _GridCurrent = Tools.RemoveLeadingZeros(value);
+                GridCurrent2 = _GridCurrent;
                 RaiseProperChanged(nameof(GridCurrent));
             }
         }
@@ -3051,7 +3086,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", CT_Enable_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("EXTCT", getSelectedToCommad(nameof(CT_Enable_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -3159,6 +3194,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -3224,7 +3260,7 @@ namespace WpfApp1.Command.Command_PDF3024
             catch (Exception ex)
             {
                 //异常
-                return;
+                ReceiveException("HEEP1异常");
             }
 
         }
@@ -3372,7 +3408,7 @@ namespace WpfApp1.Command.Command_PDF3024
                     else if (GridConnectedFunction_Inputs == "开启/On") { return "01"; }
                     else if (GridConnectedFunction_Inputs == "关闭/Off") { return "00"; }
                     else
-                        return OutputSettingFrequency_Inputs;
+                        return GridConnectedFunction_Inputs;
                 //PV并网协议
                 case "PV_GridConnectionProtocol_Inputs":
                     if (string.IsNullOrWhiteSpace(PV_GridConnectionProtocol_Inputs)) { return string.Empty; }
@@ -3381,14 +3417,14 @@ namespace WpfApp1.Command.Command_PDF3024
                     else if (PV_GridConnectionProtocol_Inputs == "SouthAmerica") { return "02"; }
                     else if (PV_GridConnectionProtocol_Inputs == "Pakistan") { return "03"; }
                     else
-                        return OutputSettingFrequency_Inputs;
+                        return PV_GridConnectionProtocol_Inputs;
                 //PV馈能优先级
                 case "PV_FeedPriority_Inputs":
                     if (string.IsNullOrWhiteSpace(PV_FeedPriority_Inputs)) { return string.Empty; }
                     else if (PV_FeedPriority_Inputs == "BLU") { return "00"; }
                     else if (PV_FeedPriority_Inputs == "LBU") { return "01"; }
                     else
-                        return OutputSettingFrequency_Inputs;
+                        return PV_FeedPriority_Inputs;
                 //自动返回首页
                 case "AutoReturnHome_Inputs":
                     if(AutoReturnHome_Inputs == "开启/On")
@@ -3401,14 +3437,24 @@ namespace WpfApp1.Command.Command_PDF3024
                         return AutoReturnHome_Inputs;
                 //输入源提示
                 case "InputPrompt_Inputs":
-                    if(AutoReturnHome_Inputs == "开启/On")
+                    if(InputPrompt_Inputs == "开启/On")
                     {
                         return "PEy";
-                    }else if(AutoReturnHome_Inputs == "关闭/Off")
+                    }else if(InputPrompt_Inputs == "关闭/Off")
                     {
                         return "PDy";
                     }else
-                        return AutoReturnHome_Inputs;
+                        return InputPrompt_Inputs;
+                 //CT功能开关
+                case "CT_Enable_Inputs":
+                    if(CT_Enable_Inputs == "开启/On")
+                    {
+                        return "01";
+                    }else if(CT_Enable_Inputs == "关闭/Off")
+                    {
+                        return "00";
+                    }else
+                        return CT_Enable_Inputs;
                 default:
                     return "";
 
@@ -3416,6 +3462,69 @@ namespace WpfApp1.Command.Command_PDF3024
             }
         }
 
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription) 
+        {
+            //工作模式
+            WorkingMode = exceptionDescription;
+            //最大总充电流
+            TotalChargeCurrent = exceptionDescription;
+            //市电总充电流
+            AC_ChargingCurrent = exceptionDescription;
+            //市电输入范围
+            AC_InputRange = exceptionDescription;
+            //PV并网协议
+            PV_GridConnectionProtocol = exceptionDescription;
+            //电池类型
+            BatteryType = exceptionDescription;
+            //PV馈能优先级
+            PV_FeedPriority = exceptionDescription;
+            //过载重启
+            OverloadRestart = exceptionDescription;
+            //输入源提示
+            InputPrompt = exceptionDescription;
+            //过温重启
+            OverTemperatureRestart = exceptionDescription;
+            //CT功能开关
+            CT_Enable = exceptionDescription;
+            //系统频率
+            OutputSettingFrequency = exceptionDescription;
+            //自动返回首页
+            AutoReturnHome = exceptionDescription;
+            //充电优先顺序(充电模式)
+            ChargingPriority = exceptionDescription;
+            //蜂鸣器状态
+            BuzzerStatus = exceptionDescription;
+            //LCD背光
+            LCD_Backlight = exceptionDescription;
+            //过载转接旁路
+            OverloadByPassFunction = exceptionDescription;
+            //输出模式
+            OutputMode = exceptionDescription;
+            //BMS通讯控制功能
+            BMS_CommunicationControlFunction = exceptionDescription;
+            //BMS锁机电池容量
+            BMS_LowPower_SOC = exceptionDescription;
+            //BMS返回市电模式SOC(AC充电电池容量)
+            BMSreturns_to_AC_mode_SOC = exceptionDescription;
+            //恢复电池放电电池容量
+            BMS_returns_to_battery_mode_SOC = exceptionDescription;
+            //BMS低电压自动开机(逆变开机电池容量)
+            BMS_automatically_turns_on_after_low_power_SOC = exceptionDescription;
+            //强充电压
+            StrongChargeVoltage = exceptionDescription;
+            //浮充电压
+            FloatChargeVolage = exceptionDescription;
+            //低电锁机电压
+            LowPowerLock = exceptionDescription;
+            //并网电流
+            GridCurrent = exceptionDescription;
+            //并网功能
+            GridConnectedFunction = exceptionDescription;
+        }
         #endregion
 
     }

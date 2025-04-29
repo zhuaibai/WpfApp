@@ -125,13 +125,19 @@ namespace WpfApp1.Command.Comand_GB3024
         /// <returns></returns>
         private string GetTimeNow()
         {
-            string timeNow = DateTime.Now.ToString("yy/MM/dd/hh/mm/ss");
+            string timeNow = DateTime.Now.ToString("yy/MM/dd/HH/mm/ss");
             if (string.IsNullOrEmpty(timeNow))
             {
                 return "010719121212";
-            }else
-            return timeNow.Split("/").ToString();
+            }
+            else
+            {
+                string result = timeNow.Replace("/","");
+                
+                return result;
+            }
         }
+            
 
         #endregion
 
@@ -166,8 +172,9 @@ namespace WpfApp1.Command.Comand_GB3024
             string[] Values = value.Split(" ");
             try
             {
+                string time = Values[0].Substring(1, 6);
                 //系统时间
-                SystemTime = Values[0].Substring(1, 6) + " " + Values[1];
+                SystemTime = $"20{time.Substring(0,2)}/{time.Substring(2,2)}/{time.Substring(4,2)} {Values[1]}";
             }
             catch (Exception ex)
             {

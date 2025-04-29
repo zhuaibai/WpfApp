@@ -123,5 +123,16 @@
     <s:String x:Key="MPPT总功率">总功率</s:String>
     <s:String x:Key="市电总功率">市电总功率</s:String>
     <s:String x:Key="抗干扰模式">抗干扰模式</s:String>
+    <s:String x:Key="PV">PV</s:String>
+    <s:String x:Key="CT">CT</s:String>
+    <s:String x:Key="并网功能配置">并网功能配置</s:String>
+    <s:String x:Key="市电">市电</s:String>
+    <s:String x:Key="系统信息">系统信息</s:String>
+    <s:String x:Key="机器状态">机器状态</s:String>
+    <s:String x:Key="输出">输出</s:String>
+    <s:String x:Key="属性">属性</s:String>
+    <s:String x:Key="单位">单位</s:String>
+    
+    
 
 </ResourceDictionary>

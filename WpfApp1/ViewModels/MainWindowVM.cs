@@ -183,7 +183,7 @@ namespace WpfApp1.ViewModels
         {
             int newFront = StringToIntConversion(front);
             int newAfter = StringToIntConversion(after);
-            if (newAfter == 0)
+            if (newAfter == 0||newAfter ==0)
             {
                 return 0;
             }
@@ -192,6 +192,11 @@ namespace WpfApp1.ViewModels
                 return (newFront * 100) / newAfter;
             }
         }
+
+
+        #endregion
+
+        #region 抗干扰功能
 
         /// <summary>
         /// 抗干扰按钮开关切换
@@ -222,7 +227,7 @@ namespace WpfApp1.ViewModels
         /// 打开或关闭抗干扰功能
         /// </summary>
         /// <param name="parameter"></param>
-        private  void SwitchCRCReceive()
+        private void SwitchCRCReceive()
         {
             // 根据 ToggleButton 的选中状态执行相应逻辑
             if (IsChecked)
@@ -230,14 +235,20 @@ namespace WpfApp1.ViewModels
                 //处理选中状态
                 OnceOpenCRC = true;
                 SerialCommunicationService.OpenReceiveCRC(true);
+                //发送HOSTCRCEN
+                Task.Run(new Action(()=>SpecialCommand.AntiJamModeOperation(true)));
 
             }
             else
             {
                 // 处理未选中状态
                 SerialCommunicationService.OpenReceiveCRC(false);
+                
+
             }
         }
+
+        
 
         #endregion
 
@@ -272,8 +283,7 @@ namespace WpfApp1.ViewModels
         //选中项改变
         private void OnSelectionChanged()
         { 
-            // 这里处理选择变更逻辑
-            System.Diagnostics.Debug.WriteLine($"选中项: {SelectedMachineItem}");
+            
 
             // 如果需要，可以在这里添加业务逻辑
             if (SelectedMachineItem != null)
@@ -292,14 +302,17 @@ namespace WpfApp1.ViewModels
             if (view == "VQ3024")
             {
                 ContentUC = new VQ_Monitor();
+                SelectedMachineItem = "VQ3024";
             }
             else if(view =="GB3024")
             {
                 ContentUC = new GB_MonitorUC();
+                SelectedMachineItem = "GB3024";
             }
             else
             {
                 ContentUC = new PTF_Monitor();
+                SelectedMachineItem = "PTF";
             }
         }
         #endregion
@@ -634,48 +647,40 @@ namespace WpfApp1.ViewModels
         }
 
         /// <summary>
-        /// 打开串口
+        /// 打开串口(已打开则关闭串口)
         /// </summary>
         public void openCom()
         {
             if (SerialCommunicationService.IsOpen())
             {
-                MessageBoxResult dialogResult = MessageBox.Show(App.GetText("串口已打开，是否关闭?"), "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                if (dialogResult == MessageBoxResult.OK)
+                //MessageBoxResult dialogResult = MessageBox.Show(App.GetText("串口已打开，是否关闭?"), "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                //if (dialogResult == MessageBoxResult.OK)
+                //{
+                //}
+                //else
+                //{
+                //    return;
+                //}
+                try
                 {
-                    try
-                    {
-                        AddLog("准备关闭通信");
-                        //停止后台通信(如果有)
-                        StopBackgroundThread();
+                    AddLog("准备关闭通信");
+                    //停止后台通信(如果有)
+                    StopBackgroundThread();
 
-                        //关闭串口
-                        AddLog("串口已关闭");
-                        SerialCommunicationService.CloseCom();
+                    //关闭串口
+                    SerialCommunicationService.CloseCom();
+                    AddLog("串口已关闭");
 
-                        ChangeComIcon(false);
+                    ChangeComIcon(false);
 
-                        ////重新加载配置文件
-                        //IniCom();
-                        //if (!SerialCommunicationService.OpenCom())
-                        //{
-                        //    MessageBox.Show("串口打开失败！");
-                        //    return;
-                        //};
-                        UpdateState(App.GetText("串口已关闭"));
-                        comStateColor(false);
-                        AddLog($"关闭串口{SerialCommunicationService.getComName()}成功");
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
+                    UpdateState(App.GetText("串口已关闭"));
+                    comStateColor(false);
+                    AddLog($"关闭串口{SerialCommunicationService.getComName()}成功");
                 }
-                else
+                catch (Exception ex)
                 {
-                    return;
+
                 }
-                
             }
             else
             {
@@ -689,8 +694,63 @@ namespace WpfApp1.ViewModels
                 UpdateState(App.GetText("串口已打开(点击开始进行通讯)"));
                 comStateColor(true);
                 AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
+
+                string machine;
+                //自动识别机器
+                if (!AutoSelectedMachineType(out machine))
+                {
+                    //未识别
+                    MessageBox.Show($"无法识别机器机器类型:{machine},请关闭串口后再试","Error",MessageBoxButton.OK,MessageBoxImage.Error);
+                    //关闭串口
+                    openCom();
+                    return;
+                }
+                //开始通讯
+                StartBackgroundThread();
             }
            
+        }
+
+        /// <summary>
+        /// 自动获取机型
+        /// </summary>
+        private bool AutoSelectedMachineType(out string machine)
+        {
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            SerialCommunicationService.MachineType = receive_MachineType;
+            if(receive_MachineType.Length>=9)
+            {
+                if(receive_MachineType.Substring(0, 9) == "(HPVINV05")
+                {
+                    //切换到PTF界面
+                    SwitchViewToVQorGB("PTF");
+                    //默认设置抗干扰模式
+                    IsChecked = true;
+                    OnceOpenCRC = true;
+                    SerialCommunicationService.OpenReceiveCRC(true);
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }else if(receive_MachineType.Substring(0,9) == "(HPVINV02")
+                {
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else
+                {
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                machine = receive_MachineType;
+                return false;
+            }
         }
 
         #endregion
@@ -1009,10 +1069,13 @@ namespace WpfApp1.ViewModels
                     }
                     if (SelectedMachineItem == "PTF")
                     {
+                        //处理选中状态
+                        
+                        //PTF通讯
                         CommunicationWithPTF3024(token);
                     }
                     // 模拟常规通信
-                    await Task.Delay(1000, token);
+                    await Task.Delay(0, token);
                     //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
 
                     
@@ -1038,6 +1101,22 @@ namespace WpfApp1.ViewModels
         { 
 
             string receive = "";
+
+            //判断是否开启CRC接收校验（抗干扰 默认开启
+            if (IsChecked)
+            {
+                //发送HOSTCRCEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "EN");
+
+            }
+            else if (OnceOpenCRC)
+            {
+                //发送HOSTCRDEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "DN");
+                OnceOpenCRC = false;
+            }
 
             //获取机器型号
             _pauseEvent.Wait(token);
@@ -1115,22 +1194,6 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HCTMSG1_PDF.Command, 80);
             HCTMSG1_PDF.AnalysisStringToElement(receive);
-
-            //判断是否开启CRC接收校验（抗干扰
-            if (IsChecked)
-            {
-                //发送HOSTCRCEN指令
-                _pauseEvent.Wait(token);
-                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "EN");
-
-            }
-            else if (OnceOpenCRC)
-            {
-                //发送HOSTCRDEN指令
-                _pauseEvent.Wait(token);
-                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "DN");
-                OnceOpenCRC = false;
-            }
 
             //发送HGEN指令
             _pauseEvent.Wait(token); 

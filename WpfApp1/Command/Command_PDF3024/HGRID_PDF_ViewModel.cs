@@ -564,6 +564,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -587,10 +588,32 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HGRID异常");
             }
         }
-        
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //市电电压
+            MainsVoltage = exceptionDescription;
+            //市电频率
+            MainsFrequency = exceptionDescription;
+            //市电功率
+            ACPower = exceptionDescription;
+            //温度限制
+            TempLimit = exceptionDescription;
+            //当前允许最大逆变功率
+            MaxInvPower = exceptionDescription;
+            ////逆变电流
+            //InverterCurrent = Values[7];
+            ////Mos管电流
+            //MOS_TubeCurrent = Values[8];
+        }
+
         /// <summary>
         /// 把选项转化为指令格式
         /// </summary>

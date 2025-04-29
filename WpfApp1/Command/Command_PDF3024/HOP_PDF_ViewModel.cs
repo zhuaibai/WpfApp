@@ -79,6 +79,20 @@ namespace WpfApp1.Command.Command_PDF3024
 
 
         #region 输出电压
+
+
+        private string _OutVolt2;
+
+        public string OutVolt2
+        {
+            get { return _OutVolt2; }
+            set
+            {
+                _OutVolt2 = value+"V";
+                this.RaiseProperChanged(nameof(OutVolt2));
+            }
+        }
+
         //输出电压
         private string _OutVolt;
 
@@ -88,6 +102,7 @@ namespace WpfApp1.Command.Command_PDF3024
             set
             {
                 _OutVolt = Tools.RemoveLeadingZeros(value);
+                OutVolt2 = _OutVolt;
                 this.RaiseProperChanged(nameof(OutVolt));
             }
         }
@@ -922,6 +937,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -949,8 +965,34 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HOP异常");
             }
+        }
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //输出电压
+            OutVolt = exceptionDescription;
+            //输出频率
+            OutFreq = exceptionDescription;
+            //视在频率
+            ApparentPwr = exceptionDescription;
+            //有功功率
+            ActivePwr = exceptionDescription;
+            //负载百分比
+            LoadPercent = exceptionDescription;
+            //直流分量
+            DCOffset = exceptionDescription;
+            //额定功率
+            RatedPwr = exceptionDescription;
+            //电感电流
+            InductorCurr = exceptionDescription;
+            //电感功率
+            InductorPwr = exceptionDescription;
         }
         #endregion
     }

@@ -53,7 +53,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _BusVolt; }
             set
             {
-                _BusVolt = Tools.RemoveLeadingZeros(value);
+                _BusVolt = Tools.RemoveLeadingZeros(value) + "V";
                 this.RaiseProperChanged(nameof(BusVolt));
             }
         }
@@ -276,6 +276,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -290,8 +291,20 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HBAT异常");
             }
+        }
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //母线电压
+            BusVolt = exceptionDescription;
+            //PFC工作状态
+            PFCStatus = exceptionDescription;
         }
 
         /// <summary>

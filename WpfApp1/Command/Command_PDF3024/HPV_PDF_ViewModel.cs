@@ -353,6 +353,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -369,8 +370,23 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HPV异常");
             }
+        }
+
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //PV电压
+            PVVolt = exceptionDescription;
+            //PV电流
+            PVCurr = exceptionDescription;
+            //PV功率
+            PVPwr = exceptionDescription;
         }
         #endregion
     }

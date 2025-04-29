@@ -64,7 +64,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _InvTemp; }
             set
             {
-                _InvTemp = Tools.RemoveLeadingZeros(value);
+                _InvTemp = Tools.RemoveLeadingZeros(value) + "℃";
                 this.RaiseProperChanged(nameof(InvTemp));
             }
         }
@@ -155,7 +155,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _MaxTemp; }
             set
             {
-                _MaxTemp = Tools.RemoveLeadingZeros(value);
+                _MaxTemp = Tools.RemoveLeadingZeros(value) + "℃";
                 this.RaiseProperChanged(nameof(MaxTemp));
             }
         }
@@ -465,6 +465,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -483,8 +484,24 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HTEMP异常");
             }
+        }
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //逆变温度
+            InvTemp = exceptionDescription;
+            //当前最大温度
+            MaxTemp = exceptionDescription;
+            //风扇转速
+            FanSpeed = exceptionDescription;
+            //风扇开关
+            FanEnable = exceptionDescription;
         }
         #endregion
     }

@@ -99,12 +99,12 @@ namespace WpfApp1.Command.Comand_GB3024
                 canExecute: () =>
                 !FaultHistorySaveOff_IsWorking // 增加处理状态检查
              );
-            //抗干扰开关
-            Command_SetAntiJamMode = new RelayCommand(
-                execute: () => AntiJamModeOperation(),
-                canExecute: () =>
-                !FaultHistorySaveOff_IsWorking // 增加处理状态检查
-             );
+            ////抗干扰开关
+            //Command_SetAntiJamMode = new RelayCommand(
+            //    execute: () => AntiJamModeOperation(),
+            //    canExecute: () =>
+            //    !FaultHistorySaveOff_IsWorking // 增加处理状态检查
+            // );
 
         }
 
@@ -1448,15 +1448,15 @@ namespace WpfApp1.Command.Comand_GB3024
         /// <summary>
         /// 点击设置
         /// </summary>
-        private async void AntiJamModeOperation()
+        public async void AntiJamModeOperation(bool flag)
         {
-            if (AntiJamMode)
+            if (flag)
             {
                 try
                 {
                     AntiJamMode_IsWorking = true;
                     // 禁用按钮
-                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    //Command_SetAntiJamMode.RaiseCanExecuteChanged();
 
                     // 异步等待锁
                     await _semaphore.WaitAsync();
@@ -1490,7 +1490,7 @@ namespace WpfApp1.Command.Comand_GB3024
                     AntiJamMode_IsWorking = false;
                     //Status = "就绪";
                     // 重新启用按钮
-                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    //Command_SetAntiJamMode.RaiseCanExecuteChanged();
                     // 确保释放锁
                     _semaphore.Release();
                     UpdateState("设置指令已经执行完");
@@ -1502,7 +1502,7 @@ namespace WpfApp1.Command.Comand_GB3024
                 {
                     AntiJamMode_IsWorking = true;
                     // 禁用按钮
-                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    //Command_SetAntiJamMode.RaiseCanExecuteChanged();
 
                     // 异步等待锁
                     await _semaphore.WaitAsync();
@@ -1536,7 +1536,7 @@ namespace WpfApp1.Command.Comand_GB3024
                     AntiJamMode_IsWorking = false;
                     //Status = "就绪";
                     // 重新启用按钮
-                    Command_SetAntiJamMode.RaiseCanExecuteChanged();
+                    //Command_SetAntiJamMode.RaiseCanExecuteChanged();
                     // 确保释放锁
                     _semaphore.Release();
                     UpdateState("设置指令已经执行完");

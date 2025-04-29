@@ -47,6 +47,20 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #region 调零功率
 
+        private string _ZeroAdjPwr2;
+
+        public string ZeroAdjPwr2
+        {
+            get { return _ZeroAdjPwr2; }
+            set
+            {
+                _ZeroAdjPwr2 = value+"W";
+                this.RaiseProperChanged(nameof(ZeroAdjPwr2));
+            }
+        }
+
+
+        //调零功率
         private string _ZeroAdjPwr;
 
         public string ZeroAdjPwr
@@ -55,6 +69,7 @@ namespace WpfApp1.Command.Command_PDF3024
             set
             {
                 _ZeroAdjPwr = Tools.RemoveLeadingZeros(value);
+                ZeroAdjPwr2 = _ZeroAdjPwr;
                 this.RaiseProperChanged(nameof(ZeroAdjPwr));
             }
         }
@@ -105,8 +120,8 @@ namespace WpfApp1.Command.Command_PDF3024
                 await Task.Run(new Action(() =>
                 {
                     //执行设置指令
-                    Thread.Sleep(2000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", ZeroAdjPwr_Inputs);
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("EZCTP", ZeroAdjPwr_Inputs);
 
                 })
                 , timeoutCts.Token);
@@ -278,6 +293,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -292,8 +308,20 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HEEP3异常");
             }
+        }
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //调零功率
+            ZeroAdjPwr = exceptionDescription;
+            //PFC工作状态
+            //PFCStatus = Values[6].Substring(0, 1);
         }
         #endregion
     }

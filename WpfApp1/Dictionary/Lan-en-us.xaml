@@ -123,4 +123,11 @@
     <s:String x:Key="MPPT总功率">MPPTTotalPwr</s:String>
     <s:String x:Key="市电总功率">ACTotalPwr</s:String>
     <s:String x:Key="抗干扰模式">AntiJamMode</s:String>
+    <s:String x:Key="并网功能配置">GridFuncConfig</s:String>
+    <s:String x:Key="市电">AC</s:String>
+    <s:String x:Key="系统信息">SysInfo</s:String>
+    <s:String x:Key="机器状态">MachineStat</s:String>
+    <s:String x:Key="输出">Output</s:String>
+    <s:String x:Key="属性">Property</s:String>
+    <s:String x:Key="单位">Unit</s:String>
 </ResourceDictionary>

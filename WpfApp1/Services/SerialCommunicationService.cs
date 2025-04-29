@@ -39,10 +39,14 @@ namespace WpfApp1.Services
         {
             get { return _MachineType; }
             set {
-                if (value == "(HPVINV01\r") _MachineType = "A";
-                else if(value =="(HPVINV02\r"||value== "(HPVINV05\r") _MachineType = "B";
-                else if(value == "(HPVINV03\r") _MachineType = "C";
-                else if(value == "(HPVINV04\r") _MachineType = "D";
+                if (value.Length >= 9)
+                {
+                    value = value.Substring(0, 9);
+                    if (value == "(HPVINV01") _MachineType = "A";
+                    else if (value == "(HPVINV02" || value == "(HPVINV05") _MachineType = "B";
+                    else if (value == "(HPVINV03") _MachineType = "C";
+                    else if (value == "(HPVINV04") _MachineType = "D";
+                }
                 else
                 _MachineType = value; }
         }

@@ -354,6 +354,7 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("0");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -369,8 +370,24 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HIMSG2异常");
             }
+        }
+
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+
+            //逆变总电压
+            InvTotalPwr = exceptionDescription;
+            //MPPT总功率
+            MPPTTotalPwr = exceptionDescription;
+            //市电总功率
+            ACTotalPwr = exceptionDescription;
         }
         #endregion
     }

@@ -262,6 +262,7 @@ namespace WpfApp1.Command.Command_PDF302
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -276,8 +277,21 @@ namespace WpfApp1.Command.Command_PDF302
             }
             catch (Exception ex)
             {
-
+                ReceiveException("HCTMSG1异常");
             }
+        }
+
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //CT电流
+            CTCurr = exceptionDescription;
+            //CT功率
+            CTPwr = exceptionDescription;
         }
         #endregion
     }
