@@ -130,4 +130,7 @@
     <s:String x:Key="输出">Output</s:String>
     <s:String x:Key="属性">Property</s:String>
     <s:String x:Key="单位">Unit</s:String>
+    <s:String x:Key="输出设定电压">OutSetVolt</s:String>
+    <s:String x:Key="故障记录">FaultLog</s:String>
+    
 </ResourceDictionary>

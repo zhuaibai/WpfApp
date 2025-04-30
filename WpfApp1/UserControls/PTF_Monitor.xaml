@@ -87,7 +87,7 @@
                 Content="{DynamicResource 概览图}"
                 IsChecked="True" />
             <RadioButton Click="ElementSetting_Click" Content="{DynamicResource 参数设置}" />
-            <RadioButton Content="{DynamicResource 软件升级}" />
+            <!--<RadioButton Content="{DynamicResource 软件升级}" />-->
         </StackPanel>
         <!--  第二行 第一列  -->
         <Grid Grid.Row="1" Margin="10,10">
@@ -1041,16 +1041,16 @@
                                 Grid.Row="2"
                                 Grid.Column="1"
                                 Style="{StaticResource ContentText}"
-                                Text="{Binding HOP_PDF.OutVolt2}" />
+                                Text="{Binding HEEP1_PDF.OutSetVolt}" />
                             <TextBox
                                 Grid.Row="2"
                                 Grid.Column="2"
                                 Style="{StaticResource InputBox}"
-                                Text="{Binding HOP_PDF.OutVolt_Inputs, UpdateSourceTrigger=PropertyChanged}" />
+                                Text="{Binding HEEP1_PDF.OutSetVolt_Inputs, UpdateSourceTrigger=PropertyChanged}" />
                             <Button
                                 Grid.Row="2"
                                 Grid.Column="3"
-                                Command="{Binding DataContext.HOP_PDF.Command_SetOutVolt, RelativeSource={RelativeSource AncestorType=Window}}"
+                                Command="{Binding DataContext.HEEP1_PDF.Command_SetOutSetVolt, RelativeSource={RelativeSource AncestorType=Window}}"
                                 Content="{DynamicResource 设置}"
                                 Style="{StaticResource ActionButton}" />
 

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
-namespace WpfApp1.Command.Command_PDF3024
+namespace WpfApp1.Command.Command_VQ3024
 {
-    public class HEEP1_PDF_ViewModel:BaseViewModel
+    public class HEEP1_VQ_ViewModel:BaseViewModel
     {
         //指令
         private string command = "HEEP1\r";
@@ -23,14 +21,14 @@ namespace WpfApp1.Command.Command_PDF3024
         SemaphoreSlim _semaphore;        //异步竞争，资源锁
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
-        public HEEP1_PDF_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> _updateState)
+        public HEEP1_VQ_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> _updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
             AddLog = addLog;
             UpdateState = _updateState;
 
-            #region 初始化命令
+            #region 初始化命令            
             //设置工作模式
             Command_SetWorkingMode = new RelayCommand(
                 execute: () => WorkingModeOperation(),
@@ -185,6 +183,13 @@ namespace WpfApp1.Command.Command_PDF3024
               execute: () => OutSetVoltOperation(),
               canExecute: () => Validate(nameof(OutSetVolt_Inputs)) && !OutSetVolt_IsWorking
              );
+            //故障记录
+            Command_SetFaultLog = new RelayCommand(
+              execute: () => FaultLogOperation(),
+              canExecute: () => Validate(nameof(FaultLog_Inputs)) && !FaultLog_IsWorking
+             );
+            
+
 
             #endregion
         }
@@ -200,17 +205,10 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _WorkingMode; }
             set
             {
-                if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
-                {
-                    if (value == "(0") { _WorkingMode = "UTI"; }
-                    else if (value == "(1") { _WorkingMode = "SUB"; }
-                    else if (value == "(2") { _WorkingMode = "SBU"; }
-                }
-                else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
-                {
-                    if (value == "1") { _WorkingMode = "PV"; }
-                    else if (value == "0") { _WorkingMode = "VOLTAGE"; }
-                }
+
+                if (value == "1") { _WorkingMode = "SOL"; }
+                else if (value == "0") { _WorkingMode = "USB"; }
+                else if(value == "2") { _WorkingMode = "SBU"; }
                 else
                     _WorkingMode = value;
                 RaiseProperChanged(nameof(WorkingMode));
@@ -221,7 +219,7 @@ namespace WpfApp1.Command.Command_PDF3024
         /// <summary>
         /// 工作模式可选项
         /// </summary>
-        private List<string> _WorkingModeOptions = new List<string> { "PV", "VOLTAGE" };
+        private List<string> _WorkingModeOptions = new List<string> { "USB", "SOL","SBU" };
 
         public List<string> WorkingModeOptions
         {
@@ -1086,7 +1084,7 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #endregion
 
-        #region 输入源提示
+        #region 低电告警关机
 
         private string _InputPrompt;
 
@@ -1168,7 +1166,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(InputPrompt_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(InputPrompt_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -1302,6 +1300,95 @@ namespace WpfApp1.Command.Command_PDF3024
             }
         }
 
+
+
+
+        #endregion
+
+        #region 输出设定电压
+
+        private string _OutSetVolt;
+
+        public string OutSetVolt
+        {
+            get { return _OutSetVolt; }
+            set
+            {
+                _OutSetVolt = value;
+                this.RaiseProperChanged(nameof(OutSetVolt));
+            }
+        }
+
+
+        private bool OutSetVolt_IsWorking;
+
+
+        //设置值
+        private string _OutSetVolt_Inputs;
+
+        public string OutSetVolt_Inputs
+        {
+            get { return _OutSetVolt_Inputs; }
+            set
+            {
+                _OutSetVolt_Inputs = value;
+                this.RaiseProperChanged(nameof(OutSetVolt_Inputs));
+                Command_SetOutSetVolt.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetOutSetVolt { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void OutSetVoltOperation()
+        {
+            try
+            {
+                OutSetVolt_IsWorking = true;
+                // 禁用按钮
+                Command_SetOutSetVolt.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("V", OutSetVolt_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                OutSetVolt_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetOutSetVolt.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
 
 
 
@@ -1879,6 +1966,115 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #endregion
 
+        #region 故障记录
+
+        private string _FaultLog;
+
+        public string FaultLog
+        {
+            get { return _FaultLog; }
+            set
+            {
+                if (value == "0")
+                {
+                    _FaultLog = App.GetText("关闭");
+                }
+                else if (value == "1")
+                {
+                    _FaultLog = App.GetText("开启");
+                }
+                else
+                    _FaultLog = value;
+                this.RaiseProperChanged(nameof(FaultLog));
+            }
+        }
+
+
+        private bool FaultLog_IsWorking;
+
+
+        //设置值
+        private string _FaultLog_Inputs;
+
+        public string FaultLog_Inputs
+        {
+            get { return _FaultLog_Inputs; }
+            set
+            {
+                _FaultLog_Inputs = value;
+                this.RaiseProperChanged(nameof(FaultLog_Inputs));
+                Command_SetFaultLog.RaiseCanExecuteChanged();
+            }
+        }
+
+        //下拉选项
+        private List<string> _FaultLogOptions = new List<string> { "开启", "关闭" };
+
+        public List<string> FaultLogOptions
+        {
+            get { return _FaultLogOptions; }
+            set
+            {
+                _FaultLogOptions = value;
+                this.RaiseProperChanged(nameof(FaultLogOptions));
+            }
+        }
+
+        public RelayCommand Command_SetFaultLog { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void FaultLogOperation()
+        {
+            try
+            {
+                FaultLog_IsWorking = true;
+                // 禁用按钮
+                Command_SetFaultLog.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", FaultLog_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                FaultLog_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetFaultLog.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
         #region BMS锁机电池容量(%)
 
         //BMS锁机电池容量
@@ -2351,7 +2547,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _OutputSettingFrequency2; }
             set
             {
-                _OutputSettingFrequency2 = value+"Hz";
+                _OutputSettingFrequency2 = value + "Hz";
                 this.RaiseProperChanged(nameof(OutputSettingFrequency2));
             }
         }
@@ -2553,7 +2749,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(AutoReturnHome_Inputs)));
+                    string receive = SerialCommunicationService.SendSettingCommand("", getSelectedToCommad(nameof(AutoReturnHome_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2591,7 +2787,7 @@ namespace WpfApp1.Command.Command_PDF3024
             set
             {
 
-                _GridCurrent2 = value+"A";
+                _GridCurrent2 = value + "A";
                 this.RaiseProperChanged(nameof(GridCurrent2));
             }
         }
@@ -3119,97 +3315,6 @@ namespace WpfApp1.Command.Command_PDF3024
 
         #endregion
 
-        #region 输出设定电压
-
-
-        //输出设定电压
-        private string _OutSetVolt;
-
-        public string OutSetVolt
-        {
-            get { return _OutSetVolt; }
-            set
-            {
-                _OutSetVolt = value+"V";
-                this.RaiseProperChanged(nameof(OutSetVolt));
-            }
-        }
-
-
-        private bool OutSetVolt_IsWorking;
-
-
-        //设置值
-        private string _OutSetVolt_Inputs;
-
-        public string OutSetVolt_Inputs
-        {
-            get { return _OutSetVolt_Inputs; }
-            set
-            {
-                _OutSetVolt_Inputs = value;
-                this.RaiseProperChanged(nameof(OutSetVolt_Inputs));
-                Command_SetOutSetVolt.RaiseCanExecuteChanged();
-            }
-        }
-
-
-        public RelayCommand Command_SetOutSetVolt { get; }
-
-        /// <summary>
-        /// 点击设置
-        /// </summary>
-        private async void OutSetVoltOperation()
-        {
-            try
-            {
-                OutSetVolt_IsWorking = true;
-                // 禁用按钮
-                Command_SetOutSetVolt.RaiseCanExecuteChanged();
-
-                // 异步等待锁
-                await _semaphore.WaitAsync();
-                UpdateState("正在执行设置命令");
-                //Status = "正在执行特殊操作...";
-
-                // 暂停后台线程
-                _pauseEvent.Reset();
-                AddLog("已暂停后台通信");
-
-                // 执行特殊操作（带超时保护）
-                using var timeoutCts = new CancellationTokenSource(5000);
-                await Task.Run(new Action(() =>
-                {
-                    //执行设置指令
-                    Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("V", OutSetVolt_Inputs);
-
-                })
-                , timeoutCts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                AddLog("特殊操作执行超时");
-            }
-            finally
-            {
-                // 恢复后台线程
-                _pauseEvent.Set();
-                AddLog("恢复后台通信");
-                OutSetVolt_IsWorking = false;
-                //Status = "就绪";
-                // 重新启用按钮
-                Command_SetOutSetVolt.RaiseCanExecuteChanged();
-                // 确保释放锁
-                _semaphore.Release();
-                UpdateState("设置指令已经执行完");
-            }
-        }
-
-
-
-        #endregion
-
         #region 通用方法
         // 输入验证&选择验证
         private bool Validate(string value)
@@ -3274,6 +3379,8 @@ namespace WpfApp1.Command.Command_PDF3024
                     return !string.IsNullOrWhiteSpace(InputPrompt_Inputs);
                 case "OutSetVolt_Inputs":
                     return !string.IsNullOrWhiteSpace(OutSetVolt_Inputs);
+                case "FaultLog_Inputs":
+                    return !string.IsNullOrWhiteSpace(FaultLog_Inputs);
                 default:
                     return false;
             }
@@ -3296,7 +3403,7 @@ namespace WpfApp1.Command.Command_PDF3024
             try
             {
                 //工作模式
-                WorkingMode = Values[8];
+                WorkingMode = Values[0].Substring(0,1);
                 //最大总充电流
                 TotalChargeCurrent = Values[1];
                 //市电总充电流
@@ -3311,7 +3418,7 @@ namespace WpfApp1.Command.Command_PDF3024
                 PV_FeedPriority = Values[3].Substring(3, 1);
                 //过载重启
                 OverloadRestart = Values[3].Substring(4, 1);
-                //输入源提示
+                //低电告警关机
                 InputPrompt = Values[3].Substring(5, 1);
                 //过温重启
                 OverTemperatureRestart = Values[3].Substring(6, 1);
@@ -3325,34 +3432,36 @@ namespace WpfApp1.Command.Command_PDF3024
                 AutoReturnHome = Values[4].Substring(1, 1);
                 //充电优先顺序(充电模式)
                 ChargingPriority = Values[4].Substring(2, 1);
+                //故障记录
+                FaultLog = Values[4].Substring(3, 1);
                 //蜂鸣器状态
-                BuzzerStatus = Values[5];
+                BuzzerStatus = Values[4].Substring(4,0);
                 //LCD背光
-                LCD_Backlight = Values[6];
+                LCD_Backlight = Values[5];
                 //过载转接旁路
-                OverloadByPassFunction = Values[7];
+                OverloadByPassFunction = Values[6];
                 //输出模式
-                OutputMode = Values[8];
+                OutputMode = Values[7];
                 //BMS通讯控制功能
-                BMS_CommunicationControlFunction = Values[9];
+                BMS_CommunicationControlFunction = Values[8];
                 //BMS锁机电池容量
-                BMS_LowPower_SOC = Values[10];
+                BMS_LowPower_SOC = Values[9];
                 //BMS返回市电模式SOC(AC充电电池容量)
-                BMSreturns_to_AC_mode_SOC = Values[11];
+                BMSreturns_to_AC_mode_SOC = Values[10];
                 //恢复电池放电电池容量
-                BMS_returns_to_battery_mode_SOC = Values[12];
+                BMS_returns_to_battery_mode_SOC = Values[11];
                 //BMS低电压自动开机(逆变开机电池容量)
-                BMS_automatically_turns_on_after_low_power_SOC = Values[13];
+                BMS_automatically_turns_on_after_low_power_SOC = Values[12];
                 //强充电压
-                StrongChargeVoltage = Values[14];
+                StrongChargeVoltage = Values[13];
                 //浮充电压
-                FloatChargeVolage = Values[15];
+                FloatChargeVolage = Values[14];
                 //低电锁机电压
-                LowPowerLock = Values[16];
+                LowPowerLock = Values[15];
                 //并网电流
-                GridCurrent = Values[17];
+                GridCurrent = Values[16];
                 //并网功能
-                GridConnectedFunction = Values[18].Substring(0,1);
+                GridConnectedFunction = Values[17].Substring(0, 1);
             }
             catch (Exception ex)
             {
@@ -3373,35 +3482,16 @@ namespace WpfApp1.Command.Command_PDF3024
             {
                 //设置工作模式
                 case "WorkingModeSelectedOption":
-                    if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                    if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
                     {
-                        if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
-                        {
-                            return string.Empty;
-                        }
-                        else if (WorkingModeSelectedOption == "UTI")
-                        {
-                            return "00";
-                        }
-                        else if (WorkingModeSelectedOption == "SUB")
-                        {
-                            return "01";
-                        }
-                        else if (WorkingModeSelectedOption == "SBU") { return "02"; }
-
+                        return string.Empty;
                     }
-                    else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
+                    else if (WorkingModeSelectedOption == "SOL")
                     {
-                        if (string.IsNullOrWhiteSpace(WorkingModeSelectedOption))
-                        {
-                            return string.Empty;
-                        }
-                        else if (WorkingModeSelectedOption == "PV")
-                        {
-                            return "01";
-                        }
-                        else if (WorkingModeSelectedOption == "VOLTAGE") { return "00"; }
+                        return "01";
                     }
+                    else if (WorkingModeSelectedOption == "USB") { return "00"; }
+                    else if(WorkingModeSelectedOption == "SBU") { return "02"; }
                     return "";
                 //设置电池类型
                 case "BatteryTypeSelectedOption":
@@ -3524,34 +3614,53 @@ namespace WpfApp1.Command.Command_PDF3024
                         return PV_FeedPriority_Inputs;
                 //自动返回首页
                 case "AutoReturnHome_Inputs":
-                    if(AutoReturnHome_Inputs == "开启/On")
+                    if (AutoReturnHome_Inputs == "开启/On")
                     {
                         return "PEk";
-                    }else if(AutoReturnHome_Inputs == "关闭/Off")
+                    }
+                    else if (AutoReturnHome_Inputs == "关闭/Off")
                     {
                         return "PDk";
-                    }else
+                    }
+                    else
                         return AutoReturnHome_Inputs;
                 //输入源提示
                 case "InputPrompt_Inputs":
-                    if(InputPrompt_Inputs == "开启/On")
+                    if (InputPrompt_Inputs == "开启/On")
                     {
                         return "PEy";
-                    }else if(InputPrompt_Inputs == "关闭/Off")
+                    }
+                    else if (InputPrompt_Inputs == "关闭/Off")
                     {
                         return "PDy";
-                    }else
+                    }
+                    else
                         return InputPrompt_Inputs;
-                 //CT功能开关
+                //CT功能开关
                 case "CT_Enable_Inputs":
-                    if(CT_Enable_Inputs == "开启/On")
+                    if (CT_Enable_Inputs == "开启/On")
                     {
                         return "01";
-                    }else if(CT_Enable_Inputs == "关闭/Off")
+                    }
+                    else if (CT_Enable_Inputs == "关闭/Off")
                     {
                         return "00";
-                    }else
+                    }
+                    else
+                        return CT_Enable_Inputs; 
+                 //CT功能开关
+                case "FaultLog_Inputs":
+                    if (CT_Enable_Inputs == "开启/On")
+                    {
+                        return "01";
+                    }
+                    else if (CT_Enable_Inputs == "关闭/Off")
+                    {
+                        return "00";
+                    }
+                    else
                         return CT_Enable_Inputs;
+
                 default:
                     return "";
 
@@ -3563,7 +3672,7 @@ namespace WpfApp1.Command.Command_PDF3024
         /// 接收异常使用方法
         /// </summary>
         /// <param name="exceptionDescription"></param>
-        private void ReceiveException(string exceptionDescription) 
+        private void ReceiveException(string exceptionDescription)
         {
             //工作模式
             WorkingMode = exceptionDescription;
@@ -3622,7 +3731,7 @@ namespace WpfApp1.Command.Command_PDF3024
             //并网功能
             GridConnectedFunction = exceptionDescription;
         }
-        #endregion
 
+        #endregion
     }
 }

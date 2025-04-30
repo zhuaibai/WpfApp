@@ -132,6 +132,8 @@
     <s:String x:Key="输出">输出</s:String>
     <s:String x:Key="属性">属性</s:String>
     <s:String x:Key="单位">单位</s:String>
+    <s:String x:Key="输出设定电压">输出设定电压</s:String>
+    <s:String x:Key="故障记录">故障记录</s:String>
     
     
 

@@ -268,7 +268,7 @@ namespace WpfApp1.ViewModels
         public ObservableCollection<string> MachineItems { get; } = new(){
         "GB3024",
         "VQ3024",
-        "PTF"
+        "VDF"
          };
 
         //切换指令
@@ -312,7 +312,7 @@ namespace WpfApp1.ViewModels
             else
             {
                 ContentUC = new PTF_Monitor();
-                SelectedMachineItem = "PTF";
+                SelectedMachineItem = "VDF";
             }
         }
         #endregion
@@ -723,7 +723,7 @@ namespace WpfApp1.ViewModels
                 if(receive_MachineType.Substring(0, 9) == "(HPVINV05")
                 {
                     //切换到PTF界面
-                    SwitchViewToVQorGB("PTF");
+                    SwitchViewToVQorGB("VDF");
                     //默认设置抗干扰模式
                     IsChecked = true;
                     OnceOpenCRC = true;
@@ -733,13 +733,21 @@ namespace WpfApp1.ViewModels
                     return true;
                 }else if(receive_MachineType.Substring(0,9) == "(HPVINV02")
                 {
+                    SwitchViewToVQorGB("GB3024");
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else if(receive_MachineType.Substring(0,9)=="(LPVINV02")
+                {
+                    SwitchViewToVQorGB("VQ3024");
                     //返回机器类型
                     machine = receive_MachineType;
                     return true;
                 }
                 else
                 {
-                    //返回机器类型
+                    //返回机器类型(无法识别
                     machine = receive_MachineType;
                     return false;
                 }
@@ -1067,7 +1075,7 @@ namespace WpfApp1.ViewModels
                         //VQ3024通讯
                         CommunicationWithVQ3024(token);
                     }
-                    if (SelectedMachineItem == "PTF")
+                    if (SelectedMachineItem == "VDF")
                     {
                         //处理选中状态
                         
@@ -1077,8 +1085,6 @@ namespace WpfApp1.ViewModels
                     // 模拟常规通信
                     await Task.Delay(0, token);
                     //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
-
-                    
                 }
             }
             catch (OperationCanceledException)
@@ -1161,7 +1167,6 @@ namespace WpfApp1.ViewModels
             //解析返回指令
             HEEP1_PDF.AnalyseStringToElement(receive);
 
-
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送HEEP2指令
             receive = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
@@ -1199,10 +1204,6 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token); 
             receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             HGEN.AnalyseStringToElement(receive);
-
-            
-            
-
         }
 
         /// <summary>
