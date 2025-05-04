@@ -216,48 +216,50 @@
                             Style="{StaticResource ContentText}"
                             Text="Hz" />
 
-                        <!--  当前允许最大逆变功率  -->
-                        <TextBlock
-                            Grid.Row="5"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 当前允许最大逆变功率}" />
-                        <TextBlock
-                            Grid.Row="5"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MaxInvPower}" />
-                        <TextBlock
-                            Grid.Row="5"
-                            Grid.Column="2"
-                            Style="{StaticResource ContentText}"
-                            Text="W" />
+
                         <!--  并网电流  -->
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="4"
                             Style="{StaticResource ContentText}"
                             Text="{DynamicResource 并网电流}" />
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="4"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
                             Text="{Binding HEEP1_PDF.GridCurrent}" />
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="4"
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
                             Text="A" />
                         <!--  调零功率  -->
                         <TextBlock
-                            Grid.Row="7"
+                            Grid.Row="5"
                             Style="{StaticResource ContentText}"
                             Text="{DynamicResource 调零功率}" />
                         <TextBlock
-                            Grid.Row="7"
+                            Grid.Row="5"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
                             Text="{Binding HEEP3_PDF.ZeroAdjPwr}" />
                         <TextBlock
-                            Grid.Row="7"
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="W" />
+
+                        <!--  当前允许最大逆变功率  -->
+                        <TextBlock
+                            Grid.Row="6"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 当前允许最大逆变功率}" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.MaxInvPower}" />
+                        <TextBlock
+                            Grid.Row="6"
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
                             Text="W" />
@@ -290,7 +292,7 @@
                             Grid.ColumnSpan="2"
                             Style="{StaticResource ContentText}"
                             Text="{Binding HGEN.SystemTime}" />
-                        <!--版本号-->
+                        <!--  版本号  -->
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
@@ -630,7 +632,6 @@
 
             </GroupBox>
         </Grid>
-
         <!--  第二行 第三列  -->
         <Grid
             Grid.Row="1"
@@ -945,8 +946,6 @@
             <!--
             </Border>-->
         </Grid>
-
-
 
         <!--  参数设置 界面  -->
         <Grid

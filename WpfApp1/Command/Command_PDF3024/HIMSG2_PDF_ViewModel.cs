@@ -43,7 +43,6 @@ namespace WpfApp1.Command.Command_PDF3024
             #endregion
         }
 
-
         #region 逆变总功率
         private string _InvTotalPwr;
 
@@ -307,10 +306,6 @@ namespace WpfApp1.Command.Command_PDF3024
         }
 
         #endregion
-
-
-
-
 
         #region 通用方法
 

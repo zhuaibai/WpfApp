@@ -53,6 +53,21 @@ namespace WpfApp1.Command.Command_PDF3024
             #endregion
         }
 
+        #region PV温度
+
+        private string _PVTemp;
+
+        public string PVTemp
+        {
+            get { return _PVTemp; }
+            set
+            {
+                _PVTemp = Tools.RemoveLeadingZeros(value);
+                this.RaiseProperChanged(nameof(PVTemp));
+            }
+        }
+
+        #endregion
 
         #region 逆变温度
 
@@ -142,6 +157,38 @@ namespace WpfApp1.Command.Command_PDF3024
 
 
 
+
+        #endregion
+
+        #region 升压温度
+
+        private string _BoostTemp;
+
+        public string BoostTemp
+        {
+            get { return _BoostTemp; }
+            set
+            {
+                _BoostTemp = Tools.RemoveLeadingZeros(value);
+                this.RaiseProperChanged(nameof(BoostTemp));
+            }
+        }
+
+        #endregion
+
+        #region 变压器温度
+
+        private string _XfmrTemp;
+
+        public string XfmrTemp
+        {
+            get { return _XfmrTemp; }
+            set
+            {
+                _XfmrTemp = Tools.RemoveLeadingZeros(value);
+                this.RaiseProperChanged(nameof(XfmrTemp));
+            }
+        }
 
         #endregion
 
@@ -472,8 +519,14 @@ namespace WpfApp1.Command.Command_PDF3024
 
             try
             {
+                //PV温度
+                PVTemp = Values[0].Substring(1);
                 //逆变温度
                 InvTemp = Values[1];
+                //升压温度
+                FanSpeed = Values[2];
+                //变压器温度
+                XfmrTemp = Values[3];
                 //当前最大温度
                 MaxTemp = Values[4];
                 //风扇转速
@@ -494,8 +547,14 @@ namespace WpfApp1.Command.Command_PDF3024
         /// <param name="exceptionDescription"></param>
         private void ReceiveException(string exceptionDescription)
         {
+            //PV温度
+            PVTemp = exceptionDescription;
             //逆变温度
             InvTemp = exceptionDescription;
+            //升压温度
+            FanSpeed = exceptionDescription;
+            //变压器温度
+            XfmrTemp = exceptionDescription;
             //当前最大温度
             MaxTemp = exceptionDescription;
             //风扇转速

@@ -9,6 +9,27 @@ namespace WpfApp1.Convert
     public class Tools
     {
         /// <summary>
+        /// 根据0/1返回开关状态
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public static string ConvertState(String state)
+        {
+            if (state == null) return "";
+            if (state == "1")
+            {
+                return App.GetText("开启");
+            }
+            else if (state == "0")
+            {
+                return App.GetText("关闭");
+            }
+            else
+                return state;
+        }
+
+
+        /// <summary>
         /// 带符号的数字字符串转换成数字
         /// </summary>
         /// <param name="input"></param>

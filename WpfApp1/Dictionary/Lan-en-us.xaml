@@ -132,5 +132,32 @@
     <s:String x:Key="单位">Unit</s:String>
     <s:String x:Key="输出设定电压">OutSetVolt</s:String>
     <s:String x:Key="故障记录">FaultLog</s:String>
-    
+    <s:String x:Key="电池节数">BattCells</s:String>
+    <s:String x:Key="电池电压">BattVolt</s:String>
+    <s:String x:Key="电池容量">BattCapacity</s:String>
+    <s:String x:Key="电池充电电流">BattChgCurr</s:String>
+    <s:String x:Key="电池放电电流">BattDisCurr</s:String>
+    <s:String x:Key="充电总开关">ChgMasterSW</s:String>
+    <s:String x:Key="太阳能充电开关">SolarChgSW</s:String>
+    <s:String x:Key="AC充电开关">ACChgSW</s:String>
+    <s:String x:Key="PV温度">PVTemp</s:String>
+    <s:String x:Key="升压温度">BoostTemp</s:String>
+    <s:String x:Key="变压器温度">XfmrTemp</s:String>
+    <s:String x:Key="协议类型">ProtocolType</s:String>
+    <s:String x:Key="BMS通信正常">BMS_ComOK</s:String>
+    <s:String x:Key="BMS低电报警">BMS_LowBattAlarm</s:String>
+    <s:String x:Key="BMS低电故障">BMS_LowBattFault</s:String>
+    <s:String x:Key="BMS允许充电">BMS_ChgEnable</s:String>
+    <s:String x:Key="BMS允许放电">BMS_DisEnable</s:String>
+    <s:String x:Key="BMS充电过流">BMS_ChgOC</s:String>
+    <s:String x:Key="BMS放电过流">BMS_DisOC</s:String>
+    <s:String x:Key="BMS温度过低">BMS_UnderTemp</s:String>
+    <s:String x:Key="BMS温度过高">BMS_OverTemp</s:String>
+    <s:String x:Key="BMS放电电压限制">BMS_DisVoltLimit</s:String>
+    <s:String x:Key="BMS充电电压限制">BMS_ChgVoltLimit</s:String>
+    <s:String x:Key="BMS充电电流限制">BMS_ChgCurrLimit</s:String>
+    <s:String x:Key="BMS当前SOC">BMS_SOC</s:String>
+    <s:String x:Key="BMS充电电流">BMS_ChgCurr</s:String>
+    <s:String x:Key="BMS放电电流">BMS_DisCurr</s:String>
+    <s:String x:Key="BMS平均温度">BMS_AvgTemp</s:String>
 </ResourceDictionary>

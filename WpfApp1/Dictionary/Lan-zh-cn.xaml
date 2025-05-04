@@ -134,7 +134,34 @@
     <s:String x:Key="单位">单位</s:String>
     <s:String x:Key="输出设定电压">输出设定电压</s:String>
     <s:String x:Key="故障记录">故障记录</s:String>
-    
-    
+    <s:String x:Key="电池节数">电池节数</s:String>
+    <s:String x:Key="电池电压">电池电压</s:String>
+    <s:String x:Key="电池容量">电池容量</s:String>
+    <s:String x:Key="电池充电电流">电池充电电流</s:String>
+    <s:String x:Key="电池放电电流">电池放电电流</s:String>
+    <s:String x:Key="充电总开关">充电总开关</s:String>
+    <s:String x:Key="太阳能充电开关">太阳能充电开关</s:String>
+    <s:String x:Key="AC充电开关">AC充电开关</s:String>
+    <s:String x:Key="PV温度">PV温度</s:String>
+    <s:String x:Key="升压温度">升压温度</s:String>
+    <s:String x:Key="变压器温度">变压器温度</s:String>
+    <s:String x:Key="协议类型">协议类型</s:String>
+    <s:String x:Key="BMS通信正常">BMS通信正常</s:String>
+    <s:String x:Key="BMS低电报警">BMS低电报警</s:String>
+    <s:String x:Key="BMS低电故障">BMS低电故障</s:String>
+    <s:String x:Key="BMS允许充电">BMS允许充电</s:String>
+    <s:String x:Key="BMS允许放电">BMS允许放电</s:String>
+    <s:String x:Key="BMS充电过流">BMS充电过流</s:String>
+    <s:String x:Key="BMS放电过流">BMS放电过流</s:String>
+    <s:String x:Key="BMS温度过低">BMS温度过低</s:String>
+    <s:String x:Key="BMS温度过高">BMS温度过高</s:String>
+    <s:String x:Key="BMS放电电压限制">BMS放电电压限制</s:String>
+    <s:String x:Key="BMS充电电压限制">BMS充电电压限制</s:String>
+    <s:String x:Key="BMS充电电流限制">BMS充电电流限制</s:String>
+    <s:String x:Key="BMS当前SOC">BMS当前SOC</s:String>
+    <s:String x:Key="BMS充电电流">BMS充电电流</s:String>
+    <s:String x:Key="BMS放电电流">BMS放电电流</s:String>
+    <s:String x:Key="BMS平均温度">BMS平均温度</s:String>
+  
 
 </ResourceDictionary>
