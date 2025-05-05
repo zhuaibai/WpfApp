@@ -317,7 +317,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _LowPowerLock; }
             set
             {
-                _LowPowerLock = value;
+                _LowPowerLock = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(LowPowerLock));
             }
         }
@@ -407,8 +407,8 @@ namespace WpfApp1.Command.Command_VQ3024
             {
                 if (value == "0") { _BatteryType = "AGM"; }
                 else if (value == "1") { _BatteryType = "FLD"; }
-                else if (value == "2") { _BatteryType = "USE"; }
-                else if (value == "3") { _BatteryType = "LIA"; }
+                else if (value == "2") { _BatteryType = "USER"; }
+                else if (value == "3") { _BatteryType = "AUTO"; }
                 else if (value == "4") { _BatteryType = "PYL"; }
                 else if (value == "5") { _BatteryType = "TQF"; }
                 else if (value == "6") { _BatteryType = "GRO"; }
@@ -425,7 +425,7 @@ namespace WpfApp1.Command.Command_VQ3024
 
 
         //电池类型可选项
-        private List<string> _BatteryTypeOptions = new List<string> { "AGM", "FLD", "USE", "LIA", "PYL", "TQF", "GRO", "LIB", "LIC" };
+        private List<string> _BatteryTypeOptions = new List<string> { "AGM", "FLD", "USER", "AUTO", "PYL", "TQF", "GRO", "LIB", "LIC" };
 
         public List<string> BatteryTypeOptions
         {
@@ -515,7 +515,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _StrongChargeVoltage; }
             set
             {
-                _StrongChargeVoltage = value;
+                _StrongChargeVoltage = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(StrongChargeVoltage));
             }
         }
@@ -604,7 +604,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _FloatChargeVoltage; }
             set
             {
-                _FloatChargeVoltage = value;
+                _FloatChargeVoltage = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(FloatChargeVolage));
             }
         }
@@ -693,7 +693,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _TotalChargeCurrent; }
             set
             {
-                _TotalChargeCurrent = value;
+                _TotalChargeCurrent = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(TotalChargeCurrent));
             }
         }
@@ -781,7 +781,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _AC_ChargingCurrent; }
             set
             {
-                _AC_ChargingCurrent = value;
+                _AC_ChargingCurrent = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(AC_ChargingCurrent));
             }
         }
@@ -1314,7 +1314,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _OutSetVolt; }
             set
             {
-                _OutSetVolt = value;
+                _OutSetVolt = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(OutSetVolt));
             }
         }
@@ -1619,7 +1619,7 @@ namespace WpfApp1.Command.Command_VQ3024
 
         #endregion
 
-        #region BMS开关
+        #region BMS开关（BMS通信控制功能
 
         //BMS通信控制功能
         private string _BMS_CommunicationControlFunction;
@@ -1851,33 +1851,15 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _ChargingPriority; }
             set
             {
-
-                if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
+                if (value == "0")
                 {
-                    if (value == "0")
-                    {
-                        _ChargingPriority = "CUT";
-                    }
-                    else if (value == "1") { _ChargingPriority = "CSO"; }
-                    else if (value == "2") { _ChargingPriority = "SUN"; }
-                    else if (value == "3") { _ChargingPriority = "OSO"; }
-                    else { _ChargingPriority = value; }
+                    _ChargingPriority = "CSO";
                 }
-                else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
-                {
-                    if (value == "0")
-                    {
-                        _ChargingPriority = "CSO";
-                    }
-                    else if (value == "1") { _ChargingPriority = "SUN"; }
-                    else if (value == "2") { _ChargingPriority = "OSO"; }
-                    else if (value == "3") { _ChargingPriority = "OSO"; }
-                    else { _ChargingPriority = value; }
-                }
-
-                else
-                    _ChargingPriority = value;
+                else if (value == "1") { _ChargingPriority = "SUN"; }
+                else if (value == "2") { _ChargingPriority = "OSO"; }
+                else { _ChargingPriority = value; }
                 RaiseProperChanged(nameof(ChargingPriority));
+
             }
         }
 
@@ -1900,7 +1882,7 @@ namespace WpfApp1.Command.Command_VQ3024
         }
 
         //下拉选项
-        private List<string> _ChargingPriorityOptions = new List<string> { "CUT", "CSO", "SNU", "OSO" };
+        private List<string> _ChargingPriorityOptions = new List<string> { "CSO", "SNU", "OSO" };
 
         public List<string> ChargingPriorityOptions
         {
@@ -2008,7 +1990,7 @@ namespace WpfApp1.Command.Command_VQ3024
         }
 
         //下拉选项
-        private List<string> _FaultLogOptions = new List<string> { "开启", "关闭" };
+        private List<string> _FaultLogOptions = new List<string> { "开启/On", "关闭/Off" };
 
         public List<string> FaultLogOptions
         {
@@ -2048,7 +2030,7 @@ namespace WpfApp1.Command.Command_VQ3024
                 {
                     //执行设置指令
                     Thread.Sleep(1000);//没有这个延时会报错
-                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", FaultLog_Inputs);
+                    string receive = SerialCommunicationService.SendSettingCommand("",getSelectedToCommad(nameof(FaultLog_Inputs)));
 
                 })
                 , timeoutCts.Token);
@@ -2085,7 +2067,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_LowPower_SOC; }
             set
             {
-                _BMS_LowPower_SOC = value;
+                _BMS_LowPower_SOC = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(BMS_LowPower_SOC));
             }
         }
@@ -2174,7 +2156,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMSreturns_to_AC_mode_SOC; }
             set
             {
-                _BMSreturns_to_AC_mode_SOC = value;
+                _BMSreturns_to_AC_mode_SOC = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(BMSreturns_to_AC_mode_SOC));
             }
         }
@@ -2262,7 +2244,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_returns_to_battery_mode_SOC; }
             set
             {
-                _BMS_returns_to_battery_mode_SOC = value;
+                _BMS_returns_to_battery_mode_SOC = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(BMS_returns_to_battery_mode_SOC));
             }
         }
@@ -2351,7 +2333,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_automatically_turns_on_after_low_power_SOC; }
             set
             {
-                _BMS_automatically_turns_on_after_low_power_SOC = value;
+                _BMS_automatically_turns_on_after_low_power_SOC = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(BMS_automatically_turns_on_after_low_power_SOC));
             }
         }
@@ -2547,7 +2529,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _OutputSettingFrequency2; }
             set
             {
-                _OutputSettingFrequency2 = value + "Hz";
+                _OutputSettingFrequency2 = Tools.RemoveLeadingZeros(value) + "Hz";
                 this.RaiseProperChanged(nameof(OutputSettingFrequency2));
             }
         }
@@ -2787,7 +2769,7 @@ namespace WpfApp1.Command.Command_VQ3024
             set
             {
 
-                _GridCurrent2 = value + "A";
+                _GridCurrent2 = Tools.RemoveLeadingZeros(value) + "A";
                 this.RaiseProperChanged(nameof(GridCurrent2));
             }
         }
@@ -3403,7 +3385,7 @@ namespace WpfApp1.Command.Command_VQ3024
             try
             {
                 //工作模式
-                WorkingMode = Values[0].Substring(0,1);
+                WorkingMode = Values[0].Substring(1,1);
                 //最大总充电流
                 TotalChargeCurrent = Values[1];
                 //市电总充电流
@@ -3435,7 +3417,7 @@ namespace WpfApp1.Command.Command_VQ3024
                 //故障记录
                 FaultLog = Values[4].Substring(3, 1);
                 //蜂鸣器状态
-                BuzzerStatus = Values[4].Substring(4,0);
+                BuzzerStatus = Values[4].Substring(4,1);
                 //LCD背光
                 LCD_Backlight = Values[5];
                 //过载转接旁路
@@ -3444,7 +3426,7 @@ namespace WpfApp1.Command.Command_VQ3024
                 OutputMode = Values[7];
                 //BMS通讯控制功能
                 BMS_CommunicationControlFunction = Values[8];
-                //BMS锁机电池容量
+                //BMS低电SOC
                 BMS_LowPower_SOC = Values[9];
                 //BMS返回市电模式SOC(AC充电电池容量)
                 BMSreturns_to_AC_mode_SOC = Values[10];
@@ -3498,15 +3480,15 @@ namespace WpfApp1.Command.Command_VQ3024
                     if (string.IsNullOrWhiteSpace(BatteryTypeSelectedOption)) { return string.Empty; }
                     else if (BatteryTypeSelectedOption == "AGM") { return "00"; }
                     else if (BatteryTypeSelectedOption == "FLD") { return "01"; }
-                    else if (BatteryTypeSelectedOption == "USE") { return "02"; }
-                    else if (BatteryTypeSelectedOption == "LIA") { return "03"; }
+                    else if (BatteryTypeSelectedOption == "USER") { return "02"; }
+                    else if (BatteryTypeSelectedOption == "AUTO") { return "03"; }
                     else if (BatteryTypeSelectedOption == "PYL") { return "04"; }
                     else if (BatteryTypeSelectedOption == "TQF") { return "05"; }
                     else if (BatteryTypeSelectedOption == "GRO") { return "06"; }
                     else if (BatteryTypeSelectedOption == "LIB") { return "07"; }
                     else if (BatteryTypeSelectedOption == "LIC") { return "08"; }
                     else
-                        return "00";
+                        return "";
                 //设置蜂鸣器状态
                 case "BuzzerStatus_Inputs":
                     if (string.IsNullOrWhiteSpace(BuzzerStatus_Inputs)) { return string.Empty; }
@@ -3560,20 +3542,10 @@ namespace WpfApp1.Command.Command_VQ3024
                     else return AC_InputRange_Inputs;
                 //充电模式
                 case "ChargingPriority_Inputs":
-                    if (SerialCommunicationService.MachineType == "A" || SerialCommunicationService.MachineType == "C")
-                    {
-                        if (ChargingPriority_Inputs == "CUT") { return "00"; }
-                        else if (ChargingPriority_Inputs == "CSO") { return "01"; }
-                        else if (ChargingPriority_Inputs == "SNU") { return "02"; }
-                        else if (ChargingPriority_Inputs == "OSO") { return "03"; }
-                    }
-                    else if (SerialCommunicationService.MachineType == "B" || SerialCommunicationService.MachineType == "D")
-                    {
-                        if (ChargingPriority_Inputs == "CUT") { return ""; }
-                        else if (ChargingPriority_Inputs == "CSO") { return "00"; }
-                        else if (ChargingPriority_Inputs == "SNU") { return "01"; }
-                        else if (ChargingPriority_Inputs == "OSO") { return "02"; }
-                    }
+                    if (ChargingPriority_Inputs == "CSO") { return "00"; }
+                    else if (ChargingPriority_Inputs == "SNU") { return "01"; }
+                    else if (ChargingPriority_Inputs == "OSO") { return "02"; }
+                    else
                     return ChargingPriority_Inputs;
                 //过载转接旁路
                 case "OverloadByPassFunction_Inputs":
@@ -3648,18 +3620,18 @@ namespace WpfApp1.Command.Command_VQ3024
                     }
                     else
                         return CT_Enable_Inputs; 
-                 //CT功能开关
+                 //故障记录
                 case "FaultLog_Inputs":
-                    if (CT_Enable_Inputs == "开启/On")
+                    if (FaultLog_Inputs == "开启/On")
                     {
-                        return "01";
+                        return "PEz";
                     }
-                    else if (CT_Enable_Inputs == "关闭/Off")
+                    else if (FaultLog_Inputs == "关闭/Off")
                     {
-                        return "00";
+                        return "PDz";
                     }
                     else
-                        return CT_Enable_Inputs;
+                        return FaultLog_Inputs;
 
                 default:
                     return "";
@@ -3702,6 +3674,8 @@ namespace WpfApp1.Command.Command_VQ3024
             AutoReturnHome = exceptionDescription;
             //充电优先顺序(充电模式)
             ChargingPriority = exceptionDescription;
+            //故障记录
+            FaultLog = exceptionDescription;
             //蜂鸣器状态
             BuzzerStatus = exceptionDescription;
             //LCD背光

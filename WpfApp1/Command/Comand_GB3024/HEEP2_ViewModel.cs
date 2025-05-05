@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WpfApp1.Command;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -98,6 +99,12 @@ namespace WpfApp1.Command.Comand_GB3024
               execute: () => BatteryBalancingTimeoutValueOperation(),
               canExecute: () => Validate(nameof(BatteryBalancingTimeoutValue_Inputs)) && !BatteryBalancingTimeoutValue_IsWorking // 增加处理状态检查
             );
+            //电池均衡超时值
+            Command_SetBattLowAlarmVolt = new RelayCommand(
+              execute: () => BattLowAlarmVoltOperation(),
+              canExecute: () => Validate(nameof(BattLowAlarmVolt_Inputs)) && !BattLowAlarmVolt_IsWorking // 增加处理状态检查
+            );
+
         }
 
         #region 双输出模式(并机模式)
@@ -372,6 +379,94 @@ namespace WpfApp1.Command.Comand_GB3024
                 //Status = "就绪";
                 // 重新启用按钮
                 Command_SetParallelModeShutdownSOC.RaiseCanExecuteChanged();
+                // 确保释放锁
+                _semaphore.Release();
+                UpdateState("设置指令已经执行完");
+            }
+        }
+
+
+        #endregion
+
+        #region 电池低电告警电压
+
+        private string _BattLowAlarmVolt;
+
+        public string BattLowAlarmVolt
+        {
+            get { return _BattLowAlarmVolt; }
+            set
+            {
+                _BattLowAlarmVolt = Tools.RemoveLeadingZeros(value);
+                this.RaiseProperChanged(nameof(BattLowAlarmVolt));
+            }
+        }
+
+
+        private bool BattLowAlarmVolt_IsWorking;
+
+
+        //设置值
+        private string _BattLowAlarmVolt_Inputs;
+
+        public string BattLowAlarmVolt_Inputs
+        {
+            get { return _BattLowAlarmVolt_Inputs; }
+            set
+            {
+                _BattLowAlarmVolt_Inputs = value;
+                this.RaiseProperChanged(nameof(BattLowAlarmVolt_Inputs));
+                Command_SetBattLowAlarmVolt.RaiseCanExecuteChanged();
+            }
+        }
+
+
+        public RelayCommand Command_SetBattLowAlarmVolt { get; }
+
+        /// <summary>
+        /// 点击设置
+        /// </summary>
+        private async void BattLowAlarmVoltOperation()
+        {
+            try
+            {
+                BattLowAlarmVolt_IsWorking = true;
+                // 禁用按钮
+                Command_SetBattLowAlarmVolt.RaiseCanExecuteChanged();
+
+                // 异步等待锁
+                await _semaphore.WaitAsync();
+                UpdateState("正在执行设置命令");
+                //Status = "正在执行特殊操作...";
+
+                // 暂停后台线程
+                _pauseEvent.Reset();
+                AddLog("已暂停后台通信");
+
+                // 执行特殊操作（带超时保护）
+                using var timeoutCts = new CancellationTokenSource(5000);
+                await Task.Run(new Action(() =>
+                {
+                    //执行设置指令
+                    Thread.Sleep(1000);//没有这个延时会报错
+                    string receive = SerialCommunicationService.SendSettingCommand("设置指令", BattLowAlarmVolt_Inputs);
+
+                })
+                , timeoutCts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                AddLog("特殊操作执行超时");
+            }
+            finally
+            {
+                // 恢复后台线程
+                _pauseEvent.Set();
+                AddLog("恢复后台通信");
+                BattLowAlarmVolt_IsWorking = false;
+                //Status = "就绪";
+                // 重新启用按钮
+                Command_SetBattLowAlarmVolt.RaiseCanExecuteChanged();
                 // 确保释放锁
                 _semaphore.Release();
                 UpdateState("设置指令已经执行完");
@@ -1414,7 +1509,9 @@ namespace WpfApp1.Command.Comand_GB3024
                 case "BatteryBalancingTime_Inputs":
                     return !string.IsNullOrWhiteSpace(BatteryBalancingTime_Inputs);
                 case "BatteryBalancingTimeoutValue_Inputs":
-                    return !string.IsNullOrWhiteSpace(BatteryBalancingTimeoutValue_Inputs);
+                    return !string.IsNullOrWhiteSpace(BatteryBalancingTimeoutValue_Inputs); 
+                case "BattLowAlarmVolt_Inputs":
+                    return !string.IsNullOrWhiteSpace(BattLowAlarmVolt_Inputs);
                 default:
                     return false;
             }
@@ -1442,6 +1539,8 @@ namespace WpfApp1.Command.Comand_GB3024
                 ParallelModeShutdownVoltage = Values[1];
                 //并机模式关闭SOC
                 ParallelModeShutdownSOC = Values[2];
+                //电池低电告警电压
+                BattLowAlarmVolt = Values[3];
                 //返回市电模式电压
                 ReturnMainsBatteryVoltage = Values[4];
                 //返回电池模式电压
@@ -1456,14 +1555,15 @@ namespace WpfApp1.Command.Comand_GB3024
                 BatteryBalancingTimeoutValue = Values[9];
                 //电池均衡间隔时间(Day)
                 BatteryBalancingInterval = Values[10];
-                //第二输出放电时间
-                SecondOutputDischargeTime = Values[16].Substring(2, 3);
+               
                 //恢复第二输出的延时时间
                 DelayTimeToRestoreTheSecondOutput = Values[13];
                 //恢复第二输出的电电池电压
                 RestoreBatteryVoltageOfSecondOutput = Values[15];
                 //恢复第二输出的电池容量
                 RestoreBatteryCapacityOfSecondOutput = Values[16].Substring(0, 2);
+                //第二输出放电时间
+                SecondOutputDischargeTime = Values[16].Substring(2, 3);
                 ////强充电压
                 //StrongChargeVoltage = Values[15];
                 ////浮充电压

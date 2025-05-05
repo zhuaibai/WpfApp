@@ -53,8 +53,12 @@ namespace WpfApp1.ViewModels
             SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
             OpenCom = new RelayCommand(openCom);
             //初始化  VQ   VIew
-            HOP_VQ = new HOP_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
-            HGRID_VQ = new HGRID_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HOP_VQ = new HOP_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HBMS1_VQ = new HBMS1_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HBAT_VQ = new HBAT_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HEEP1_VQ = new HEEP1_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+            HGRID_VQ = new HGRID_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
+           
             //初始化  PTF ViewModel
             HBAT_PDF = new HBAT_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HCTMSG1_PDF = new HCTMSG1_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
@@ -133,6 +137,10 @@ namespace WpfApp1.ViewModels
         /// <returns></returns>
         private int StringToIntConversion(string str)
         {
+            if (str == null)
+            {
+                return -1;
+            }
             //这是专门应对市电功率的情况
             string tag = str.Substring(0, 1);
             if(tag == "-")
@@ -396,9 +404,10 @@ namespace WpfApp1.ViewModels
 
         #region VQ指令ViewModel
 
-        private HOP_ViewModel _HOP_VQ;
+        //HOP
+        private HOP_VQ_ViewModel _HOP_VQ;
 
-        public HOP_ViewModel HOP_VQ
+        public HOP_VQ_ViewModel HOP_VQ
         {
             get { return _HOP_VQ; }
             set
@@ -408,9 +417,49 @@ namespace WpfApp1.ViewModels
             }
         }
 
-        private HGRID_ViewModel _HGRID_VQ ;
+        //HBMS1
+        private HBMS1_VQ_ViewModel _HBMS1_VQ;
 
-        public HGRID_ViewModel HGRID_VQ
+        public HBMS1_VQ_ViewModel HBMS1_VQ
+        {
+            get { return _HBMS1_VQ; }
+            set
+            {
+                _HBMS1_VQ = value;
+                this.RaiseProperChanged(nameof(HBMS1_VQ));
+            }
+        }
+
+        //HBAT
+        private HBAT_VQ_ViewModel _HBAT_VQ;
+
+        public HBAT_VQ_ViewModel HBAT_VQ
+        {
+            get { return _HBAT_VQ; }
+            set
+            {
+                _HBAT_VQ = value;
+                this.RaiseProperChanged(nameof(HBAT_VQ));
+            }
+        }
+
+        //HEEP1
+        private HEEP1_VQ_ViewModel _HEEP1_VQ;
+
+        public HEEP1_VQ_ViewModel HEEP1_VQ
+        {
+            get { return _HEEP1_VQ; }
+            set
+            {
+                _HEEP1_VQ = value;
+                this.RaiseProperChanged(nameof(HEEP1_VQ));
+            }
+        }
+
+        //HGRID
+        private HGRID_VQ_ViewModel _HGRID_VQ;
+
+        public HGRID_VQ_ViewModel HGRID_VQ
         {
             get { return _HGRID_VQ; }
             set
@@ -425,7 +474,7 @@ namespace WpfApp1.ViewModels
 
         #endregion
 
-        #region PTF指令ViewModel
+        #region VDF指令ViewModel
 
 
         //HIMSG2
@@ -653,14 +702,7 @@ namespace WpfApp1.ViewModels
         {
             if (SerialCommunicationService.IsOpen())
             {
-                //MessageBoxResult dialogResult = MessageBox.Show(App.GetText("串口已打开，是否关闭?"), "警告", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-                //if (dialogResult == MessageBoxResult.OK)
-                //{
-                //}
-                //else
-                //{
-                //    return;
-                //}
+                
                 try
                 {
                     AddLog("准备关闭通信");
@@ -1099,8 +1141,11 @@ namespace WpfApp1.ViewModels
             }
         }
 
+        #endregion
+
+        #region 通讯实现方法
         /// <summary>
-        /// PTF3024通讯
+        /// VDF3024通讯
         /// </summary>
         /// <param name="token"></param>
         private void CommunicationWithPTF3024(CancellationToken token)
@@ -1254,19 +1299,59 @@ namespace WpfApp1.ViewModels
         /// <param name="token"></param>
         private void CommunicationWithVQ3024(CancellationToken token)
         {
-            //发送VQ2024
-            string Receive = "";
-            _pauseEvent.Wait(token); // 等待暂停或取消信号
-            //发送HOP指令
-            Receive = SerialCommunicationService.SendCommand(HOP_VQ.Command, 60);
-            //解析返回指令
-            HGEN.AnalyseStringToElement(Receive);
+            string receive = "";
 
+            //获取机器型号
+            _pauseEvent.Wait(token);
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            SerialCommunicationService.MachineType = receive_MachineType;
+
+
+            //发送HBMS1指令
             _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HBMS1_VQ.Command, 70);
+            HBMS1_VQ.AnalysisStringToElement(receive);
+
+            //发送HEEP1指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HEEP1_VQ.Command, 80);
+            HEEP1_VQ.AnalyseStringToElement(receive);
+
+            //发送HEEP2指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+            HEEP2.AnalyseStringToElement(receive);
+
+            //发送HOP指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HOP_VQ.Command, 50);
+            HOP_VQ.AnalyseStringToElement(receive);
+
             //发送HGRID指令
-            Receive = SerialCommunicationService.SendCommand(HGRID_VQ.Command, 60);
-            //解析返回指令
-            HGEN.AnalyseStringToElement(Receive);
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HGRID_VQ.Command, 50);
+            //解析返回命令
+            HGRID_VQ.AnalyseStringToElement(receive);
+            //显示
+            ACPowerVM = StringToIntConversion(HGRID_PDF.ACPower);
+            //市电百分比
+            //ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
+
+            //发送HTEMP指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HTEMP_PDF.Command, 50);
+            HTEMP_PDF.AnalysisStringToElement(receive);
+            
+            //发送HBAT指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
+            HBAT_VQ.AnalysisStringToElement(receive);
+
+            //发送HBAT指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
+            HIMSG1.AnalysisStringToElement(receive);
+
         }
 
         

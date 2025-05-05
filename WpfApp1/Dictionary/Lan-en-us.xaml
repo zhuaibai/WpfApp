@@ -144,7 +144,7 @@
     <s:String x:Key="升压温度">BoostTemp</s:String>
     <s:String x:Key="变压器温度">XfmrTemp</s:String>
     <s:String x:Key="协议类型">ProtocolType</s:String>
-    <s:String x:Key="BMS通信正常">BMS_ComOK</s:String>
+    <s:String x:Key="BMS通信正常">BMS_Com</s:String>
     <s:String x:Key="BMS低电报警">BMS_LowBattAlarm</s:String>
     <s:String x:Key="BMS低电故障">BMS_LowBattFault</s:String>
     <s:String x:Key="BMS允许充电">BMS_ChgEnable</s:String>
@@ -160,4 +160,5 @@
     <s:String x:Key="BMS充电电流">BMS_ChgCurr</s:String>
     <s:String x:Key="BMS放电电流">BMS_DisCurr</s:String>
     <s:String x:Key="BMS平均温度">BMS_AvgTemp</s:String>
+    <s:String x:Key="电池低电告警电压">BattLowAlarmVolt</s:String>
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WpfApp1.Convert;
 using WpfApp1.ViewModels;
 
 namespace WpfApp1.Command.Command_VQ3024
@@ -202,7 +203,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_DisVoltLimit; }
             set
             {
-                _BMS_DisVoltLimit = value;
+                _BMS_DisVoltLimit = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_DisVoltLimit));
             }
         }
@@ -217,7 +218,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_ChgVoltLimit; }
             set
             {
-                _BMS_ChgVoltLimit = value;
+                _BMS_ChgVoltLimit = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_ChgVoltLimit));
             }
         }
@@ -232,7 +233,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_ChgCurrLimit; }
             set
             {
-                _BMS_ChgCurrLimit = value;
+                _BMS_ChgCurrLimit = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_ChgCurrLimit));
             }
         }
@@ -263,7 +264,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_ChgCurr; }
             set
             {
-                _BMS_ChgCurr = value;
+                _BMS_ChgCurr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_ChgCurr));
             }
         }
@@ -280,7 +281,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_DisCurr; }
             set
             {
-                _BMS_DisCurr = value;
+                _BMS_DisCurr = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_DisCurr));
             }
         }
@@ -296,7 +297,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _BMS_AvgTemp; }
             set
             {
-                _BMS_AvgTemp = value;
+                _BMS_AvgTemp = Tools.RemoveLeadingZeros(value);
                 this.RaiseProperChanged(nameof(BMS_AvgTemp));
             }
         }

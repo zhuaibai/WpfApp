@@ -25,7 +25,7 @@
     <s:String x:Key="操作">操作</s:String>
     <s:String x:Key="设置">设置</s:String>
     <s:String x:Key="电池类型">电池类型</s:String>
-    <s:String x:Key="锁机电压">锁机电压</s:String>
+    <s:String x:Key="锁机电压">低电锁机电压</s:String>
     <s:String x:Key="工作模式">工作模式</s:String>
     <s:String x:Key="强充电压">强充电压</s:String>
     <s:String x:Key="浮充电压">浮充电压</s:String>
@@ -146,7 +146,7 @@
     <s:String x:Key="升压温度">升压温度</s:String>
     <s:String x:Key="变压器温度">变压器温度</s:String>
     <s:String x:Key="协议类型">协议类型</s:String>
-    <s:String x:Key="BMS通信正常">BMS通信正常</s:String>
+    <s:String x:Key="BMS通信正常">BMS通信</s:String>
     <s:String x:Key="BMS低电报警">BMS低电报警</s:String>
     <s:String x:Key="BMS低电故障">BMS低电故障</s:String>
     <s:String x:Key="BMS允许充电">BMS允许充电</s:String>
@@ -162,6 +162,7 @@
     <s:String x:Key="BMS充电电流">BMS充电电流</s:String>
     <s:String x:Key="BMS放电电流">BMS放电电流</s:String>
     <s:String x:Key="BMS平均温度">BMS平均温度</s:String>
+    <s:String x:Key="电池低电告警电压">电池低电告警电压</s:String>
   
 
 </ResourceDictionary>

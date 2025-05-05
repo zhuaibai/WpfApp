@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WpfApp1.Command;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
 namespace WpfApp1.Command.Command_VQ3024
 {
-    public class HOP_ViewModel : BaseViewModel
+    public class HOP_VQ_ViewModel : BaseViewModel
     {
         //指令
         private string command = "HOP\r";
@@ -22,7 +23,7 @@ namespace WpfApp1.Command.Command_VQ3024
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
 
-        public HOP_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> _updateState)
+        public HOP_VQ_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> _updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
@@ -82,7 +83,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _OutputVoltage; }
             set
             {
-                _OutputVoltage = value;
+                _OutputVoltage = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(OutputVoltage));
             }
         }
@@ -171,7 +172,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _OutputFrequency; }
             set
             {
-                _OutputFrequency = value;
+                _OutputFrequency = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(OutputFrequency));
             }
         }
@@ -259,7 +260,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _ReactivePower; }
             set
             {
-                _ReactivePower = value;
+                _ReactivePower = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(ReactivePower));
             }
         }
@@ -348,7 +349,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _ActivePower; }
             set
             {
-                _ActivePower = value;
+                _ActivePower = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(ActivePower));
             }
         }
@@ -438,7 +439,7 @@ namespace WpfApp1.Command.Command_VQ3024
             get { return _PercentageOfLoad; }
             set
             {
-                _PercentageOfLoad = value;
+                _PercentageOfLoad = Tools.RemoveLeadingZeros(value);
                 RaiseProperChanged(nameof(PercentageOfLoad));
             }
         }
@@ -746,7 +747,7 @@ namespace WpfApp1.Command.Command_VQ3024
             try
             {
                 //输出电压
-                OutputVoltage = Values[0];
+                OutputVoltage = Values[0].Substring(1);
                 //输出频率
                 OutputFrequency = Values[1];
                 //无功功率
@@ -755,10 +756,10 @@ namespace WpfApp1.Command.Command_VQ3024
                 ActivePower = Values[3];
                 //负载百分比
                 PercentageOfLoad = Values[4];
-                //逆变电流
-                InverterCurrent = Values[7];
-                //Mos管电流
-                MOS_TubeCurrent = Values[8];
+                ////逆变电流
+                //InverterCurrent = Values[7];
+                ////Mos管电流
+                //MOS_TubeCurrent = Values[8];
 
             }
             catch (Exception ex)
