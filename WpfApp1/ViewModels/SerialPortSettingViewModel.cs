@@ -109,26 +109,6 @@ namespace WpfApp1.ViewModels
             StopBitsOptions = new ObservableCollection<StopBits> { StopBits.One, StopBits.Two };
             ParityOptions = new ObservableCollection<Parity> { Parity.None, Parity.Even, Parity.Odd };
 
-            //if (AvailablePorts.Count > 0 && string.IsNullOrEmpty(_settings.PortName))
-            //{
-            //    SelectedPort = AvailablePorts[0];
-            //}
-            //if (_settings.BaudRate == 0)
-            //{
-            //    SelectedBaudRate = BaudRates[0];
-            //}
-            //if (_settings.DataBits == 0)
-            //{
-            //    SelectedDataBits = DataBits[0];
-            //}
-            //if (_settings.StopBits == 0)
-            //{
-            //    SelectedStopBits = StopBitsOptions[0];
-            //}
-            //if (_settings.Parity == 0)
-            //{
-            //    SelectedParity = ParityOptions[0];
-            //}
 
             SaveCommand = new DelegateCommand(SaveSettings);
         }

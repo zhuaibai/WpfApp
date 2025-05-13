@@ -60,9 +60,9 @@ namespace WpfApp1.Services
             SerialPortModel = serialPortSettings;
             SerialPort = new SerialPort();
             SerialPort.PortName = SerialPortModel.PortName;
-            SerialPort.Parity = SerialPort.Parity;
-            SerialPort.StopBits = SerialPort.StopBits;
-            SerialPort.DataBits = SerialPort.DataBits;
+            SerialPort.Parity = SerialPortModel.Parity;
+            SerialPort.StopBits = SerialPortModel.StopBits;
+            SerialPort.DataBits = SerialPortModel.DataBits;
             SerialPort.BaudRate = SerialPortModel.BaudRate;
         }
 

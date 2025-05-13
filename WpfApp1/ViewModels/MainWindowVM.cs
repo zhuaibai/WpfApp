@@ -59,7 +59,7 @@ namespace WpfApp1.ViewModels
             HEEP1_VQ = new HEEP1_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HGRID_VQ = new HGRID_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
            
-            //初始化  PTF ViewModel
+            //初始化  VDF ViewModel
             HBAT_PDF = new HBAT_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HCTMSG1_PDF = new HCTMSG1_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HGRID_PDF = new HGRID_PDF_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
@@ -622,6 +622,7 @@ namespace WpfApp1.ViewModels
             SerialCommunicationService.InitiateCom(serialPortSettings);
         }
 
+        #region 串口图标
         //串口打开图标
         private Visibility _ComIconOpen  = Visibility.Visible;
 
@@ -669,6 +670,7 @@ namespace WpfApp1.ViewModels
             }
         }
 
+        #endregion
 
 
         /// <summary>
@@ -737,6 +739,8 @@ namespace WpfApp1.ViewModels
                 comStateColor(true);
                 AddLog($"打开串口{SerialCommunicationService.getComName()}成功");
 
+                
+
                 string machine;
                 //自动识别机器
                 if (!AutoSelectedMachineType(out machine))
@@ -759,6 +763,18 @@ namespace WpfApp1.ViewModels
         private bool AutoSelectedMachineType(out string machine)
         {
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            if(receive_MachineType == "")
+            {
+                //判断抗干扰是否打开
+                if (IsChecked)
+                {
+                    IsChecked = false;
+                    OnceOpenCRC = false;
+                    SerialCommunicationService.OpenReceiveCRC(false);
+                    receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+                }
+            }
+            
             SerialCommunicationService.MachineType = receive_MachineType;
             if(receive_MachineType.Length>=9)
             {
@@ -776,6 +792,13 @@ namespace WpfApp1.ViewModels
                 }else if(receive_MachineType.Substring(0,9) == "(HPVINV02")
                 {
                     SwitchViewToVQorGB("GB3024");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
                     //返回机器类型
                     machine = receive_MachineType;
                     return true;
@@ -783,6 +806,13 @@ namespace WpfApp1.ViewModels
                 else if(receive_MachineType.Substring(0,9)=="(LPVINV02")
                 {
                     SwitchViewToVQorGB("VQ3024");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
                     //返回机器类型
                     machine = receive_MachineType;
                     return true;
@@ -965,7 +995,6 @@ namespace WpfApp1.ViewModels
         #endregion
 
         #region 后台通讯线程
-        private readonly object _syncLock = new object();
         private CancellationTokenSource _cts = new CancellationTokenSource();//取消线程专用
         private ManualResetEventSlim _pauseEvent = new ManualResetEventSlim(true);//暂停线程专用
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // 异步竞争

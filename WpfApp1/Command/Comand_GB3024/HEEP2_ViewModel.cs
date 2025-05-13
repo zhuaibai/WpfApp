@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -106,6 +108,8 @@ namespace WpfApp1.Command.Comand_GB3024
             );
 
         }
+
+        
 
         #region 双输出模式(并机模式)
 
