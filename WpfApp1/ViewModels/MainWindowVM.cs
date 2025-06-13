@@ -274,6 +274,7 @@ namespace WpfApp1.ViewModels
         }
 
         public ObservableCollection<string> MachineItems { get; } = new(){
+        "GB6042",
         "GB3024",
         "VQ3024",
         "VDF"
@@ -306,22 +307,41 @@ namespace WpfApp1.ViewModels
         /// </summary>
         public void SwitchViewToVQorGB(string view)
         {
+            switch (view)
+            {
+                case "GB6042":
+                    ContentUC = new GB6042();
+                    SelectedMachineItem = "GB6042";
+                    break;
+                case "GB3024":
+                    ContentUC = new GB_MonitorUC();
+                    SelectedMachineItem = "GB3024";
+                    break;
+                case "VQ3024":
+                    ContentUC = new VQ_Monitor();
+                    SelectedMachineItem = "VQ3024";
+                    break;
+                case "VDF":
+                    ContentUC = new PTF_Monitor();
+                    SelectedMachineItem = "VDF";
+                    break;
+            }
 
-            if (view == "VQ3024")
-            {
-                ContentUC = new VQ_Monitor();
-                SelectedMachineItem = "VQ3024";
-            }
-            else if(view =="GB3024")
-            {
-                ContentUC = new GB_MonitorUC();
-                SelectedMachineItem = "GB3024";
-            }
-            else
-            {
-                ContentUC = new PTF_Monitor();
-                SelectedMachineItem = "VDF";
-            }
+            //if (view == "VQ3024")
+            //{
+            //    ContentUC = new VQ_Monitor();
+            //    SelectedMachineItem = "VQ3024";
+            //}
+            //else if(view =="GB3024")
+            //{
+            //    ContentUC = new GB_MonitorUC();
+            //    SelectedMachineItem = "GB3024";
+            //}
+            //else 
+            //{
+            //    ContentUC = new PTF_Monitor();
+            //    SelectedMachineItem = "VDF";
+            //}
         }
         #endregion
 
@@ -816,6 +836,19 @@ namespace WpfApp1.ViewModels
                     //返回机器类型
                     machine = receive_MachineType;
                     return true;
+                }else if(receive_MachineType.Substring(0, 9) == "(HPVINV04")
+                {
+                    SwitchViewToVQorGB("GB6042");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
                 }
                 else
                 {
@@ -1153,6 +1186,11 @@ namespace WpfApp1.ViewModels
                         //PTF通讯
                         CommunicationWithPTF3024(token);
                     }
+                    if (SelectedMachineItem == "GB6042")
+                    {
+                        //GB6042通讯
+                        CommunicationWithGB6042(token);
+                    }
                     // 模拟常规通信
                     await Task.Delay(0, token);
                     //AddLog($"[后台] 常规通信: {DateTime.Now:HH:mm:ss.fff}");
@@ -1383,7 +1421,79 @@ namespace WpfApp1.ViewModels
 
         }
 
-        
+        /// <summary>
+        /// GB6042通讯
+        /// </summary>
+        /// <param name="token"></param>
+        private void CommunicationWithGB6042(CancellationToken token)
+        {
+
+            string receive = "";
+
+            //获取机器型号
+            _pauseEvent.Wait(token);
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            SerialCommunicationService.MachineType = receive_MachineType;
+
+
+            //发送HBMS1指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HBMS1_VQ.Command, 70);
+            HBMS1_VQ.AnalysisStringToElement(receive);
+
+            //发送HEEP1指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HEEP1_PDF.Command, 80);
+            HEEP1_PDF.AnalyseStringToElement(receive);
+
+            //发送HEEP2指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+            HEEP2.AnalyseStringToElement(receive);
+
+            //发送HOP指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HOP_VQ.Command, 50);
+            HOP_VQ.AnalyseStringToElement(receive);
+
+            //发送HIMSG2N指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
+            HIGSG2_PDF.AnalysisStringToElement(receive);
+
+            //发送HGRID指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HGRID_PDF.Command, 50);
+            //解析返回命令
+            HGRID_PDF.AnalyseStringToElement(receive);
+            //显示
+            ACPowerVM = StringToIntConversion(HGRID_PDF.ACPower);
+            //市电百分比
+            ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
+
+            //发送HTEMP指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HTEMP_PDF.Command, 50);
+            HTEMP_PDF.AnalysisStringToElement(receive);
+
+            //发送HBAT指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
+            HBAT_VQ.AnalysisStringToElement(receive);
+
+            //发送HBAT指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
+            HIMSG1.AnalysisStringToElement(receive);
+
+            //发送HGEN指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HGEN.Command, 21);
+            HGEN.AnalyseStringToElement(receive);
+
+        }
+
+
 
         /// <summary>
         /// 停止后台通信
@@ -1394,7 +1504,5 @@ namespace WpfApp1.ViewModels
             AddLog("后台通信停止请求已发送");
         }
         #endregion
-
-
     }
 }
