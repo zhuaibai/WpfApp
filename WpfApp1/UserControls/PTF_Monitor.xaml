@@ -154,6 +154,7 @@
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <!--  标题  -->
                         <TextBlock
@@ -248,18 +249,48 @@
                             Style="{StaticResource ContentText}"
                             Text="W" />
 
-                        <!--  当前允许最大逆变功率  -->
+                        <!--  CT电流  -->
                         <TextBlock
                             Grid.Row="6"
                             Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 当前允许最大逆变功率}" />
+                            Text="{DynamicResource CT电流}" />
                         <TextBlock
                             Grid.Row="6"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MaxInvPower}" />
+                            Text="{Binding HCTMSG1_PDF.CTCurr}" />
                         <TextBlock
                             Grid.Row="6"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="A" />
+                        <!--  CT功率  -->
+                        <TextBlock
+                            Grid.Row="7"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource CT功率}" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="1 "
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HCTMSG1_PDF.CTPwr}" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="W" />
+                        <!--  当前允许最大逆变功率  -->
+                        <TextBlock
+                            Grid.Row="8"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 当前允许最大逆变功率}" />
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_PDF.MaxInvPower}" />
+                        <TextBlock
+                            Grid.Row="8"
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
                             Text="W" />
@@ -322,7 +353,7 @@
         <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*" />
+                <RowDefinition Height="4*" MaxHeight="500" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
@@ -499,6 +530,9 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <!--  标题  -->
                     <TextBlock
@@ -560,11 +594,72 @@
                         Grid.Column="2"
                         Style="{StaticResource ContentText}"
                         Text="W" />
+                    <!--  日发电量  -->
+                    <TextBlock
+                        Grid.Row="4"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 日发电量}" />
+                    <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HGEN.DailyGen}" />
+                    <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="kW·h" />
+                    <!--  月发电量  -->
+                    <TextBlock
+                        Grid.Row="5"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 月发电量}" />
+                    <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HGEN.MonthlyGen}" />
+                    <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="kW·h" />
+                    <!--  年发电量  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 年发电量}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HGEN.AnnualGen}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="kW·h" /> 
+                    <!--  总发电量  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 总发电量}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HGEN.TotalGen}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="kW·h" />
+
                 </Grid>
             </GroupBox>
 
             <!--  第三行  -->
-            <GroupBox Grid.Row="2" Header="CT">
+            <!--<GroupBox Grid.Row="2" Header="CT">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*" />
@@ -583,7 +678,9 @@
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <!--  标题  -->
+            -->
+            <!--  标题  -->
+            <!--
                     <TextBlock
                         Grid.Row="0"
                         Style="{StaticResource HeaderText}"
@@ -598,39 +695,10 @@
                         Grid.Column="2"
                         Style="{StaticResource HeaderText}"
                         Text="{DynamicResource 单位}" />
-                    <!--  CT电流  -->
-                    <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource CT电流}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HCTMSG1_PDF.CTCurr}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="A" />
-                    <!--  CT功率  -->
-                    <TextBlock
-                        Grid.Row="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource CT功率}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1 "
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HCTMSG1_PDF.CTPwr}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="W" />
+
                 </Grid>
 
-            </GroupBox>
+            </GroupBox>-->
         </Grid>
         <!--  第二行 第三列  -->
         <Grid

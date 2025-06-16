@@ -1,12 +1,14 @@
-﻿<UserControl x:Class="WpfApp1.UserControls.GB6042"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WpfApp1.UserControls"
-             mc:Ignorable="d" 
-             Background="White"
-             d:DesignHeight="600" d:DesignWidth="1000">
+﻿<UserControl
+    x:Class="WpfApp1.UserControls.GB6042"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:WpfApp1.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="600"
+    d:DesignWidth="1000"
+    Background="White"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <!--  GroupBox模版控件  -->
         <Style TargetType="GroupBox">
@@ -91,210 +93,9 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <!--  BMS  -->
-            <GroupBox Header="BMS">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-                    <!--  协议类型  -->
-                    <TextBlock Style="{StaticResource ContentText}" Text="{DynamicResource 协议类型}" />
-                    <TextBlock
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.ProtocolType}" />
-                    <!--  BMS通信  -->
-                    <TextBlock
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS通信正常}" />
-                    <TextBlock
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ComOK}" />
-                    <!--  BMS低电报警  -->
-                    <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS低电报警}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_LowBattAlarm}" />
-                    <!--  BMS低电故障  -->
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS低电故障}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_LowBattFault}" />
-                    <!--  BMS允许充电  -->
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS允许充电}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgEnable}" />
-                    <!--  BMS允许放电  -->
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS允许放电}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_DisEnable}" />
-                    <!--  BMS充电过流  -->
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS充电过流}" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgOC}" />
-                    <!--  BMS放电过流  -->
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS放电过流}" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_DisOC}" />
-                    <!--  BMS温度过低  -->
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS温度过低}" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_UnderTemp}" />
-                    <!--  BMS温度过高  -->
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS温度过高}" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_OverTemp}" />
-                    <!--  BMS充电电压限制  -->
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS充电电压限制}" />
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgVoltLimit}" />
-                    <!--  BMS放电电压限制  -->
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS放电电压限制}" />
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_DisVoltLimit}" />
-                    <!--  BMS充电电流限制  -->
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS充电电流限制}" />
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgCurrLimit}" />
-                    <!--  BMS当前SOC  -->
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS当前SOC}" />
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_SOC}" />
-                    <!--  BMS充电电流  -->
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS充电电流}" />
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgCurr}" />
-                    <!--  BMS放电电流  -->
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS放电电流}" />
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_DisCurr}" />
-                    <!--  BMS平均温度  -->
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS平均温度}" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_AvgTemp}" />
-                </Grid>
-            </GroupBox>
             <!--  市电  -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <GroupBox Grid.Row="2" Header="{DynamicResource 市电}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <GroupBox Header="{DynamicResource 市电}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
@@ -335,7 +136,7 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MainsVoltage}" />
+                            Text="{Binding HGRID_GB.MainsVoltage}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
@@ -344,82 +145,549 @@
 
                         <!--  市电频率  -->
                         <TextBlock
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Style="{StaticResource ContentText}"
                             Text="{DynamicResource 市电频率}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HGRID_GB.MainsFrequency}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="Hz" />
+                        <!--  市电功率  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 市电功率}" />
                         <TextBlock
                             Grid.Row="3"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HGRID_PDF.MainsFrequency}" />
+                            Text="{Binding HGRID_GB.ACPower}" />
                         <TextBlock
                             Grid.Row="3"
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
-                            Text="Hz" />
+                            Text="W" />
+
 
                     </Grid>
                 </GroupBox>
             </ScrollViewer>
+            <!--  输出  -->
+            <GroupBox Grid.Row="1" Header="{DynamicResource 输出}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <!--  标题  -->
+                    <TextBlock
+                        Grid.Row="0"
+                        Style="{StaticResource HeaderText}"
+                        Text="{DynamicResource 属性}" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Style="{StaticResource HeaderText}"
+                        Text="{DynamicResource 当前值}" />
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Style="{StaticResource HeaderText}"
+                        Text="{DynamicResource 单位}" />
 
-            <!--  系统信息与状态  -->
+                    <!--  输出电压  -->
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 输出电压}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.OutVolt}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="V" />
+                    <!--  输出频率  -->
+                    <TextBlock
+                        Grid.Row="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 输出频率}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.OutFreq}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="Hz" />
+                    <!--  视在功率  -->
+                    <TextBlock
+                        Grid.Row="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 视在功率}" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.ApparentPwr}" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="W" />
+                    <!--  有功功率  -->
+                    <TextBlock
+                        Grid.Row="4"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 有功功率}" />
+                    <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.ActivePwr}" />
+                    <TextBlock
+                        Grid.Row="4"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="W" />
+                    <!--  负载百分比  -->
+                    <TextBlock
+                        Grid.Row="5"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource 负载百分比}" />
+                    <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HOP_PDF.LoadPercent}" />
+                    <TextBlock
+                        Grid.Row="5"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="%" />
+
+
+                </Grid>
+            </GroupBox>
+
+            <!--  机器状态  -->
             <ScrollViewer
                 Grid.Row="2"
                 VerticalAlignment="Bottom"
                 VerticalScrollBarVisibility="Auto">
-                <GroupBox FontSize="16" Header="{DynamicResource 系统信息}">
-                    <Grid>
+                <GroupBox FontSize="16" Header="{DynamicResource 机器状态}">
+                    <Grid Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
-                        <!--  系统时间  -->
-                        <TextBlock Style="{StaticResource ContentText}" Text="{DynamicResource 系统时间}" />
-                        <TextBlock
-                            Grid.Column="2"
-                            Grid.ColumnSpan="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HGEN.SystemTime}" />
-                        <!--  版本号  -->
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 版本号}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HIMSG1.Version}" />
-                        <!--  发布日期  -->
+                        <!--  PV温度  -->
                         <TextBlock
                             Grid.Row="1"
                             Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 发布日期}" />
+                            Text="{DynamicResource PV温度}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HIMSG1.ReleaseDate}" />
+                            Text="{Binding HTEMP_PDF.PVTemp}" />
+                        <!--  升压温度  -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 升压温度}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.FanSpeed}" />
+                        <!--  逆变温度  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 逆变温度}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.InvTemp}" />
+                        <!--  故障代码  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 故障代码}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.FaultCode}" />
+                        <!--  变压器温度  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 变压器温度}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.XfmrTemp}" />
+                        <!--  当前最高温度  -->
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 当前最高温度}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.MaxTemp}" />
+
+                        <!--  风扇转速  -->
+                        <TextBlock
+                            Grid.Row="4"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 风扇转速}" />
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.FanSpeed}" />
+                        <!--  风扇使能  -->
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 风扇使能}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HTEMP_PDF.FanEnable}" />
+                        <!--  模式  -->
+                        <TextBlock
+                            Grid.Row="5"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 模式}" />
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.Mode}" />
+                        <!--  AC状态下PV馈能到负载  -->
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource AC状态下PV馈能到负载}" />
+
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.PVToLoadAC}" />
+                        <!--  机器是否有输出  -->
+                        <TextBlock
+                            Grid.Row="6"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 机器是否有输出}" />
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.OutputStatus}" />
+                        <!--  电池低电报警  -->
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 电池低电报警}" />
+
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.BattLowAlarm}" />
+                        <!--  电池未接  -->
+                        <TextBlock
+                            Grid.Row="7"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 电池未接}" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.BattDisconnected}" />
+                        <!--  输出过载  -->
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 输出过载}" />
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.OutputOverload}" />
+                        <!--  机器过温  -->
+                        <TextBlock
+                            Grid.Row="8"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 机器过温}" />
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.OverTemp}" />
+                        <!--  EEPROM数据异常  -->
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource EEPROM数据异常}" />
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.EEPROM_DataErr}" />
+                        <!--  EEPROM读写异常  -->
+                        <TextBlock
+                            Grid.Row="9"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource EEPROM读写异常}" />
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.EEPROM_IOErr}" />
+                        <!--  PV功率过低异常  -->
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource PV功率过低异常}" />
+                        <TextBlock
+                            Grid.Row="9"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.PVLowPwrFault}" />
+                        <!--  输入电压过高  -->
+                        <TextBlock
+                            Grid.Row="10"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 输入电压过高}" />
+                        <TextBlock
+                            Grid.Row="10"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.InputOV}" />
+                        <!--  电池电压过高  -->
+                        <TextBlock
+                            Grid.Row="10"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 电池电压过高}" />
+                        <TextBlock
+                            Grid.Row="10"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.BattOV}" />
+                        <!--  风扇转速异常  -->
+                        <TextBlock
+                            Grid.Row="11"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 风扇转速异常}" />
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.FanSpeedFault}" />
+                        <!--  并机系统里机器的总数  -->
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 并机系统里机器的总数}" />
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.ParallelUnits}" />
+                        <!--  并网标志  -->
+                        <TextBlock
+                            Grid.Row="12"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 并网标志}" />
+                        <TextBlock
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.GridTieFlag}" />
+                        <!--  并机系统中角色  -->
+                        <TextBlock
+                            Grid.Row="12"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 并机系统中角色}" />
+                        <TextBlock
+                            Grid.Row="12"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.ParallelRole}" />
+                        <!--  主输出继电器状态  -->
+                        <TextBlock
+                            Grid.Row="13"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 主输出继电器状态}" />
+                        <TextBlock
+                            Grid.Row="13"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.MainRelayStat}" />
+                        <!--  第二输出当前状态  -->
+                        <TextBlock
+                            Grid.Row="13"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 第二输出当前状态}" />
+                        <TextBlock
+                            Grid.Row="13"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.SecOutStat}" />
+                        <!--  BMS通讯异常  -->
+                        <TextBlock
+                            Grid.Row="14"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource BMS通讯异常}" />
+                        <TextBlock
+                            Grid.Row="14"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.BMS_ComFault}" />
+                        <!--  温度传感器异常  -->
+                        <TextBlock
+                            Grid.Row="14"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 温度传感器异常}" />
+                        <TextBlock
+                            Grid.Row="14"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.TempSensorFault}" />
+                        <!--  市电灯状态  -->
+                        <TextBlock
+                            Grid.Row="15"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 市电灯状态}" />
+                        <TextBlock
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.ACLED}" />
+                        <!--  逆变灯状态  -->
+                        <TextBlock
+                            Grid.Row="15"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 逆变灯状态}" />
+                        <TextBlock
+                            Grid.Row="15"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.InvLED}" />
+                        <!--  充电灯状态  -->
+                        <TextBlock
+                            Grid.Row="16"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 充电灯状态}" />
+                        <TextBlock
+                            Grid.Row="16"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.ChgLED}" />
+                        <!--  报警灯状态  -->
+                        <TextBlock
+                            Grid.Row="16"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 报警灯状态}" />
+                        <TextBlock
+                            Grid.Row="16"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding HSTS_GB.AlarmLED}" />
+
+
+
+
+
 
                     </Grid>
                 </GroupBox>
             </ScrollViewer>
 
+
+
+
         </Grid>
         <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="4*" MaxHeight="500" />
+                
+                <RowDefinition Height="auto" MinHeight="200"/>
             </Grid.RowDefinitions>
             <!--  第一行 图标显示  -->
             <Grid>
@@ -579,6 +847,207 @@
 
 
             </Grid>
+            <!--  PV  -->
+            <GroupBox Grid.Row="1" Grid.Column="1" Header="PV">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <!--PV电压-->
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV电压}" />
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVVolt,StringFormat={}{0}V}" />
+                    <!--  PV2电压  -->
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV2电压}" />
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPVB_GB.PV2Volt}" />
+                    <!--  PV电流  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV电流}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVCurr,StringFormat={}{0}V}" />
+                    <!--  PV2电流  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV2电流}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPVB_GB.PV2Curr}" />
+                    <!--  PV功率  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV功率}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPV_PDF.PVPwr,StringFormat={}{0}V}" />
+                    <!--  PV2功率  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource PV2功率}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HPVB_GB.PV2Pwr}" />
+                    
+                </Grid>
+            </GroupBox>
+
+
+        </Grid>
+        <!--  第二行 第三列  -->
+        <Grid
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <!--  BMS  -->
+            <GroupBox Header="BMS">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS充电电压限制}" />
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_ChgVoltLimit}" />
+                    <!--  BMS放电电压限制  -->
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS放电电压限制}" />
+                    <TextBlock
+                        Grid.Row="8"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_DisVoltLimit}" />
+                    <!--  BMS充电电流限制  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS充电电流限制}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_ChgCurrLimit}" />
+                    <!--  BMS当前SOC  -->
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS当前SOC}" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_SOC}" />
+                    <!--  BMS充电电流  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="0"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS充电电流}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="1"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_ChgCurr}" />
+                    <!--  BMS放电电流  -->
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="2"
+                        Style="{StaticResource ContentText}"
+                        Text="{DynamicResource BMS放电电流}" />
+                    <TextBlock
+                        Grid.Row="7"
+                        Grid.Column="3"
+                        Style="{StaticResource ContentText}"
+                        Text="{Binding HBMS1_VQ.BMS_DisCurr}" />
+                    <!--  BMS平均温度  -->
+                    <!--<TextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            Style="{StaticResource ContentText}"
+            Text="{DynamicResource BMS平均温度}" />
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="1"
+            Style="{StaticResource ContentText}"
+            Text="{Binding HBMS1_VQ.BMS_AvgTemp}" />-->
+                </Grid>
+            </GroupBox>
+
             <!--  第二行  -->
             <GroupBox Grid.Row="1" Header="电池">
                 <Grid>
@@ -694,242 +1163,56 @@
                 </Grid>
             </GroupBox>
 
-
-        </Grid>
-        <!--  第二行 第三列  -->
-        <Grid
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <GroupBox Header="{DynamicResource 输出}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <!--  标题  -->
-                    <TextBlock
-                        Grid.Row="0"
-                        Style="{StaticResource HeaderText}"
-                        Text="{DynamicResource 属性}" />
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Style="{StaticResource HeaderText}"
-                        Text="{DynamicResource 当前值}" />
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        Style="{StaticResource HeaderText}"
-                        Text="{DynamicResource 单位}" />
-
-                    <!--  输出电压  -->
-                    <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 输出电压}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HOP_VQ.OutputVoltage}" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="V" />
-                    <!--  输出频率  -->
-                    <TextBlock
-                        Grid.Row="2"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 输出频率}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HOP_VQ.OutputFrequency}" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="Hz" />
-                    <!--  视在功率  -->
-                    <TextBlock
-                        Grid.Row="3"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 视在功率}" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HOP_VQ.ReactivePower}" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="W" />
-                    <!--  有功功率  -->
-                    <TextBlock
-                        Grid.Row="4"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 有功功率}" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HOP_VQ.ActivePower}" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="W" />
-                    <!--  负载百分比  -->
-                    <TextBlock
-                        Grid.Row="5"
-                        Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 负载百分比}" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="1"
-                        Style="{StaticResource ContentText}"
-                        Text="{Binding HOP_VQ.PercentageOfLoad}" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="2"
-                        Style="{StaticResource ContentText}"
-                        Text="%" />
-
-
-                </Grid>
-            </GroupBox>
+            <!--  系统信息与状态  -->
             <ScrollViewer
-                Grid.Row="1"
+                Grid.Row="2"
                 VerticalAlignment="Bottom"
                 VerticalScrollBarVisibility="Auto">
-                <GroupBox FontSize="16" Header="{DynamicResource 机器状态}">
-                    <Grid Margin="0,10,0,0">
+                <GroupBox FontSize="16" Header="{DynamicResource 系统信息}">
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition />
                             <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
                         </Grid.RowDefinitions>
-
-
-
-                        <!--  PV温度  -->
+                        <!--  系统时间  -->
+                        <TextBlock Style="{StaticResource ContentText}" Text="{DynamicResource 系统时间}" />
                         <TextBlock
-                            Grid.Row="1"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="2"
                             Style="{StaticResource ContentText}"
-                            Text="{DynamicResource PV温度}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.PVTemp}" />
-                        <!--  升压温度  -->
+                            Text="{Binding HGEN.SystemTime}" />
+                        <!--  版本号  -->
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 升压温度}" />
+                            Text="{DynamicResource 版本号}" />
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="3"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.FanSpeed}" />
-                        <!--  逆变温度  -->
+                            Text="{Binding HIMSG1.Version}" />
+                        <!--  发布日期  -->
                         <TextBlock
-                            Grid.Row="2"
+                            Grid.Row="1"
                             Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 逆变温度}" />
+                            Text="{DynamicResource 发布日期}" />
                         <TextBlock
-                            Grid.Row="2"
+                            Grid.Row="1"
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.InvTemp}" />
-                        <!--  变压器温度  -->
-                        <TextBlock
-                            Grid.Row="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 变压器温度}" />
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.XfmrTemp}" />
-                        <!--  当前最高温度  -->
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 当前最高温度}" />
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.MaxTemp}" />
-
-                        <!--  风扇转速  -->
-                        <TextBlock
-                            Grid.Row="4"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 风扇转速}" />
-                        <TextBlock
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.FanSpeed}" />
-                        <!--  风扇使能  -->
-                        <TextBlock
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            Style="{StaticResource ContentText}"
-                            Text="{DynamicResource 风扇使能}" />
-
-                        <TextBlock
-                            Grid.Row="4"
-                            Grid.Column="3"
-                            Style="{StaticResource ContentText}"
-                            Text="{Binding HTEMP_PDF.FanEnable}" />
-
+                            Text="{Binding HIMSG1.ReleaseDate}" />
 
                     </Grid>
                 </GroupBox>
             </ScrollViewer>
-
-
 
         </Grid>
 

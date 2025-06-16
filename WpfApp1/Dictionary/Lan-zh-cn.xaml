@@ -163,6 +163,45 @@
     <s:String x:Key="BMS放电电流">BMS放电电流</s:String>
     <s:String x:Key="BMS平均温度">BMS平均温度</s:String>
     <s:String x:Key="电池低电告警电压">电池低电告警电压</s:String>
-  
+    <s:String x:Key="市电丢失电压高点">市电丢失电压高点</s:String>
+    <s:String x:Key="市电丢失电压低点">市电丢失电压低点</s:String>
+    <s:String x:Key="市电丢失频率高点">市电丢失频率高点</s:String>
+    <s:String x:Key="市电丢失频率低点">市电丢失频率低点</s:String>
+    <s:String x:Key="故障代码">故障代码</s:String>
+    <s:String x:Key="模式">模式</s:String>
+    <s:String x:Key="AC状态下PV馈能到负载">AC下PV馈能到负载</s:String>
+    <s:String x:Key="机器是否有输出">机器是否有输出</s:String>
+    <s:String x:Key="电池低电报警">电池低电报警</s:String>
+    <s:String x:Key="电池未接">电池未接</s:String>
+    <s:String x:Key="输出过载">输出过载</s:String>
+    <s:String x:Key="机器过温">机器过温</s:String>
+    <s:String x:Key="EEPROM数据异常">EEPROM数据异常</s:String>
+    <s:String x:Key="EEPROM读写异常">EEPROM读写异常</s:String>
+    <s:String x:Key="PV功率过低异常">PV功率过低异常</s:String>
+    <s:String x:Key="输入电压过高">输入电压过高</s:String>
+    <s:String x:Key="电池电压过高">电池电压过高</s:String>
+    <s:String x:Key="风扇转速异常">风扇转速异常</s:String>
+    <s:String x:Key="并机系统里机器的总数">并机系统里机器的总数</s:String>
+    <s:String x:Key="并网标志">并网标志</s:String>
+    <s:String x:Key="并机系统中角色">并机系统中角色</s:String>
+    <s:String x:Key="主输出继电器状态">主输出继电器状态</s:String>
+    <s:String x:Key="第二输出当前状态">第二输出当前状态</s:String>
+    <s:String x:Key="BMS通讯异常">通讯异常</s:String>
+    <s:String x:Key="温度传感器异常">温度传感器异常</s:String>
+    <s:String x:Key="市电灯状态">市电灯状态</s:String>
+    <s:String x:Key="逆变灯状态">逆变灯状态</s:String>
+    <s:String x:Key="充电灯状态">充电灯状态</s:String>
+    <s:String x:Key="报警灯状态">报警灯状态</s:String>
+    <s:String x:Key="日发电量">日发电量</s:String>
+    <s:String x:Key="月发电量">月发电量</s:String>
+    <s:String x:Key="年发电量">年发电量</s:String>
+    <s:String x:Key="总发电量">总发电量</s:String>
+    <s:String x:Key="PV2电压">PV2电压</s:String>
+    <s:String x:Key="PV2电流">PV2电流</s:String>
+    <s:String x:Key="PV2功率">PV2功率</s:String>
+   
+    
+    
+    
 
 </ResourceDictionary>

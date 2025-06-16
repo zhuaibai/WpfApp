@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WpfApp1.Command;
+using WpfApp1.Convert;
 using WpfApp1.Services;
 using WpfApp1.ViewModels;
 
@@ -137,7 +138,68 @@ namespace WpfApp1.Command.Comand_GB3024
                 return result;
             }
         }
-            
+
+
+        #endregion
+
+        #region 日发电量
+        private string _DailyGen;
+
+        public string DailyGen
+        {
+            get { return _DailyGen; }
+            set
+            {
+                _DailyGen = value;
+                this.RaiseProperChanged(nameof(DailyGen));
+            }
+        }
+        #endregion
+
+        #region 月发电量
+
+        private string _MonthlyGen;
+
+        public string MonthlyGen
+        {
+            get { return _MonthlyGen; }
+            set
+            {
+                _MonthlyGen = value;
+                this.RaiseProperChanged(nameof(MonthlyGen));
+            }
+        }
+
+        #endregion
+
+        #region 年发电量
+        private string _AnnualGen;
+
+        public string AnnualGen
+        {
+            get { return _AnnualGen; }
+            set
+            {
+                _AnnualGen = value;
+                this.RaiseProperChanged(nameof(AnnualGen));
+            }
+        }
+
+        #endregion
+
+        #region 总发电量
+
+        private string _TotalGen;
+
+        public string TotalGen
+        {
+            get { return _TotalGen; }
+            set
+            {
+                _TotalGen = value;
+                this.RaiseProperChanged(nameof(TotalGen));
+            }
+        }
 
         #endregion
 
@@ -175,6 +237,14 @@ namespace WpfApp1.Command.Comand_GB3024
                 string time = Values[0].Substring(1, 6);
                 //系统时间
                 SystemTime = $"20{time.Substring(0,2)}/{time.Substring(2,2)}/{time.Substring(4,2)} {Values[1]}";
+                //日发电量
+                DailyGen = Tools.RemoveLeadingZeros(Values[2]);
+                //月发电量
+                MonthlyGen = Tools.RemoveLeadingZeros(Values[3]);
+                //年发电量
+                AnnualGen = Tools.RemoveLeadingZeros(Values[4]);
+                //总发电量
+                TotalGen = Tools.RemoveLeadingZeros(Values[5]);
             }
             catch (Exception ex)
             {
