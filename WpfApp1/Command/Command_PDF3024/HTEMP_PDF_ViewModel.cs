@@ -290,7 +290,7 @@ namespace WpfApp1.Command.Command_PDF3024
             get { return _FanSpeed; }
             set
             {
-                if(FanEnable=="开启"||FanEnable == "On") { _FanEnable = Tools.RemoveLeadingZeros(value); }
+                if(FanEnable=="开启"||FanEnable == "On") { _FanSpeed = Tools.RemoveLeadingZeros(value); }
                 else 
                 _FanSpeed = "0";
                 this.RaiseProperChanged(nameof(FanSpeed));
@@ -529,10 +529,10 @@ namespace WpfApp1.Command.Command_PDF3024
                 XfmrTemp = Values[3];
                 //当前最大温度
                 MaxTemp = Values[4];
-                //风扇转速
-                FanSpeed = Values[5];
                 //风扇开关
                 FanEnable = Values[7].Substring(0, 1);
+                //风扇转速
+                FanSpeed = Values[5];
 
             }
             catch (Exception ex)

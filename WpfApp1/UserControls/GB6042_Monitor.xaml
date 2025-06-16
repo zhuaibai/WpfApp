@@ -293,7 +293,6 @@
 
                 </Grid>
             </GroupBox>
-
             <!--  机器状态  -->
             <ScrollViewer
                 Grid.Row="2"
@@ -678,21 +677,19 @@
                 </GroupBox>
             </ScrollViewer>
 
-
-
-
         </Grid>
         <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*" MaxHeight="500" />
-                
-                <RowDefinition Height="auto" MinHeight="200"/>
+
+                <RowDefinition Height="auto" MinHeight="200" />
             </Grid.RowDefinitions>
             <!--  第一行 图标显示  -->
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -700,8 +697,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <!--  太阳能发电(上)  -->
-                <Grid Grid.Column="1">
+                <!--  太阳能发电(左上)  -->
+                <Grid Grid.Column="0">
 
                     <local:RingUC
                         FontSize="12"
@@ -723,8 +720,8 @@
                     </StackPanel>
 
                 </Grid>
-                <!--  左一  -->
-                <Grid Grid.Row="1">
+                <!--  市电（左上）  -->
+                <Grid Grid.Row="0" Grid.Column="2">
 
                     <local:RingUC
                         FontSize="12"
@@ -819,8 +816,32 @@
                     </StackPanel>
 
                 </StackPanel>
-                <!--  右一  -->
-                <Grid Grid.Row="1" Grid.Column="2">
+                <!--  电池（左下）  -->
+                <Grid Grid.Row="2" Grid.Column="0">
+                    <local:RingUC
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        FontSize="12"
+                        PercentValue="{Binding BattPercent}"
+                        icon="&#xe603;" />
+
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Text="{Binding HOP_PDF.ActivePwr}" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            FontSize="10"
+                            Text="w" />
+                    </StackPanel>
+                </Grid>
+                <!--  居民用电（右下）  -->
+                <Grid Grid.Row="2" Grid.Column="2">
                     <local:RingUC
                         Grid.Row="1"
                         Grid.Column="2"
@@ -844,11 +865,12 @@
                     </StackPanel>
                 </Grid>
 
-
-
             </Grid>
             <!--  PV  -->
-            <GroupBox Grid.Row="1" Grid.Column="1" Header="PV">
+            <GroupBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Header="PV">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -867,7 +889,7 @@
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <!--PV电压-->
+                    <!--  PV电压  -->
                     <TextBlock
                         Grid.Row="8"
                         Grid.Column="0"
@@ -877,7 +899,7 @@
                         Grid.Row="8"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HPV_PDF.PVVolt,StringFormat={}{0}V}" />
+                        Text="{Binding HPV_PDF.PVVolt, StringFormat={}{0}V}" />
                     <!--  PV2电压  -->
                     <TextBlock
                         Grid.Row="8"
@@ -899,7 +921,7 @@
                         Grid.Row="6"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HPV_PDF.PVCurr,StringFormat={}{0}V}" />
+                        Text="{Binding HPV_PDF.PVCurr, StringFormat={}{0}A}" />
                     <!--  PV2电流  -->
                     <TextBlock
                         Grid.Row="6"
@@ -921,7 +943,7 @@
                         Grid.Row="7"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HPV_PDF.PVPwr,StringFormat={}{0}V}" />
+                        Text="{Binding HPV_PDF.PVPwr, StringFormat={}{0}W}" />
                     <!--  PV2功率  -->
                     <TextBlock
                         Grid.Row="7"
@@ -933,10 +955,9 @@
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
                         Text="{Binding HPVB_GB.PV2Pwr}" />
-                    
+
                 </Grid>
             </GroupBox>
-
 
         </Grid>
         <!--  第二行 第三列  -->
@@ -1017,14 +1038,14 @@
                         Grid.Row="7"
                         Grid.Column="0"
                         Style="{StaticResource ContentText}"
-                        Text="{DynamicResource BMS充电电流}" />
+                        Text="{DynamicResource BMS电流}" />
                     <TextBlock
                         Grid.Row="7"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_ChgCurr}" />
+                        Text="{Binding HBMS1_VQ.BMS_Curr}" />
                     <!--  BMS放电电流  -->
-                    <TextBlock
+                    <!--<TextBlock
                         Grid.Row="7"
                         Grid.Column="2"
                         Style="{StaticResource ContentText}"
@@ -1033,7 +1054,7 @@
                         Grid.Row="7"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBMS1_VQ.BMS_DisCurr}" />
+                        Text="{Binding HBMS1_VQ.BMS_DisCurr}" />-->
                     <!--  BMS平均温度  -->
                     <!--<TextBlock
             Grid.Row="5"
@@ -1048,7 +1069,7 @@
                 </Grid>
             </GroupBox>
 
-            <!--  第二行  -->
+            <!--  电池  -->
             <GroupBox Grid.Row="1" Header="电池">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -1107,17 +1128,17 @@
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
                         Text="{Binding HBAT_VQ.BusVolt}" />
-                    <!--  电池充电电流  -->
+                    <!--  电池电流  -->
                     <TextBlock
                         Grid.Row="2"
                         Style="{StaticResource ContentText}"
-                        Text="{DynamicResource 电池充电电流}" />
+                        Text="{DynamicResource 电池电流}" />
                     <TextBlock
                         Grid.Row="2"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattChgCurr}" />
-                    <!--  电池放电电流  -->
+                        Text="{Binding HBAT_VQ.BatCurr}" />
+                    <!--  电池放电电流  --><!--
                     <TextBlock
                         Grid.Row="2"
                         Grid.Column="2"
@@ -1127,8 +1148,8 @@
                         Grid.Row="2"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattDisCurr}" />
-                    <!--  充电总开关  -->
+                        Text="{Binding HBAT_VQ.BattDisCurr}" />-->
+                    <!--  充电总开关  --><!--
                     <TextBlock
                         Grid.Row="3"
                         Style="{StaticResource ContentText}"
@@ -1138,7 +1159,7 @@
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
                         Text="{Binding HBAT_VQ.ChgMasterSW}" />
-                    <!--  AC充电开关  -->
+                    --><!--  AC充电开关  --><!--
                     <TextBlock
                         Grid.Row="3"
                         Grid.Column="2"
@@ -1149,7 +1170,7 @@
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
                         Text="{Binding HBAT_VQ.ACChgSW}" />
-                    <!--  太阳能充电开关  -->
+                    --><!--  太阳能充电开关  --><!--
                     <TextBlock
                         Grid.Row="4"
                         Grid.Column="0"
@@ -1159,7 +1180,7 @@
                         Grid.Row="4"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.SolarChgSW}" />
+                        Text="{Binding HBAT_VQ.SolarChgSW}" />-->
                 </Grid>
             </GroupBox>
 
@@ -1214,52 +1235,6 @@
                 </GroupBox>
             </ScrollViewer>
 
-        </Grid>
-
-        <!--  第三行  -->
-        <Grid Grid.Row="2" Grid.ColumnSpan="4">
-            <!--<Border BorderBrush="Gray" BorderThickness="1">
-            -->
-            <!--<StackPanel Margin="5,0" Orientation="Horizontal">
-                <Button
-                    x:Name="StopBtn"
-                    Width="80"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    Background="Red"
-                    Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 停止}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe691;" />
-                <Button
-                    x:Name="BeginBtn"
-                    Width="80"
-                    Height="30"
-                    Background="#FF1AFA29"
-                    Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 开始}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe622;" />
-                <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
-                <CheckBox Margin="10,0,0,0" VerticalAlignment="Center">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="15"
-                        Text="导出运行数据" />
-                </CheckBox>
-                <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-                    <Hyperlink>日志目录</Hyperlink>
-                </TextBlock>
-                <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
-            </StackPanel>-->
-            <!--
-        </Border>-->
         </Grid>
 
         <!--  参数设置 界面  -->

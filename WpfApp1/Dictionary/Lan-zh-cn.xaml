@@ -199,6 +199,8 @@
     <s:String x:Key="PV2电压">PV2电压</s:String>
     <s:String x:Key="PV2电流">PV2电流</s:String>
     <s:String x:Key="PV2功率">PV2功率</s:String>
+    <s:String x:Key="电池电流">电池电流</s:String>
+    <s:String x:Key="BMS电流">电池电流</s:String>
    
     
     

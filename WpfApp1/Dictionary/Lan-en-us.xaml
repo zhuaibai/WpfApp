@@ -197,4 +197,7 @@
     <s:String x:Key="PV2电压">PV2Volt</s:String>
     <s:String x:Key="PV2电流">PV2Curr</s:String>
     <s:String x:Key="PV2功率">PVP2wr</s:String>
+    <s:String x:Key="电池电流">BattCurr</s:String>
+    <s:String x:Key="BMS电流">BMS_Curr</s:String>
+
 </ResourceDictionary>

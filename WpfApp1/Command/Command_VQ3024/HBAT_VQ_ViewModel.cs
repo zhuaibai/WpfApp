@@ -306,6 +306,39 @@ namespace WpfApp1.Command.Command_VQ3024
 
         #endregion
 
+        #region 电池电流
+
+        public string _BatCurr { get; set; }
+
+        public string BatCurr
+        {
+            get 
+            {
+                return _BatCurr; 
+            }
+            set
+            {
+                if (value == "1")
+                {
+                    //返回放电
+                    _BatCurr = "-" + BattDisCurr+"A";
+                }
+                else if (value == "2")
+                {
+                    //返回充电
+                    _BatCurr = "+" + BattChgCurr + "A";
+                }
+                else
+                {
+                    _BatCurr = "0";
+                }
+                OnPropertyChanged();
+            }
+        }
+
+
+        #endregion
+
         #region 母线电压
         private string _BusVolt;
 
@@ -439,6 +472,23 @@ namespace WpfApp1.Command.Command_VQ3024
 
         #endregion
 
+        #region 电池状态
+
+        private string _BatState;
+
+        public string BatState
+        {
+            get { return _BatState; }
+            set
+            {
+                _BatState = value;
+                this.RaiseProperChanged(nameof(BatState));
+            }
+        }
+
+
+        #endregion
+
         #region 通用方法
 
         private bool Validate(string value)
@@ -502,7 +552,9 @@ namespace WpfApp1.Command.Command_VQ3024
                 SolarChgSW = Values[6].Substring(1, 1);
                 //AC充电开关
                 ACChgSW = Values[6].Substring(2, 1);
-
+                //电池状态
+                BatState = Values[6].Substring(6,1);
+                BatCurr = BatState;
 
 
             }
@@ -536,6 +588,8 @@ namespace WpfApp1.Command.Command_VQ3024
             SolarChgSW = exceptionDescription;
             //AC充电开关
             ACChgSW = exceptionDescription;
+            //电池状态
+            BatState = exceptionDescription;
         }
 
         

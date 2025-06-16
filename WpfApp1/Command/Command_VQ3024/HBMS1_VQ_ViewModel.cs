@@ -303,6 +303,29 @@ namespace WpfApp1.Command.Command_VQ3024
         }
         #endregion
 
+        #region BMS电流
+
+        private string _BMS_Curr;
+
+        public string BMS_Curr
+        {
+            get { return _BMS_Curr; }
+            set
+            {
+                if (value == "1")
+                {
+                    //BMS充电电流
+                    _BMS_Curr = "+" + BMS_ChgCurr + "A";
+                }else if(value == "0")
+                {
+                    _BMS_Curr = "-" + BMS_DisCurr + "A";
+                }
+                this.RaiseProperChanged(nameof(BMS_Curr));
+            }
+        }
+
+        #endregion
+
         #region 通用方法
 
         private bool Validate(string value)
@@ -383,7 +406,8 @@ namespace WpfApp1.Command.Command_VQ3024
                 //BMS平均温度
                 BMS_AvgTemp = Values[8];
 
-
+                //BMS电流
+                BMS_Curr = BMS_ChgEnable;
             }
             catch (Exception ex)
             {

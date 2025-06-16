@@ -126,6 +126,22 @@ namespace WpfApp1.ViewModels
         }
 
         /// <summary>
+        /// 电池百分比
+        /// </summary>
+        private int _BattPercent;
+
+        public int BattPercent
+        {
+            get { return _BattPercent; }
+            set
+            {
+                _BattPercent = value;
+                this.RaiseProperChanged(nameof(BattPercent));
+            }
+        }
+
+
+        /// <summary>
         /// 市电功率
         /// </summary>
         private int _ACPower;
@@ -1450,6 +1466,7 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
             HBAT_VQ.AnalysisStringToElement(receive);
+            BattPercent = StringToIntConversion(HBAT_VQ.BattCapacity);
 
             //发送HIMSG1指令
             _pauseEvent.Wait(token);
@@ -1512,7 +1529,7 @@ namespace WpfApp1.ViewModels
             //显示
             ACPowerVM = StringToIntConversion(HGRID_PDF.ACPower);
             //市电百分比
-            //ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
+            ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
 
             //发送HTEMP指令
             _pauseEvent.Wait(token);
@@ -1523,6 +1540,7 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
             HBAT_VQ.AnalysisStringToElement(receive);
+            BattPercent = StringToIntConversion(HBAT_VQ.BattCapacity);
 
             //发送HBAT指令
             _pauseEvent.Wait(token);
@@ -1602,6 +1620,7 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
             HBAT_VQ.AnalysisStringToElement(receive);
+            BattPercent = StringToIntConversion(HBAT_VQ.BattCapacity);
 
             //发送HIMSG1指令
             _pauseEvent.Wait(token);
