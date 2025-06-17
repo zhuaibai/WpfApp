@@ -83,7 +83,7 @@ namespace WpfApp1.ViewModels
 
 
         //逆变总功率百分比
-        private int _PercentValue = 30;
+        private int _PercentValue;
 
         public int InvTotalPwr
         {
@@ -167,7 +167,7 @@ namespace WpfApp1.ViewModels
         {
             if (str == null)
             {
-                return -1;
+                return 0;
             }
             //这是专门应对市电功率的情况
             string tag = str.Substring(0, 1);
@@ -291,7 +291,7 @@ namespace WpfApp1.ViewModels
 
         #region 下拉框选择机器类型
 
-        private string? _selectedItem = "GB3024";
+        private string? _selectedItem = "HPVINV02";
         public string? SelectedMachineItem
         {
             get => _selectedItem;
@@ -303,10 +303,11 @@ namespace WpfApp1.ViewModels
         }
 
         public ObservableCollection<string> MachineItems { get; } = new(){
-        "GB_04",
-        "GB3024",
-        "VQ3024",
-        "VDF"
+        "HPVINV02",
+        "HPVINV04",
+        "HPVINV06",
+        "HPVINV07",
+        "LPVINV02"
          };
 
         //切换指令
@@ -338,39 +339,133 @@ namespace WpfApp1.ViewModels
         {
             switch (view)
             {
-                case "GB_04":
+                case "HPVINV04":
                     ContentUC = new GB6042();
-                    SelectedMachineItem = "GB_04";
+                    SelectedMachineItem = "HPVINV04";
                     break;
-                case "GB3024":
+                case "HPVINV02":
                     ContentUC = new GB_MonitorUC();
-                    SelectedMachineItem = "GB3024";
+                    SelectedMachineItem = "HPVINV02";
                     break;
-                case "VQ3024":
+                case "LPVINV02":
                     ContentUC = new VQ_Monitor();
-                    SelectedMachineItem = "VQ3024";
+                    SelectedMachineItem = "LPVINV02";
                     break;
-                case "VDF":
+                case "HPVINV06":
+                    ContentUC = new HPVINV06_MonitorUC();
+                    SelectedMachineItem = "HPVINV06";
+                    break;
+                case "HPVINV07":
                     ContentUC = new PTF_Monitor();
-                    SelectedMachineItem = "VDF";
+                    SelectedMachineItem = "HPVINV07";
                     break;
             }
 
-            //if (view == "VQ3024")
-            //{
-            //    ContentUC = new VQ_Monitor();
-            //    SelectedMachineItem = "VQ3024";
-            //}
-            //else if(view =="GB3024")
-            //{
-            //    ContentUC = new GB_MonitorUC();
-            //    SelectedMachineItem = "GB3024";
-            //}
-            //else 
-            //{
-            //    ContentUC = new PTF_Monitor();
-            //    SelectedMachineItem = "VDF";
-            //}
+        }
+
+        /// <summary>
+        /// 自动获取机型
+        /// </summary>
+        private bool AutoSelectedMachineType(out string machine)
+        {
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            if (receive_MachineType == "")
+            {
+                //判断抗干扰是否打开
+                if (IsChecked)
+                {
+                    IsChecked = false;
+                    OnceOpenCRC = false;
+                    SerialCommunicationService.OpenReceiveCRC(false);
+                    receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+                }
+            }
+
+            SerialCommunicationService.MachineType = receive_MachineType;
+            if (receive_MachineType.Length >= 9)
+            {
+                if (receive_MachineType.Substring(0, 9) == "(HPVINV07")
+                {
+                    //切换到PTF界面
+                    SwitchViewToVQorGB("HPVINV07");
+                    //默认设置抗干扰模式
+                    IsChecked = true;
+                    OnceOpenCRC = true;
+                    SerialCommunicationService.OpenReceiveCRC(true);
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else if (receive_MachineType.Substring(0, 9) == "(HPVINV02")
+                {
+                    SwitchViewToVQorGB("HPVINV02");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else if (receive_MachineType.Substring(0, 9) == "(LPVINV02")
+                {
+                    SwitchViewToVQorGB("LPVINV02");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else if (receive_MachineType.Substring(0, 9) == "(HPVINV04")
+                {
+                    SwitchViewToVQorGB("HPVINV04");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else if (receive_MachineType.Substring(0, 9) == "(HPVINV06")
+                {
+                    SwitchViewToVQorGB("HPVINV06");
+                    //判断抗干扰是否打开
+                    if (IsChecked)
+                    {
+                        IsChecked = false;
+                        OnceOpenCRC = false;
+                        SerialCommunicationService.OpenReceiveCRC(false);
+                    }
+                    //返回机器类型
+                    machine = receive_MachineType;
+                    return true;
+                }
+                else
+                {
+                    //返回机器类型(无法识别
+                    machine = receive_MachineType;
+                    return false;
+                }
+
+
+            }
+            else
+            {
+                machine = receive_MachineType;
+                return false;
+            }
         }
         #endregion
 
@@ -848,96 +943,7 @@ namespace WpfApp1.ViewModels
 
         }
 
-        /// <summary>
-        /// 自动获取机型
-        /// </summary>
-        private bool AutoSelectedMachineType(out string machine)
-        {
-            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
-            if (receive_MachineType == "")
-            {
-                //判断抗干扰是否打开
-                if (IsChecked)
-                {
-                    IsChecked = false;
-                    OnceOpenCRC = false;
-                    SerialCommunicationService.OpenReceiveCRC(false);
-                    receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
-                }
-            }
-
-            SerialCommunicationService.MachineType = receive_MachineType;
-            if (receive_MachineType.Length >= 9)
-            {
-                if (receive_MachineType.Substring(0, 9) == "(HPVINV05")
-                {
-                    //切换到PTF界面
-                    SwitchViewToVQorGB("VDF");
-                    //默认设置抗干扰模式
-                    IsChecked = true;
-                    OnceOpenCRC = true;
-                    SerialCommunicationService.OpenReceiveCRC(true);
-                    //返回机器类型
-                    machine = receive_MachineType;
-                    return true;
-                }
-                else if (receive_MachineType.Substring(0, 9) == "(HPVINV02")
-                {
-                    SwitchViewToVQorGB("GB3024");
-                    //判断抗干扰是否打开
-                    if (IsChecked)
-                    {
-                        IsChecked = false;
-                        OnceOpenCRC = false;
-                        SerialCommunicationService.OpenReceiveCRC(false);
-                    }
-                    //返回机器类型
-                    machine = receive_MachineType;
-                    return true;
-                }
-                else if (receive_MachineType.Substring(0, 9) == "(LPVINV02")
-                {
-                    SwitchViewToVQorGB("VQ3024");
-                    //判断抗干扰是否打开
-                    if (IsChecked)
-                    {
-                        IsChecked = false;
-                        OnceOpenCRC = false;
-                        SerialCommunicationService.OpenReceiveCRC(false);
-                    }
-                    //返回机器类型
-                    machine = receive_MachineType;
-                    return true;
-                }
-                else if (receive_MachineType.Substring(0, 9) == "(HPVINV04")
-                {
-                    SwitchViewToVQorGB("GB_04");
-                    //判断抗干扰是否打开
-                    if (IsChecked)
-                    {
-                        IsChecked = false;
-                        OnceOpenCRC = false;
-                        SerialCommunicationService.OpenReceiveCRC(false);
-                    }
-                    //返回机器类型
-                    machine = receive_MachineType;
-                    return true;
-                }
-                else
-                {
-                    //返回机器类型(无法识别
-                    machine = receive_MachineType;
-                    return false;
-                }
-
-
-            }
-            else
-            {
-                machine = receive_MachineType;
-                return false;
-            }
-        }
+       
 
         #endregion
 
@@ -959,7 +965,36 @@ namespace WpfApp1.ViewModels
             set { contentUC = value; RaiseProperChanged(nameof(ContentUC)); }
         }
 
+        /// <summary>
+        /// 机器类型
+        /// </summary>
+        private string _MachineType;
 
+        public string MachineType
+        {
+            get { return _MachineType; }
+            set
+            {
+                _MachineType = value;
+                this.RaiseProperChanged(nameof(MachineType));
+            }
+        }
+
+
+        /// <summary>
+        /// 机器型号
+        /// </summary>
+        private int _MachineMode;
+
+        public int MachineModel
+        {
+            get { return _MachineMode; }
+            set
+            {
+                _MachineMode = value;
+                this.RaiseProperChanged(nameof(MachineModel));
+            }
+        }
 
 
         #endregion
@@ -1232,7 +1267,6 @@ namespace WpfApp1.ViewModels
         }
 
 
-
         /// <summary>
         /// 后台工作线程主循环
         /// </summary>
@@ -1243,27 +1277,32 @@ namespace WpfApp1.ViewModels
                 //COM通讯
                 while (!token.IsCancellationRequested)
                 {
-                    if (SelectedMachineItem == "GB3024")
+                    if (SelectedMachineItem == "HPVINV02")
                     {
                         //GB3024通讯
                         CommunicationWithGB3024(token);
                     }
-                    if (SelectedMachineItem == "VQ3024")
+                    else if (SelectedMachineItem == "LPVINV02")
                     {
                         //VQ3024通讯
                         CommunicationWithVQ3024(token);
                     }
-                    if (SelectedMachineItem == "VDF")
+                    else if (SelectedMachineItem == "HPVINV07")
                     {
                         //处理选中状态
 
                         //PTF通讯
                         CommunicationWithPTF3024(token);
                     }
-                    if (SelectedMachineItem == "GB_04")
+                    else if (SelectedMachineItem == "HPVINV04")
                     {
                         //GB6042通讯
                         CommunicationWithGB6042(token);
+                    }
+                    else if (SelectedMachineItem == "HPVINV06")
+                    {
+                        //GB6042通讯
+                        CommunicationWithGB_HPVINV06(token);
                     }
                     // 模拟常规通信
                     await Task.Delay(0, token);
@@ -1313,6 +1352,7 @@ namespace WpfApp1.ViewModels
             //获取机器型号
             _pauseEvent.Wait(token);
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            MachineType = receive_MachineType.Substring(1,8);
             SerialCommunicationService.MachineType = receive_MachineType;
 
             //发送HIMSG2N指令
@@ -1390,6 +1430,9 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             HGEN.AnalyseStringToElement(receive);
+
+            //机器型号
+            MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells)*12;
         }
 
         /// <summary>
@@ -1403,6 +1446,7 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             //发送查询机器指令
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            MachineType = receive_MachineType.Substring(1, 8);
             //解析指令
             SerialCommunicationService.MachineType = receive_MachineType;
 
@@ -1485,6 +1529,9 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HSTS_GB.Command, 40);
             HSTS_GB.AnalyseStringToElement(receive);
 
+            //机器型号
+            MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells)*12;
+
         }
 
         /// <summary>
@@ -1498,6 +1545,7 @@ namespace WpfApp1.ViewModels
             //获取机器型号
             _pauseEvent.Wait(token);
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            MachineType = receive_MachineType;
             SerialCommunicationService.MachineType = receive_MachineType;
 
 
@@ -1561,6 +1609,7 @@ namespace WpfApp1.ViewModels
             //获取机器型号
             _pauseEvent.Wait(token);
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            MachineType = receive_MachineType.Substring(1, 8); 
             SerialCommunicationService.MachineType = receive_MachineType;
 
 
@@ -1646,6 +1695,108 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HPVB_GB.Command, 50);
             HPVB_GB.AnalysisStringToElement(receive);
+
+            //机器型号
+            MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells) * 12;
+        }
+
+
+        /// <summary>
+        /// GB6042通讯
+        /// </summary>
+        /// <param name="token"></param>
+        private void CommunicationWithGB_HPVINV06(CancellationToken token)
+        {
+            string receive = string.Empty;
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token);
+            //发送查询机器指令
+            string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
+            MachineType = receive_MachineType.Substring(1, 8);
+            //解析指令
+            SerialCommunicationService.MachineType = receive_MachineType;
+
+            //发送HBMS1指令
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            receive = SerialCommunicationService.SendCommand(HBMS1_VQ.Command, 70);
+            HBMS1_VQ.AnalysisStringToElement(receive);
+
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HEEP1指令
+            string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
+            //解析返回指令
+            HEEP1.AnalyseStringToElement(receiveHEEP1);
+
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送HEEP2指令
+            string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
+            //解析返回指令
+            HEEP2.AnalyseStringToElement(receive_HEEP2);
+
+
+            // 等待暂停或取消信号
+            _pauseEvent.Wait(token);
+            //发送HOP指令
+            receive = SerialCommunicationService.SendCommand(HOP_PDF.Command, 50);
+            //解析返回命令
+            HOP_PDF.AnalysisStringToElement(receive);
+            //逆变百分比
+            InvTotalPwr = StringToIntConversion(HOP_PDF.LoadPercent);
+
+            //发送HPV指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HPV_PDF.Command, 50);
+            HPV_PDF.AnalysisStringToElement(receive);
+            //MPPT百分比
+            MPPTTotalPwr = CountPercent(HPV_PDF.PVPwr, HIGSG2_PDF.MPPTTotalPwr);
+
+            //发送HIMSG2N指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
+            HIGSG2_PDF.AnalysisStringToElement(receive);
+
+            //发送HGRID指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HGRID_GB.Command, 50);
+            //解析返回命令
+            HGRID_GB.AnalyseStringToElement(receive);
+            //显示
+            ACPowerVM = StringToIntConversion(HGRID_GB.ACPower);
+            //市电百分比
+            ACTotalPwr = CountPercent(HGRID_GB.ACPower, HIGSG2_PDF.ACTotalPwr);
+
+            //发送HTEMP指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HTEMP_PDF.Command, 50);
+            HTEMP_PDF.AnalysisStringToElement(receive);
+
+            //发送HBAT指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HBAT_VQ.Command, 50);
+            HBAT_VQ.AnalysisStringToElement(receive);
+            BattPercent = StringToIntConversion(HBAT_VQ.BattCapacity);
+
+            //发送HIMSG1指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
+            HIMSG1.AnalysisStringToElement(receive);
+
+
+            _pauseEvent.Wait(token); // 等待暂停或取消信号
+            //发送Hgen指令
+            string receive_HGEN = SerialCommunicationService.SendCommand(HGEN.Command, 60);
+            //解析返回指令
+            HGEN.AnalyseStringToElement(receive_HGEN);
+
+            //发送HSTS指令
+            _pauseEvent.Wait(token);
+            receive = SerialCommunicationService.SendCommand(HSTS_GB.Command, 40);
+            HSTS_GB.AnalyseStringToElement(receive);
+
+            //机器型号
+            MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells) * 12;
 
         }
 

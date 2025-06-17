@@ -883,6 +883,24 @@ namespace WpfApp1.Command.Command_PDF3024
         }
         #endregion
 
+        #region 内部数据
+
+        //内部数据
+        private string date;
+
+        public string Data
+        {
+            get { return date; }
+            set
+            {
+                date = value;
+                this.RaiseProperChanged(nameof(Data));
+            }
+        }
+
+
+        #endregion
+
         #region 通用方法
         /// <summary>
         /// 判断输入是否正确

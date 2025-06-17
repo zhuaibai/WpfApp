@@ -8,9 +8,9 @@
     xmlns:lo="clr-namespace:WpfApp1.Behavior"
     xmlns:local="clr-namespace:WpfApp1"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
-    Width="1200"
-    Height="700"
+    Title="TQF ALL-in-One"
+    Width="1400"
+    Height="780"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>

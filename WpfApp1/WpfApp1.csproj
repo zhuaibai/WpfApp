@@ -6,10 +6,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>a8dg4-ojltd.ico</ApplicationIcon>
+    <Authors>luoFuquan</Authors>
+    <Product>General App</Product>
+    <SignAssembly>False</SignAssembly>
+    <AssemblyName>TQF AllinOne</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resource\Fonts\iconfont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="a8dg4-ojltd.ico" />
   </ItemGroup>
 
   <ItemGroup>

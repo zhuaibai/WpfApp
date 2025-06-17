@@ -196,8 +196,9 @@
     <s:String x:Key="总发电量">TotalGen</s:String>
     <s:String x:Key="PV2电压">PV2Volt</s:String>
     <s:String x:Key="PV2电流">PV2Curr</s:String>
-    <s:String x:Key="PV2功率">PVP2wr</s:String>
+    <s:String x:Key="PV2功率">PV2Pwr</s:String>
     <s:String x:Key="电池电流">BattCurr</s:String>
     <s:String x:Key="BMS电流">BMS_Curr</s:String>
-
+    <s:String x:Key="机器类型">MachineType</s:String>
+    <s:String x:Key="机器型号">MachineModel</s:String>
 </ResourceDictionary>

@@ -201,6 +201,8 @@
     <s:String x:Key="PV2功率">PV2功率</s:String>
     <s:String x:Key="电池电流">电池电流</s:String>
     <s:String x:Key="BMS电流">电池电流</s:String>
+    <s:String x:Key="机器类型">机器类型</s:String>
+    <s:String x:Key="机器型号">机器型号</s:String>
    
     
     

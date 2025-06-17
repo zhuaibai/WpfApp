@@ -344,6 +344,27 @@
                             Grid.Column="1"
                             Style="{StaticResource ContentText}"
                             Text="{Binding HIMSG1.ReleaseDate}" />
+                        <!--  机器型号  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 机器型号}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding MachineModel}" />
+                        <!--  机器类型  -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Style="{StaticResource ContentText}"
+                            Text="{DynamicResource 机器类型}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Style="{StaticResource ContentText}"
+                            Text="{Binding MachineType}" />
 
                     </Grid>
                 </GroupBox>
@@ -638,7 +659,7 @@
                         Grid.Row="6"
                         Grid.Column="2"
                         Style="{StaticResource ContentText}"
-                        Text="kW·h" /> 
+                        Text="kW·h" />
                     <!--  总发电量  -->
                     <TextBlock
                         Grid.Row="7"
