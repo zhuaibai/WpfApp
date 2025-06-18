@@ -367,6 +367,7 @@ namespace WpfApp1.Command.Command_VQ3024
                 ReceiveException("空");
                 return;
             }
+            
             string[] Values = value.Split(" ");
 
             try
