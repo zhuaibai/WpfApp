@@ -297,7 +297,11 @@ namespace WpfApp1.Command.Command_PDF3024
                 return;
             }
             string[] Values = value.Split(" ");
-
+            if(value == "-1")
+            {
+                ReceiveException("CRC异常");
+                return;
+            }
             try
             {
                 //调零功率

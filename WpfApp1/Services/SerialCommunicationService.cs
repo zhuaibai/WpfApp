@@ -205,6 +205,18 @@ namespace WpfApp1.Services
 
         }
 
+        /// <summary>
+        /// 确保遗留数据全部丢弃
+        /// </summary>
+        static void SafeDiscardInBuffer()
+        {
+            SerialPort.DiscardInBuffer();
+            while (SerialPort.BytesToRead > 0)
+            {
+                Thread.Sleep(10); // 短暂等待
+                SerialPort.DiscardInBuffer(); // 再次丢弃
+            }
+        }
 
 
         /// <summary>
@@ -216,8 +228,7 @@ namespace WpfApp1.Services
         public static string SendCommand(string command ,int returnCount)
         {
             _semaphore.Wait();
-            //在写命令之前先清空一下接受缓存
-            SerialPort.DiscardInBuffer();
+           
             SerialPort.WriteTimeout = 1000;
             //写命令
             byte[] Command = Encoding.ASCII.GetBytes(command);
@@ -229,10 +240,14 @@ namespace WpfApp1.Services
                 //添加两个校验字节
                 returnCount += 2;
             }
+            //在写命令之前先清空一下接受缓存
+            SerialPort.DiscardInBuffer();
             //收报文
             try
             {
                 SerialPort.Write(Command, 0, Command.Length);
+                //增加延时100ms
+                Thread.Sleep(100);
                 //添加发送帧数
                 AddSendFrame(Command.Length);
                 // 设置读取超时时间【1s】
@@ -253,13 +268,14 @@ namespace WpfApp1.Services
                 AddReceiveFrame(totalBytesRead);
 
                 //对返回字节进行CRC校验
-                if (Receive_CRC_Check)
+                if (Receive_CRC_Check&&buffer.Length==returnCount)
                 {
                    bool CRC_Pass = CheckReceive_CRC(buffer);
                     if (!CRC_Pass)
                     {
                         //CRC校验不通过
-                        return string.Empty;
+                        
+                        return "-1";
                     }
                 }
 
@@ -279,6 +295,29 @@ namespace WpfApp1.Services
             {
                 _semaphore.Release();
             }
+        }
+
+        /// <summary>
+        /// 字节数组转换为字符串
+        /// </summary>
+        /// <param name="buff"></param>
+        /// <returns></returns>
+        private static string BytesToString(byte[] buff)
+        {
+            
+            string result = "{";
+            for(int i=0; i < buff.Length; i++)
+            {
+                result = result + buff[i] + ",";
+            }
+            result += "}";
+            return result;
+        }
+
+        public static void DiscardInBuff()
+        {
+            //在写命令之前先清空一下接受缓存
+            SerialPort.DiscardInBuffer();
         }
 
         /// <summary>

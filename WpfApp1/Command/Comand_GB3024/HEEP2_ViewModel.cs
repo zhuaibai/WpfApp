@@ -1531,7 +1531,12 @@ namespace WpfApp1.Command.Comand_GB3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
                 return;
+            }
+            if(value == "-1")
+            {
+                ReceiveException("CRC异常");
             }
             string[] Values = value.Split(" ");
             try
@@ -1582,6 +1587,45 @@ namespace WpfApp1.Command.Comand_GB3024
 
         }
 
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            //双输出模式(并机模式)
+            DualOutputMode = exceptionDescription;
+            //并机模式关闭电压
+            ParallelModeShutdownVoltage = exceptionDescription;
+            //并机模式关闭SOC
+            ParallelModeShutdownSOC = exceptionDescription;
+            //电池低电告警电压
+            BattLowAlarmVolt = exceptionDescription;
+            //返回市电模式电压
+            ReturnMainsBatteryVoltage = exceptionDescription;
+            //返回电池模式电压
+            ReturnBatteryModeVoltage = exceptionDescription;
+            //电池均衡模式
+            BatteryBalancingMmode = exceptionDescription;
+            //电池均衡电压
+            BatteryBalancingVoltage = exceptionDescription;
+            //电池均衡时间
+            BatteryBalancingTime = exceptionDescription;
+            //电池均衡超时值
+            BatteryBalancingTimeoutValue = exceptionDescription;
+            //电池均衡间隔时间(Day)
+            BatteryBalancingInterval = exceptionDescription;
+
+            //恢复第二输出的延时时间
+            DelayTimeToRestoreTheSecondOutput = exceptionDescription;
+            //恢复第二输出的电电池电压
+            RestoreBatteryVoltageOfSecondOutput = exceptionDescription;
+            //恢复第二输出的电池容量
+            RestoreBatteryCapacityOfSecondOutput = exceptionDescription;
+            //第二输出放电时间
+            SecondOutputDischargeTime = exceptionDescription;
+            
+        }
         /// <summary>
         /// 对属性值进行二次转换，换成命令指令符号
         /// </summary>

@@ -359,6 +359,10 @@ namespace WpfApp1.Command.Command_PDF3024
                 ReceiveException("空");
                 return;
             }
+            if(value == "-1")
+            {
+                ReceiveException("CRC异常");
+            }
             string[] Values = value.Split(" ");
 
             try

@@ -1155,8 +1155,8 @@ namespace WpfApp1.ViewModels
         }
 
         // 后台线程是否正在运行
-        private bool _isRunning;
-        public bool IsRunning
+        private bool _isRunning =false;
+        public bool IsRunning 
         {
             get => _isRunning;
             set
@@ -1315,9 +1315,19 @@ namespace WpfApp1.ViewModels
                 UpdateState(App.GetText("已停止通信!"));
                 IsRunning = false;
             }
+            catch(Exception ex)
+            {
+                string mes = ex.ToString();
+                AddLog("后台通信异常");
+                UpdateState(App.GetText("异常!"));
+                //关闭串口
+                openCom();
+                MessageBox.Show($"通讯异常{ex.ToString()},已停止通讯！,请重新打开串口", "异常", MessageBoxButton.OK, MessageBoxImage.Error);
+                
+            }
             finally
             {
-
+                IsRunning = false;
             }
         }
 
@@ -1333,6 +1343,7 @@ namespace WpfApp1.ViewModels
 
             string receive = "";
 
+            
             //判断是否开启CRC接收校验（抗干扰 默认开启
             if (IsChecked)
             {
@@ -1349,17 +1360,34 @@ namespace WpfApp1.ViewModels
                 OnceOpenCRC = false;
             }
 
+            
             //获取机器型号
             _pauseEvent.Wait(token);
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
-            MachineType = receive_MachineType.Substring(1,8);
-            SerialCommunicationService.MachineType = receive_MachineType;
+            if(receive_MachineType == "")
+            {
+                AddLog("机器类型返回超时");
+                MachineType = "返回超时";
+            }
+            else if(receive_MachineType.Substring(0,2)=="-1")
+            {
+                AddLog($"机器类型校验不通过:{receive_MachineType}");
+                MachineType = "CRC异常";
+            }
+            else
+            {
+                AddLog("机器类型返回正常");
+                MachineType = receive_MachineType.Substring(1, 8);
+                SerialCommunicationService.MachineType = receive_MachineType;
+            }
 
+            
             //发送HIMSG2N指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HIGSG2_PDF.Command, 50);
             HIGSG2_PDF.AnalysisStringToElement(receive);
 
+            
             // 等待暂停或取消信号
             _pauseEvent.Wait(token);
             //发送HGRID指令
@@ -1371,6 +1399,7 @@ namespace WpfApp1.ViewModels
             //市电百分比
             ACTotalPwr = CountPercent(HGRID_PDF.ACPower, HIGSG2_PDF.ACTotalPwr);
 
+            
             // 等待暂停或取消信号
             _pauseEvent.Wait(token);
             //发送HOP指令
@@ -1380,6 +1409,7 @@ namespace WpfApp1.ViewModels
             //逆变百分比
             InvTotalPwr = StringToIntConversion(HOP_PDF.LoadPercent);
 
+            
             // 等待暂停或取消信号
             _pauseEvent.Wait(token);
             //发送HBAT指令
@@ -1387,28 +1417,33 @@ namespace WpfApp1.ViewModels
             //解析返回命令
             HBAT_PDF.AnalysisStringToElement(receive);
 
+            
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送HEEP1指令
             receive = SerialCommunicationService.SendCommand(HEEP1_PDF.Command, 80);
             //解析返回指令
             HEEP1_PDF.AnalyseStringToElement(receive);
 
+            
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送HEEP2指令
             receive = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
             //解析返回指令
             HEEP2.AnalyseStringToElement(receive);
 
+            
             //发送HEEP3指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HEEP3_PDF.Command, 80);
             HEEP3_PDF.AnalysisStringToElement(receive);
 
+            
             //发送HIMSG1指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
             HIMSG1.AnalysisStringToElement(receive);
 
+            
             //发送HPV指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HPV_PDF.Command, 50);
@@ -1416,11 +1451,13 @@ namespace WpfApp1.ViewModels
             //MPPT百分比
             MPPTTotalPwr = CountPercent(HPV_PDF.PVPwr, HIGSG2_PDF.MPPTTotalPwr);
 
+            
             //发送HTEMP指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HTEMP_PDF.Command, 50);
             HTEMP_PDF.AnalysisStringToElement(receive);
 
+            
             //发送HCTMSG1指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HCTMSG1_PDF.Command, 80);
@@ -1430,6 +1467,7 @@ namespace WpfApp1.ViewModels
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HGEN.Command, 60);
             HGEN.AnalyseStringToElement(receive);
+
 
             //机器型号
             MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells)*12;
@@ -1529,6 +1567,7 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HSTS_GB.Command, 40);
             HSTS_GB.AnalyseStringToElement(receive);
 
+            
             //机器型号
             MachineModel = StringToIntConversion(HOP_PDF.RatedPwr) + StringToIntConversion(HBAT_VQ.BattCells)*12;
 

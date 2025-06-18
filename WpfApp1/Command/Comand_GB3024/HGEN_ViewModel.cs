@@ -229,6 +229,12 @@ namespace WpfApp1.Command.Comand_GB3024
         {
             if (string.IsNullOrEmpty(value))
             {
+                ReceiveException("空");
+                return;
+            }
+            if(value == "-1")
+            {
+                ReceiveException("CRC异常");
                 return;
             }
             string[] Values = value.Split(" ");
@@ -248,8 +254,28 @@ namespace WpfApp1.Command.Comand_GB3024
             }
             catch (Exception ex)
             {
+                ReceiveException("解析异常");
                 return;
             }
+        }
+
+        /// <summary>
+        /// 接收异常使用方法
+        /// </summary>
+        /// <param name="exceptionDescription"></param>
+        private void ReceiveException(string exceptionDescription)
+        {
+            string time = exceptionDescription;
+            //系统时间
+            SystemTime = exceptionDescription;
+            //日发电量
+            DailyGen = exceptionDescription;
+            //月发电量
+            MonthlyGen = exceptionDescription;
+            //年发电量
+            AnnualGen = exceptionDescription;
+            //总发电量
+            TotalGen = exceptionDescription;
         }
 
         /// <summary>

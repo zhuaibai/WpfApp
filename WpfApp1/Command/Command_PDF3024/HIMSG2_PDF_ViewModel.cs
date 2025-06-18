@@ -349,10 +349,17 @@ namespace WpfApp1.Command.Command_PDF3024
         {
             if (string.IsNullOrEmpty(value))
             {
-                ReceiveException("0");
+                ReceiveException("空");
+                return;
+            }
+
+            if (value == "-1")
+            {
+                ReceiveException("HIMSG2CRC异常");
                 return;
             }
             string[] Values = value.Split(" ");
+            
 
             try
             {
@@ -365,7 +372,7 @@ namespace WpfApp1.Command.Command_PDF3024
             }
             catch (Exception ex)
             {
-                ReceiveException("HIMSG2异常");
+                ReceiveException("HIMSG2解析异常");
             }
         }
 

@@ -265,6 +265,11 @@ namespace WpfApp1.Command.Command_PDF302
                 ReceiveException("空");
                 return;
             }
+            if(value == "-1")
+            {
+                ReceiveException("CRC异常");
+                return;
+            }
             string[] Values = value.Split(" ");
 
             try
@@ -277,7 +282,7 @@ namespace WpfApp1.Command.Command_PDF302
             }
             catch (Exception ex)
             {
-                ReceiveException("HCTMSG1异常");
+                ReceiveException("HCTMSG1解析异常");
             }
         }
 
