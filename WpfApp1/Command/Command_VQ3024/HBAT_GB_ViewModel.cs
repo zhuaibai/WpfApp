@@ -9,7 +9,7 @@ using WpfApp1.ViewModels;
 
 namespace WpfApp1.Command.Command_VQ3024
 {
-    public class HBAT_VQ_ViewModel:BaseViewModel
+    public class HBAT_GB_ViewModel:BaseViewModel
     {
         //指令
         private string command = "HBAT\r";
@@ -20,7 +20,7 @@ namespace WpfApp1.Command.Command_VQ3024
         Action<string> AddLog;           //添加日志委托
         Action<string> UpdateState;      //更新状态日志
 
-        public HBAT_VQ_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
+        public HBAT_GB_ViewModel(ManualResetEventSlim pauseEvent, SemaphoreSlim semaphore, Action<string> addLog, Action<string> updateState)
         {
             _pauseEvent = pauseEvent;
             _semaphore = semaphore;
@@ -45,7 +45,7 @@ namespace WpfApp1.Command.Command_VQ3024
 
 
 
-
+        
 
         #region PFC工作状态
 
@@ -312,16 +312,16 @@ namespace WpfApp1.Command.Command_VQ3024
 
         public string BatCurr
         {
-            get
+            get 
             {
-                return _BatCurr;
+                return _BatCurr; 
             }
             set
             {
                 if (value == "1")
                 {
                     //返回放电
-                    _BatCurr = "-" + BattDisCurr + "A";
+                    _BatCurr = "-" + BattDisCurr+"A";
                 }
                 else if (value == "2")
                 {
@@ -553,8 +553,8 @@ namespace WpfApp1.Command.Command_VQ3024
                 //AC充电开关
                 ACChgSW = Values[6].Substring(2, 1);
                 //电池状态
-                //BatState = Values[6].Substring(6, 1);
-                //BatCurr = BatState;
+                BatState = Values[6].Substring(6,1);
+                BatCurr = BatState;
 
 
             }
@@ -592,7 +592,7 @@ namespace WpfApp1.Command.Command_VQ3024
             BatState = exceptionDescription;
         }
 
-
+        
         #endregion
     }
 }

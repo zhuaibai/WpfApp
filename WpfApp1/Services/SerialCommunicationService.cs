@@ -270,12 +270,15 @@ namespace WpfApp1.Services
                 //对返回字节进行CRC校验
                 if (Receive_CRC_Check&&buffer.Length==returnCount)
                 {
-                   bool CRC_Pass = CheckReceive_CRC(buffer);
-                    if (!CRC_Pass)
+                    byte[] origin = buffer;
+                    byte[] crcori;
+                    byte[] build;
+                   bool CRC_Pass = CheckReceive_CRC(buffer,out crcori,out build);
+                    if (!CRC_Pass) 
                     {
                         //CRC校验不通过
                         
-                        return "-1";
+                        return "-1   "+ Encoding.ASCII.GetString(origin) + $"收到的CRC:{crcori[0]},{crcori[1]};校验值:{build[0]},{build[1]}";
                     }
                 }
 
@@ -411,7 +414,7 @@ namespace WpfApp1.Services
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        private static bool CheckReceive_CRC(byte[] bytes)
+        private static bool CheckReceive_CRC(byte[] bytes,out byte[] crcOri,out byte[] crcGet)
         {
             //if (bytes == null) return false;
             //int CRC_length = bytes.Length - 3;
@@ -425,7 +428,8 @@ namespace WpfApp1.Services
             ////判断两个校验码是否一致
             //bool isEuqal = CRC_Build.SequenceEqual(CRC_Receuve);
             //return isEuqal;
-
+            crcOri = new byte[2];
+            crcGet = new byte[2];
             if (bytes == null) return false;
             int CRC_length = bytes.Length - 3;
             // 创建新的字节数组进行 CRC 校验
@@ -440,7 +444,8 @@ namespace WpfApp1.Services
 
             // 获取 CRC 校验码
             byte[] CRC_Build = getCRC(buffer);
-
+            crcOri = CRC_Receuve;
+            crcGet = CRC_Build;
             // 判断两个校验码是否一致
             bool isEqual = CRC_Build.SequenceEqual(CRC_Receuve);
             return isEqual;

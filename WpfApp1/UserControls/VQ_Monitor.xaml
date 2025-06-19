@@ -343,7 +343,7 @@
                             Grid.Column="2"
                             Style="{StaticResource ContentText}"
                             Text="V" />
-                        
+
                         <!--  市电频率  -->
                         <TextBlock
                             Grid.Row="3"
@@ -419,7 +419,7 @@
         <!--  第二行 第二列  -->
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="4*" MaxHeight="500"/>
+                <RowDefinition Height="4*" MaxHeight="500" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
@@ -427,6 +427,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -434,8 +435,8 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <!--  太阳能发电(上)  -->
-                <Grid Grid.Column="1">
+                <!--  太阳能发电(左上)  -->
+                <Grid Grid.Column="0">
 
                     <local:RingUC
                         FontSize="12"
@@ -457,8 +458,8 @@
                     </StackPanel>
 
                 </Grid>
-                <!--  左一  -->
-                <Grid Grid.Row="1">
+                <!--  市电（右上）  -->
+                <Grid Grid.Row="0" Grid.Column="2">
 
                     <local:RingUC
                         FontSize="12"
@@ -480,52 +481,35 @@
                             Text="w" />
                     </StackPanel>
                 </Grid>
-                <!--  中间  -->
-                <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                <!--  中左  -->
+                <Grid Grid.Row="1">
 
                     <TextBlock
                         HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
                         FontFamily="../Resource/Fonts/#iconfont"
                         FontSize="15"
                         Foreground="#FF1BD0E4"
                         Text="&#xe62f;" />
-                    <StackPanel
-                        Margin="10"
+                    <TextBlock
                         HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        FontFamily="../Resource/Fonts/#iconfont"
+                        FontSize="15"
+                        Foreground="#FF1BD0E4"
+                        Text="&#xec64;" />
+
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
                         Orientation="Horizontal">
+
                         <TextBlock
                             VerticalAlignment="Center"
                             FontFamily="../Resource/Fonts/#iconfont"
                             FontSize="15"
                             Foreground="#FF1BD0E4"
-                            Text="&#xec63;" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontFamily="../Resource/Fonts/#iconfont"
-                            FontSize="15"
-                            Foreground="#FF1BD0E4"
-                            Text="&#xec63;" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontFamily="../Resource/Fonts/#iconfont"
-                            FontSize="15"
-                            Foreground="#FF1BD0E4"
-                            Text="&#xec63;" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontFamily="../Resource/Fonts/#iconfont"
-                            FontSize="15"
-                            Foreground="#FF1BD0E4"
-                            Text="&#xec63;" />
-                        <TextBlock
-                            Margin="10,0"
-                            FontFamily="../Resource/Fonts/#iconfont"
-                            FontSize="30"
-                            Text="&#xe6af;" />
+                            Text="&#xec62;" />
                         <TextBlock
                             VerticalAlignment="Center"
                             FontFamily="../Resource/Fonts/#iconfont"
@@ -552,9 +536,160 @@
                             Text="&#xec62;" />
                     </StackPanel>
 
+                </Grid>
+
+                <!--  中间  -->
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+
+                    <StackPanel
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            Margin="10,0"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="30"
+                            Text="&#xe6af;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec63;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec63;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec63;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec63;" />
+
+                    </StackPanel>
+
                 </StackPanel>
-                <!--  右一  -->
+                <!--  中右  -->
                 <Grid Grid.Row="1" Grid.Column="2">
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        FontFamily="../Resource/Fonts/#iconfont"
+                        FontSize="15"
+                        Foreground="#FF1BD0E4"
+                        Text="&#xe62f;" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        FontFamily="../Resource/Fonts/#iconfont"
+                        FontSize="15"
+                        Foreground="#FF1BD0E4"
+                        Text="&#xec64;" />
+
+                    <StackPanel
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontFamily="../Resource/Fonts/#iconfont"
+                            FontSize="15"
+                            Foreground="#FF1BD0E4"
+                            Text="&#xec62;" />
+                    </StackPanel>
+
+                </Grid>
+                <!--  电池（左下）  -->
+                <Grid Grid.Row="2" Grid.Column="0">
+                    <local:RingUC
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        FontSize="12"
+                        PercentValue="{Binding BattPercent}"
+                        icon="&#xe603;" />
+
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            Text="{Binding BattPercent}" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
+                            FontSize="10"
+                            Text="w" />
+                    </StackPanel>
+                </Grid>
+                <!--  居民用电（右下）  -->
+                <Grid Grid.Row="2" Grid.Column="2">
                     <local:RingUC
                         Grid.Row="1"
                         Grid.Column="2"
@@ -577,8 +712,6 @@
                             Text="w" />
                     </StackPanel>
                 </Grid>
-
-
 
             </Grid>
             <!--  第二行  -->
@@ -607,7 +740,7 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattCells}" />
+                        Text="{Binding HBAT_VQ2.BattCells}" />
                     <!--  电池电压  -->
                     <TextBlock
                         Grid.Row="0"
@@ -618,7 +751,7 @@
                         Grid.Row="0"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattVolt}" />
+                        Text="{Binding HBAT_VQ2.BattVolt}" />
                     <!--  电池容量  -->
                     <TextBlock
                         Grid.Row="1"
@@ -628,7 +761,7 @@
                         Grid.Row="1"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattCapacity}" />
+                        Text="{Binding HBAT_VQ2.BattCapacity}" />
                     <!--  母线电压  -->
                     <TextBlock
                         Grid.Row="1"
@@ -639,7 +772,7 @@
                         Grid.Row="1"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BusVolt}" />
+                        Text="{Binding HBAT_VQ2.BusVolt}" />
                     <!--  电池充电电流  -->
                     <TextBlock
                         Grid.Row="2"
@@ -649,7 +782,7 @@
                         Grid.Row="2"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattChgCurr}" />
+                        Text="{Binding HBAT_VQ2.BattChgCurr}" />
                     <!--  电池放电电流  -->
                     <TextBlock
                         Grid.Row="2"
@@ -660,7 +793,7 @@
                         Grid.Row="2"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.BattDisCurr}" />
+                        Text="{Binding HBAT_VQ2.BattDisCurr}" />
                     <!--  充电总开关  -->
                     <TextBlock
                         Grid.Row="3"
@@ -670,7 +803,7 @@
                         Grid.Row="3"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.ChgMasterSW}" />
+                        Text="{Binding HBAT_VQ2.ChgMasterSW}" />
                     <!--  AC充电开关  -->
                     <TextBlock
                         Grid.Row="3"
@@ -681,7 +814,7 @@
                         Grid.Row="3"
                         Grid.Column="3"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.ACChgSW}" />
+                        Text="{Binding HBAT_VQ2.ACChgSW}" />
                     <!--  太阳能充电开关  -->
                     <TextBlock
                         Grid.Row="4"
@@ -692,7 +825,7 @@
                         Grid.Row="4"
                         Grid.Column="1"
                         Style="{StaticResource ContentText}"
-                        Text="{Binding HBAT_VQ.SolarChgSW}" />
+                        Text="{Binding HBAT_VQ2.SolarChgSW}" />
                 </Grid>
             </GroupBox>
 
@@ -817,7 +950,7 @@
                         Grid.Column="2"
                         Style="{StaticResource ContentText}"
                         Text="%" />
-                  
+
 
                 </Grid>
             </GroupBox>
@@ -935,51 +1068,6 @@
 
         </Grid>
 
-        <!--  第三行  -->
-        <Grid Grid.Row="2" Grid.ColumnSpan="4">
-            <!--<Border BorderBrush="Gray" BorderThickness="1">
-            -->
-            <!--<StackPanel Margin="5,0" Orientation="Horizontal">
-                <Button
-                    x:Name="StopBtn"
-                    Width="80"
-                    Height="30"
-                    Margin="0,0,5,0"
-                    Background="Red"
-                    Command="{Binding DataContext.StopCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 停止}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe691;" />
-                <Button
-                    x:Name="BeginBtn"
-                    Width="80"
-                    Height="30"
-                    Background="#FF1AFA29"
-                    Command="{Binding DataContext.StartCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                    Content="{DynamicResource 开始}"
-                    Style="{StaticResource BtnStyle}"
-                    Tag="&#xe622;" />
-                <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
-                <CheckBox Margin="10,0,0,0" VerticalAlignment="Center">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="15"
-                        Text="导出运行数据" />
-                </CheckBox>
-                <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">
-                    <Hyperlink>日志目录</Hyperlink>
-                </TextBlock>
-                <Border
-                    Width="2"
-                    Margin="5,0,0,0"
-                    Background="Black" />
-            </StackPanel>-->
-            <!--
-        </Border>-->
-        </Grid>
 
         <!--  参数设置 界面  -->
         <Grid
