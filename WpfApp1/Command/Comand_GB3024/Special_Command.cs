@@ -682,7 +682,7 @@ namespace WpfApp1.Command.Comand_GB3024
 
         #endregion
 
-        #region 清除发电量
+        #region 清除发电量 ^S???CLE\r
 
         //清除发电量
         private string _ClearPowerGeneration;
@@ -1460,12 +1460,12 @@ namespace WpfApp1.Command.Comand_GB3024
 
                     // 异步等待锁
                     await _semaphore.WaitAsync();
-                    UpdateState("正在执行设置命令");
+                    UpdateState("正在执行开启抗干扰设置命令");
                     //Status = "正在执行特殊操作...";
 
                     // 暂停后台线程
                     _pauseEvent.Reset();
-                    AddLog("已暂停后台通信");
+                    AddLog("执行开启抗干扰设置已暂停后台通信");
 
                     // 执行特殊操作（带超时保护）
                     using var timeoutCts = new CancellationTokenSource(5000);
@@ -1506,12 +1506,12 @@ namespace WpfApp1.Command.Comand_GB3024
 
                     // 异步等待锁
                     await _semaphore.WaitAsync();
-                    UpdateState("正在执行设置命令");
+                    UpdateState("正在执行停止抗干扰设置命令");
                     //Status = "正在执行特殊操作...";
 
                     // 暂停后台线程
                     _pauseEvent.Reset();
-                    AddLog("已暂停后台通信");
+                    AddLog("执行停止抗干扰已暂停后台通信");
 
                     // 执行特殊操作（带超时保护）
                     using var timeoutCts = new CancellationTokenSource(5000);

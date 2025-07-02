@@ -373,6 +373,7 @@ namespace WpfApp1.Command.Command_PDF3024
             catch (Exception ex)
             {
                 ReceiveException("HIMSG2解析异常");
+                AddLog("HIMSG2解析异常"+ex.ToString());
             }
         }
 

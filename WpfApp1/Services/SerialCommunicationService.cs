@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -233,7 +235,7 @@ namespace WpfApp1.Services
             //写命令
             byte[] Command = Encoding.ASCII.GetBytes(command);
             //接收帧数
-            int totalBytesRead =0;
+            //int totalBytesRead =0;
             //判断是否需要接收校验CRC
             if(Receive_CRC_Check)
             {
@@ -250,25 +252,126 @@ namespace WpfApp1.Services
                 Thread.Sleep(100);
                 //添加发送帧数
                 AddSendFrame(Command.Length);
-                // 设置读取超时时间【1s】
-                SerialPort.ReadTimeout = 1000;
+                 
                 // 需要读取的字节数
                 int bytesToRead =  returnCount;
-                //读取输入缓冲区
-                byte[] buffer = new byte[bytesToRead];
-                totalBytesRead = 0;
-                //设置读取超时，1s内达不到所需字节就触发超时异常
-                while (totalBytesRead < bytesToRead)
+                ////读取输入缓冲区
+                //byte[] buffer = new byte[bytesToRead];
+                //totalBytesRead = 0;
+                ////设置读取超时，1s内达不到所需字节就触发超时异常
+                //while (totalBytesRead < bytesToRead)
+                //{
+                //    int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
+                //    totalBytesRead += bytesRead;
+                //}
+
+
+                //第二种方法
+                // 设置读取超时时间（200ms）
+                //SerialPort.ReadTimeout = 100;
+                //byte[] buffer;
+                //// 使用MemoryStream动态存储所有接收到的字节
+                //using (MemoryStream memoryStream = new MemoryStream())
+                //{
+                //    byte[] chunkBuffer = new byte[128]; // 每次读取的块缓冲区
+
+                //    // 循环读取直到超时或数据读完
+                //    while (true)
+                //    {
+                //        try
+                //        {
+                //            int bytesRead = SerialPort.Read(chunkBuffer, 0, chunkBuffer.Length);//每次读取32字节
+                //            if (bytesRead > 0)
+                //            {
+                //                memoryStream.Write(chunkBuffer, 0, bytesRead);
+                //            }
+
+                //        }
+                //        catch (TimeoutException)
+                //        {
+                //            break; // 超时表示无更多数据
+                //        }
+                //    }
+
+                //    // 获取最终数据
+                //    buffer= memoryStream.ToArray();
+                //    totalBytesRead = buffer.Length; // 实际读取的总字节数
+                //}
+
+                // 设置读取超时时间
+                SerialPort.ReadTimeout = 1000;
+
+                // 使用动态缓冲区收集数据
+                var receivedData = new List<byte>();
+                int totalBytesRead = 0;
+                bool dataReceived = false;
+
+                // 第一阶段：读取所需的最小字节数
+                try
                 {
-                    int bytesRead = SerialPort.Read(buffer, totalBytesRead, bytesToRead - totalBytesRead);
-                    totalBytesRead += bytesRead;
+                    while (totalBytesRead < returnCount)
+                    {
+                        byte[] tempBuffer = new byte[returnCount - totalBytesRead];
+                        int bytesRead = SerialPort.Read(tempBuffer, 0, tempBuffer.Length);
+
+                        if (bytesRead > 0)
+                        {
+                            receivedData.AddRange(tempBuffer.Take(bytesRead));
+                            totalBytesRead += bytesRead;
+                            dataReceived = true;
+                        }
+                    }
                 }
+                catch (TimeoutException)
+                {
+                    if (!dataReceived)
+                    {
+                        // 完全未收到任何数据
+                        //throw new TimeoutException("No data received within timeout period");
+                        return string.Empty;
+                    }
+                    // 部分数据已收到，继续处理
+                }
+
+                // 第二阶段：读取剩余所有可用字节
+                try
+                {
+                    while (true)
+                    {
+                        byte[] extraBuffer = new byte[SerialPort.BytesToRead];
+                        int bytesRead = SerialPort.Read(extraBuffer, 0, extraBuffer.Length);
+
+                        if (bytesRead > 0)
+                        {
+                            receivedData.AddRange(extraBuffer.Take(bytesRead));
+                            totalBytesRead += bytesRead;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 处理其他可能的异常
+                    Debug.WriteLine($"Error reading extra bytes: {ex.Message}");
+                }
+
+                // 最终结果
+                byte[] buffer = receivedData.ToArray();
 
                 //增加接收返回帧数
                 AddReceiveFrame(totalBytesRead);
 
+                //判断是否空返回
+                if(buffer.Length == 0)
+                {
+                    return string.Empty;
+                }
+                
                 //对返回字节进行CRC校验
-                if (Receive_CRC_Check&&buffer.Length==returnCount)
+                if (Receive_CRC_Check)
                 {
                     byte[] origin = buffer;
                     byte[] crcori;
@@ -291,7 +394,7 @@ namespace WpfApp1.Services
                 // 超时未
                 //MessageBox.Show("超时未收到ACK");
                 //增加接收返回帧数
-                AddReceiveFrame(totalBytesRead);
+                //AddReceiveFrame(totalBytesRead);
                 return string.Empty;
             }
             finally

@@ -39,6 +39,7 @@ namespace WpfApp1.ViewModels
 
             //初始化串口信息
             IniCom();
+            OpenCom = new RelayCommand(openCom);
             //发送帧，接收帧
             SerialCountVM = new SerialCountVM();
             //绑定发送接收帧计数委托
@@ -55,7 +56,7 @@ namespace WpfApp1.ViewModels
             HSTS_GB = new HSTS_GB_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             SpecialCommand = new Special_Command(_pauseEvent, _semaphore, AddLog, UpdateState);
             HPVB_GB = new HPVB_GB_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
-            OpenCom = new RelayCommand(openCom);
+            
             //初始化  VQ   VIew
             HOP_VQ = new HOP_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
             HBMS1_VQ = new HBMS1_VQ_ViewModel(_pauseEvent, _semaphore, AddLog, UpdateState);
@@ -275,14 +276,12 @@ namespace WpfApp1.ViewModels
                 SerialCommunicationService.OpenReceiveCRC(true);
                 //发送HOSTCRCEN
                 Task.Run(new Action(() => SpecialCommand.AntiJamModeOperation(true)));
-
             }
             else
-            {
-                // 处理未选中状态
+            {  
+                //发送HOSTCRCDN
+                Task.Run(new Action(() => SpecialCommand.AntiJamModeOperation(false)));
                 SerialCommunicationService.OpenReceiveCRC(false);
-
-
             }
         }
 
@@ -1540,20 +1539,17 @@ namespace WpfApp1.ViewModels
             receive = SerialCommunicationService.SendCommand(HBMS1_VQ.Command, 70);
             HBMS1_VQ.AnalysisStringToElement(receive);
 
-
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送HEEP1指令
             string receiveHEEP1 = SerialCommunicationService.SendCommand(HEEP1.Command, 80);
             //解析返回指令
             HEEP1.AnalyseStringToElement(receiveHEEP1);
 
-
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送HEEP2指令
             string receive_HEEP2 = SerialCommunicationService.SendCommand(HEEP2.Command, 80);
             //解析返回指令
             HEEP2.AnalyseStringToElement(receive_HEEP2);
-
 
             // 等待暂停或取消信号
             _pauseEvent.Wait(token);
@@ -1597,11 +1593,11 @@ namespace WpfApp1.ViewModels
             HBAT_VQ.AnalysisStringToElement(receive);
             BattPercent = StringToIntConversion(HBAT_VQ.BattCapacity);
 
+            
             //发送HIMSG1指令
             _pauseEvent.Wait(token);
             receive = SerialCommunicationService.SendCommand(HIMSG1.Command, 21);
             HIMSG1.AnalysisStringToElement(receive);
-
 
             _pauseEvent.Wait(token); // 等待暂停或取消信号
             //发送Hgen指令
@@ -1628,12 +1624,29 @@ namespace WpfApp1.ViewModels
         {
             string receive = "";
 
+            //判断是否开启CRC接收校验（抗干扰 默认开启
+            if (IsChecked)
+            {
+                //发送HOSTCRCEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "EN");
+                ShowError(receive, "HOSTCRC");
+            }
+            else if (OnceOpenCRC)
+            {
+                //发送HOSTCRDEN指令
+                _pauseEvent.Wait(token);
+                receive = SerialCommunicationService.SendSettingCommand("HOSTCRC", "DN");
+                OnceOpenCRC = false;
+                IsChecked = false;
+                SerialCommunicationService.OpenReceiveCRC(false);
+            }
+
             //获取机器型号
             _pauseEvent.Wait(token);
             string receive_MachineType = SerialCommunicationService.SendCommand(SpecialCommand.QueryMachineType, 10);
             MachineType = receive_MachineType;
             SerialCommunicationService.MachineType = receive_MachineType;
-
 
             //发送HBMS1指令
             _pauseEvent.Wait(token); // 等待暂停或取消信号

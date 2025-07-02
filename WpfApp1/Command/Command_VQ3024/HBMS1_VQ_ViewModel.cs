@@ -367,7 +367,12 @@ namespace WpfApp1.Command.Command_VQ3024
                 ReceiveException("空");
                 return;
             }
-            
+
+            if (value.Substring(0, 2) == "-1")
+            {
+                ReceiveException("CRC校验异常");
+                return;
+            }
             string[] Values = value.Split(" ");
 
             try
@@ -412,7 +417,7 @@ namespace WpfApp1.Command.Command_VQ3024
             }
             catch (Exception ex)
             {
-                ReceiveException("HBAT异常");
+                ReceiveException("HBMS1异常");
             }
         }
 
